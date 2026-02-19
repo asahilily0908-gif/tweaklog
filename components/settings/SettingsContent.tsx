@@ -470,7 +470,7 @@ export default function SettingsContent({
   // ─── Render ───────────────────────────────────────────
 
   return (
-    <div className="mx-auto max-w-3xl space-y-8 p-6 pb-24">
+    <div className="mx-auto max-w-3xl space-y-6 sm:space-y-8 p-4 sm:p-6 pb-24">
       <div>
         <h1 className="text-2xl font-bold tracking-tight text-gray-900">{t('settings.title')}</h1>
         <p className="mt-1 text-sm text-gray-500">
@@ -480,11 +480,11 @@ export default function SettingsContent({
 
       {/* ── Section 1: Project Settings ──────────────── */}
       <section className="rounded-xl border border-gray-200 bg-white shadow-sm">
-        <div className="border-b border-gray-100 px-6 py-4">
+        <div className="border-b border-gray-100 px-4 sm:px-6 py-4">
           <h2 className="text-lg font-semibold text-gray-900">{t('settings.projectSettings')}</h2>
         </div>
-        <div className="space-y-5 px-6 py-5">
-          <div className="grid grid-cols-2 gap-4">
+        <div className="space-y-5 px-4 sm:px-6 py-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700">{t('settings.projectName')}</label>
               <input
@@ -581,10 +581,10 @@ export default function SettingsContent({
 
       {/* ── Section 2: KPI Settings ──────────────────── */}
       <section className="rounded-xl border border-gray-200 bg-white shadow-sm">
-        <div className="border-b border-gray-100 px-6 py-4">
+        <div className="border-b border-gray-100 px-4 sm:px-6 py-4">
           <h2 className="text-lg font-semibold text-gray-900">{t('settings.mainKpiSettings')}</h2>
         </div>
-        <div className="space-y-5 px-6 py-5">
+        <div className="space-y-5 px-4 sm:px-6 py-5">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1.5">
               {t('dashboard.mainKpi')}
@@ -674,8 +674,8 @@ export default function SettingsContent({
 
       {/* ── Section 3: Custom Metrics ────────────────── */}
       <section className="rounded-xl border border-gray-200 bg-white shadow-sm">
-        <div className="border-b border-gray-100 px-6 py-4">
-          <div className="flex items-center justify-between">
+        <div className="border-b border-gray-100 px-4 sm:px-6 py-4">
+          <div className="flex items-center justify-between gap-2">
             <h2 className="text-lg font-semibold text-gray-900">{t('settings.customMetrics')}</h2>
             <button
               type="button"
@@ -689,7 +689,7 @@ export default function SettingsContent({
             </button>
           </div>
         </div>
-        <div className="px-6 py-5">
+        <div className="px-4 sm:px-6 py-5">
           {/* Templates */}
           <div className="mb-5">
             <p className="text-xs font-medium uppercase tracking-wide text-gray-400 mb-2">
@@ -726,9 +726,9 @@ export default function SettingsContent({
                   key={m.id}
                   className="flex items-center justify-between rounded-lg border border-gray-200 px-4 py-3 transition-colors hover:bg-gray-50"
                 >
-                  <div className="flex items-center gap-3 min-w-0">
+                  <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-wrap">
                     <span className="text-sm font-medium text-gray-900">{m.displayName}</span>
-                    <code className="rounded bg-gray-100 px-2 py-0.5 text-xs text-gray-600 truncate max-w-[200px]">
+                    <code className="rounded bg-gray-100 px-2 py-0.5 text-xs text-gray-600 truncate max-w-[140px] sm:max-w-[200px]">
                       {m.formula}
                     </code>
                     <span className="flex-shrink-0 text-xs text-gray-400">
@@ -782,7 +782,7 @@ export default function SettingsContent({
                 </button>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-medium text-gray-600">{t('settings.internalName')}</label>
                   <input
@@ -880,7 +880,7 @@ export default function SettingsContent({
                     )}
                   </div>
                   {preview.length > 0 ? (
-                    <div className="grid grid-cols-7 gap-1">
+                    <div className="grid grid-cols-4 sm:grid-cols-7 gap-1">
                       {preview.map((p) => (
                         <div key={p.date} className="text-center">
                           <div className="text-[10px] text-gray-400">
@@ -976,9 +976,9 @@ export default function SettingsContent({
 
       {/* ── Section 4: Experiment Groups ────────────── */}
       <section className="rounded-xl border border-gray-200 bg-white shadow-sm">
-        <div className="border-b border-gray-100 px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div>
+        <div className="border-b border-gray-100 px-4 sm:px-6 py-4">
+          <div className="flex items-center justify-between gap-2">
+            <div className="min-w-0">
               <h2 className="text-lg font-semibold text-gray-900">{t('settings.experimentGroups')}</h2>
               <p className="mt-0.5 text-xs text-gray-500">{t('settings.experimentGroupsDescription')}</p>
             </div>
@@ -994,7 +994,7 @@ export default function SettingsContent({
             </button>
           </div>
         </div>
-        <div className="px-6 py-5">
+        <div className="px-4 sm:px-6 py-5">
           {groups.length > 0 ? (
             <div className="space-y-2">
               {groups.map((g) => (
@@ -1002,7 +1002,7 @@ export default function SettingsContent({
                   key={g.id}
                   className="flex items-center justify-between rounded-lg border border-gray-200 px-4 py-3 transition-colors hover:bg-gray-50"
                 >
-                  <div className="flex items-center gap-3 min-w-0">
+                  <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-wrap">
                     <span className="text-sm font-medium text-gray-900">{g.name}</span>
                     <span className={`inline-flex rounded-full px-2 py-0.5 text-[10px] font-semibold ${
                       g.status === 'testing' ? 'bg-blue-100 text-blue-700' :
@@ -1064,7 +1064,7 @@ export default function SettingsContent({
                 </button>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-medium text-gray-600">{t('settings.groupName')}</label>
                   <input
@@ -1250,11 +1250,11 @@ export default function SettingsContent({
 
       {/* ── Section 5: Danger Zone ───────────────────── */}
       <section className="rounded-xl border border-red-200 bg-white shadow-sm">
-        <div className="border-b border-red-100 px-6 py-4">
+        <div className="border-b border-red-100 px-4 sm:px-6 py-4">
           <h2 className="text-lg font-semibold text-red-600">{t('settings.dangerZone')}</h2>
         </div>
-        <div className="px-6 py-5">
-          <div className="flex items-center justify-between">
+        <div className="px-4 sm:px-6 py-5">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
               <p className="text-sm font-medium text-gray-900">{t('settings.deleteProject')}</p>
               <p className="text-xs text-gray-500 mt-0.5">
@@ -1284,7 +1284,7 @@ export default function SettingsContent({
           onClick={() => setShowDeleteModal(false)}
         >
           <div
-            className={`w-full max-w-md rounded-2xl bg-white p-6 shadow-xl transition-all duration-200 ${
+            className={`w-full max-w-md mx-4 rounded-2xl bg-white p-5 sm:p-6 shadow-xl transition-all duration-200 ${
               deleteModalVisible ? 'scale-100 opacity-100' : 'scale-95 opacity-0'
             }`}
             onClick={(e) => e.stopPropagation()}

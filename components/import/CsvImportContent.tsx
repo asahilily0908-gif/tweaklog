@@ -264,16 +264,16 @@ export default function CsvImportContent({ project }: Props) {
   }, [mappings, rows, project.platform])
 
   return (
-    <div className="p-6 max-w-4xl mx-auto">
+    <div className="p-4 sm:p-6 max-w-4xl mx-auto">
       {/* Header */}
-      <div className="mb-8">
+      <div className="mb-6 sm:mb-8">
         <h1 className="text-2xl font-bold tracking-tight text-gray-900">{t('import.title')}</h1>
         <p className="mt-1 text-sm text-gray-500">{t('import.uploadDescription')}</p>
       </div>
 
       {/* Step indicator */}
       {step !== 'upload' && (
-        <div className="mb-6 flex items-center gap-2">
+        <div className="mb-6 flex items-center gap-2 overflow-x-auto pb-1">
           {(['upload', 'mapping', 'importing', 'done'] as const).map((s, i) => {
             const labels = [t('import.upload'), t('import.mapColumns'), t('import.importStep'), t('import.done')]
             const isActive = s === step
@@ -313,7 +313,7 @@ export default function CsvImportContent({ project }: Props) {
           onDragOver={(e) => { e.preventDefault(); setIsDragOver(true) }}
           onDragLeave={() => setIsDragOver(false)}
           onDrop={handleDrop}
-          className={`flex flex-col items-center justify-center rounded-2xl border-2 border-dashed p-16 transition-all duration-200 ${
+          className={`flex flex-col items-center justify-center rounded-2xl border-2 border-dashed p-8 sm:p-16 transition-all duration-200 ${
             isDragOver
               ? 'border-blue-400 bg-blue-50/50 shadow-lg shadow-blue-500/5'
               : 'border-gray-200 bg-white hover:border-gray-300 hover:bg-gray-50/50'
@@ -371,11 +371,11 @@ export default function CsvImportContent({ project }: Props) {
             </div>
             <div className="divide-y divide-gray-100 p-1">
               {headers.map((header, idx) => (
-                <div key={idx} className={`flex items-center gap-4 px-4 py-2.5 rounded-lg transition-colors duration-100 ${
+                <div key={idx} className={`flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 px-3 sm:px-4 py-2.5 rounded-lg transition-colors duration-100 ${
                   mappings[idx] ? 'bg-green-50/30' : ''
                 }`}>
-                  <span className="w-44 text-xs text-gray-700 truncate font-mono bg-gray-100 rounded px-2 py-1">{header}</span>
-                  <svg className="h-4 w-4 shrink-0 text-gray-300" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                  <span className="w-full sm:w-44 text-xs text-gray-700 truncate font-mono bg-gray-100 rounded px-2 py-1">{header}</span>
+                  <svg className="hidden sm:block h-4 w-4 shrink-0 text-gray-300" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
                   </svg>
                   <select
@@ -483,11 +483,11 @@ export default function CsvImportContent({ project }: Props) {
           )}
 
           {/* Actions */}
-          <div className="flex justify-between">
+          <div className="flex flex-col-reverse sm:flex-row sm:justify-between gap-3">
             <button
               type="button"
               onClick={() => { setStep('upload'); setHeaders([]); setRows([]); setMappings({}); setError(null); }}
-              className="rounded-lg border border-gray-200 px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-all duration-150"
+              className="rounded-lg border border-gray-200 px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-all duration-150 w-full sm:w-auto"
             >
               {t('import.uploadDifferent')}
             </button>
@@ -495,7 +495,7 @@ export default function CsvImportContent({ project }: Props) {
               type="button"
               onClick={handleImport}
               disabled={!hasDateMapping()}
-              className="rounded-lg bg-slate-900 px-6 py-2.5 text-sm font-medium text-white shadow-sm hover:bg-slate-800 disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-150"
+              className="rounded-lg bg-slate-900 px-6 py-2.5 text-sm font-medium text-white shadow-sm hover:bg-slate-800 disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-150 w-full sm:w-auto"
             >
               {t('import.importRows').replace('{count}', rows.length.toLocaleString())}
             </button>
@@ -505,7 +505,7 @@ export default function CsvImportContent({ project }: Props) {
 
       {/* Step: Importing */}
       {step === 'importing' && (
-        <div className="flex flex-col items-center justify-center rounded-2xl border border-gray-200 bg-white p-16 shadow-sm">
+        <div className="flex flex-col items-center justify-center rounded-2xl border border-gray-200 bg-white p-8 sm:p-16 shadow-sm">
           <div className="relative">
             <div className="h-12 w-12 animate-spin rounded-full border-[3px] border-gray-200 border-t-slate-900" />
           </div>
@@ -525,7 +525,7 @@ export default function CsvImportContent({ project }: Props) {
 
       {/* Step: Done */}
       {step === 'done' && importResult && (
-        <div className="flex flex-col items-center justify-center rounded-2xl border border-gray-200 bg-white p-16 shadow-sm">
+        <div className="flex flex-col items-center justify-center rounded-2xl border border-gray-200 bg-white p-8 sm:p-16 shadow-sm">
           <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-green-50">
             <svg className="h-8 w-8 text-green-500" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />

@@ -113,9 +113,9 @@ export default function ExperimentsContent({ project, experiments, outcomes, exp
   })
 
   return (
-    <div className="p-6 max-w-7xl mx-auto">
+    <div className="p-4 sm:p-6 max-w-7xl mx-auto">
       {/* Header */}
-      <div className="mb-8 flex items-center justify-between">
+      <div className="mb-6 sm:mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-gray-900">{t('experiments.title')}</h1>
           <p className="mt-1 text-sm text-gray-500">{experiments.length} {t('experiments.changesRecorded')}</p>
@@ -184,81 +184,134 @@ export default function ExperimentsContent({ project, experiments, outcomes, exp
           </button>
         </div>
       ) : (
-        <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
-          <table className="min-w-full">
-            <thead>
-              <tr className="border-b border-gray-200 bg-gray-50/80">
-                <th className="w-8 px-4 py-3" />
-                {scoreMap && (
-                  <th className="px-4 py-3 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wider">{t('experiments.score')}</th>
-                )}
-                <th className="px-4 py-3 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wider">{t('experiments.category')}</th>
-                <th className="px-4 py-3 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wider">{t('experiments.platform')}</th>
-                <th className="px-4 py-3 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wider">{t('experiments.change')}</th>
-                <th className="px-4 py-3 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wider">{t('experiments.reason')}</th>
-                <th className="px-4 py-3 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wider">{t('experiments.tags')}</th>
-                <th className="px-4 py-3 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wider">{t('experiments.date')}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filtered.map((exp, i) => (
-                <tr
-                  key={exp.id}
-                  className={`border-b border-gray-100 last:border-0 hover:bg-blue-50/30 transition-all duration-100 cursor-pointer ${
-                    i % 2 === 1 ? 'bg-gray-50/30' : ''
-                  }`}
-                  onClick={() => setSelectedExperiment(exp)}
-                >
-                  <td className="px-4 py-3.5 text-center">
-                    {exp.is_ai_highlighted && <span className="text-amber-500" title="AI Highlighted">⚡</span>}
-                  </td>
-                  {scoreMap && (
-                    <td className="px-4 py-3.5">
-                      <ScoreBadge score={scoreMap.get(exp.id) ?? null} size="sm" />
-                    </td>
-                  )}
-                  <td className="px-4 py-3.5">
+        <>
+          {/* Mobile card layout */}
+          <div className="space-y-3 md:hidden">
+            {filtered.map((exp) => (
+              <div
+                key={exp.id}
+                className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm active:bg-gray-50 cursor-pointer transition-colors"
+                onClick={() => setSelectedExperiment(exp)}
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center gap-2">
+                    {scoreMap && <ScoreBadge score={scoreMap.get(exp.id) ?? null} size="sm" />}
                     <span className={`inline-flex rounded-md border px-2 py-0.5 text-[10px] font-semibold ${CATEGORY_COLORS[exp.category] ?? 'bg-gray-50 text-gray-700 border-gray-200'}`}>
                       {t('experiments.categories.' + exp.category) || exp.category}
                     </span>
-                  </td>
-                  <td className="px-4 py-3.5 text-xs font-medium text-gray-600">
-                    {exp.platform === 'google_ads' ? 'Google Ads' : exp.platform === 'meta' ? 'Meta' : exp.platform}
-                  </td>
-                  <td className="px-4 py-3.5">
-                    {exp.before_value && exp.after_value ? (
-                      <span className="text-xs">
-                        <span className="text-red-400 line-through">{exp.before_value}</span>
-                        <span className="mx-1 text-gray-300">&rarr;</span>
-                        <span className="text-green-600 font-medium">{exp.after_value}</span>
+                    {exp.is_ai_highlighted && <span className="text-amber-500" title="AI Highlighted">⚡</span>}
+                  </div>
+                  <span className="text-[11px] text-gray-400 tabular-nums">{formatDate(exp.created_at)}</span>
+                </div>
+                {exp.title && (
+                  <p className="text-sm font-medium text-gray-900 mb-1">{exp.title}</p>
+                )}
+                <div className="flex items-center gap-2 text-xs text-gray-500">
+                  <span className="font-medium">{exp.platform === 'google_ads' ? 'Google Ads' : exp.platform === 'meta' ? 'Meta' : exp.platform}</span>
+                  {exp.before_value && exp.after_value && (
+                    <>
+                      <span className="text-gray-300">·</span>
+                      <span className="text-red-400 line-through">{exp.before_value}</span>
+                      <span className="text-gray-300">&rarr;</span>
+                      <span className="text-green-600 font-medium">{exp.after_value}</span>
+                    </>
+                  )}
+                </div>
+                {exp.tags.length > 0 && (
+                  <div className="flex gap-1 mt-2">
+                    {exp.tags.slice(0, 3).map((tag) => (
+                      <span key={tag} className="rounded-md border border-gray-150 bg-gray-50 px-1.5 py-0.5 text-[10px] text-gray-500">
+                        {tag}
                       </span>
-                    ) : (
-                      <span className="text-xs text-gray-400">&mdash;</span>
+                    ))}
+                    {exp.tags.length > 3 && (
+                      <span className="text-[10px] text-gray-400">+{exp.tags.length - 3}</span>
                     )}
-                  </td>
-                  <td className="max-w-[200px] px-4 py-3.5">
-                    <p className="text-xs text-gray-500 truncate">{exp.reason ?? '—'}</p>
-                  </td>
-                  <td className="px-4 py-3.5">
-                    <div className="flex gap-1">
-                      {exp.tags.slice(0, 2).map((tag) => (
-                        <span key={tag} className="rounded-md border border-gray-150 bg-gray-50 px-1.5 py-0.5 text-[10px] text-gray-500">
-                          {tag}
-                        </span>
-                      ))}
-                      {exp.tags.length > 2 && (
-                        <span className="text-[10px] text-gray-400">+{exp.tags.length - 2}</span>
-                      )}
-                    </div>
-                  </td>
-                  <td className="px-4 py-3.5 text-xs text-gray-400 whitespace-nowrap tabular-nums">
-                    {formatDate(exp.created_at)}
-                  </td>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+
+          {/* Desktop table layout */}
+          <div className="hidden md:block overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+            <div className="overflow-x-auto">
+            <table className="min-w-full">
+              <thead>
+                <tr className="border-b border-gray-200 bg-gray-50/80">
+                  <th className="w-8 px-4 py-3" />
+                  {scoreMap && (
+                    <th className="px-4 py-3 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wider whitespace-nowrap">{t('experiments.score')}</th>
+                  )}
+                  <th className="px-4 py-3 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wider whitespace-nowrap">{t('experiments.category')}</th>
+                  <th className="px-4 py-3 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wider whitespace-nowrap">{t('experiments.platform')}</th>
+                  <th className="px-4 py-3 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wider whitespace-nowrap">{t('experiments.change')}</th>
+                  <th className="px-4 py-3 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wider whitespace-nowrap">{t('experiments.reason')}</th>
+                  <th className="px-4 py-3 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wider whitespace-nowrap">{t('experiments.tags')}</th>
+                  <th className="px-4 py-3 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wider whitespace-nowrap">{t('experiments.date')}</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {filtered.map((exp, i) => (
+                  <tr
+                    key={exp.id}
+                    className={`border-b border-gray-100 last:border-0 hover:bg-blue-50/30 transition-all duration-100 cursor-pointer ${
+                      i % 2 === 1 ? 'bg-gray-50/30' : ''
+                    }`}
+                    onClick={() => setSelectedExperiment(exp)}
+                  >
+                    <td className="px-4 py-3.5 text-center">
+                      {exp.is_ai_highlighted && <span className="text-amber-500" title="AI Highlighted">⚡</span>}
+                    </td>
+                    {scoreMap && (
+                      <td className="px-4 py-3.5">
+                        <ScoreBadge score={scoreMap.get(exp.id) ?? null} size="sm" />
+                      </td>
+                    )}
+                    <td className="px-4 py-3.5">
+                      <span className={`inline-flex whitespace-nowrap rounded-md border px-2 py-0.5 text-[10px] font-semibold ${CATEGORY_COLORS[exp.category] ?? 'bg-gray-50 text-gray-700 border-gray-200'}`}>
+                        {t('experiments.categories.' + exp.category) || exp.category}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3.5 text-xs font-medium text-gray-600 whitespace-nowrap">
+                      {exp.platform === 'google_ads' ? 'Google Ads' : exp.platform === 'meta' ? 'Meta' : exp.platform}
+                    </td>
+                    <td className="px-4 py-3.5">
+                      {exp.before_value && exp.after_value ? (
+                        <span className="text-xs whitespace-nowrap">
+                          <span className="text-red-400 line-through">{exp.before_value}</span>
+                          <span className="mx-1 text-gray-300">&rarr;</span>
+                          <span className="text-green-600 font-medium">{exp.after_value}</span>
+                        </span>
+                      ) : (
+                        <span className="text-xs text-gray-400">&mdash;</span>
+                      )}
+                    </td>
+                    <td className="max-w-[200px] px-4 py-3.5">
+                      <p className="text-xs text-gray-500 truncate">{exp.reason ?? '—'}</p>
+                    </td>
+                    <td className="px-4 py-3.5">
+                      <div className="flex gap-1 whitespace-nowrap">
+                        {exp.tags.slice(0, 2).map((tag) => (
+                          <span key={tag} className="rounded-md border border-gray-150 bg-gray-50 px-1.5 py-0.5 text-[10px] text-gray-500">
+                            {tag}
+                          </span>
+                        ))}
+                        {exp.tags.length > 2 && (
+                          <span className="text-[10px] text-gray-400">+{exp.tags.length - 2}</span>
+                        )}
+                      </div>
+                    </td>
+                    <td className="px-4 py-3.5 text-xs text-gray-400 whitespace-nowrap tabular-nums">
+                      {formatDate(exp.created_at)}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            </div>
+          </div>
+        </>
       )}
 
       {/* New Change Modal */}

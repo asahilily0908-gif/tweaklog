@@ -379,7 +379,7 @@ export default function DashboardContent({ project, outcomes, experiments, metri
   const availablePlatforms = ['ALL', ...project.platform]
 
   return (
-    <div className="p-6 max-w-7xl mx-auto">
+    <div className="p-4 sm:p-6 max-w-7xl mx-auto">
       {/* Header */}
       <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
@@ -390,14 +390,14 @@ export default function DashboardContent({ project, outcomes, experiments, metri
               : `${t('dashboard.lastDays').replace('{days}', String(dateRange))} ${t('dashboard.endingOn').replace('{date}', latestDate)}`}
           </p>
         </div>
-        <div className="flex items-center gap-3">
-          <div className="flex rounded-lg border border-gray-200 bg-white p-0.5 shadow-sm">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+          <div className="flex overflow-x-auto rounded-lg border border-gray-200 bg-white p-0.5 shadow-sm">
             {([7, 14, 30, 90, 'all'] as DateRange[]).map((range) => (
               <button
                 key={String(range)}
                 type="button"
                 onClick={() => setDateRange(range)}
-                className={`rounded-md px-3 py-1.5 text-xs font-medium transition-all duration-150 ${
+                className={`shrink-0 rounded-md px-2.5 sm:px-3 py-1.5 text-xs font-medium transition-all duration-150 ${
                   dateRange === range
                     ? 'bg-slate-900 text-white shadow-sm'
                     : 'text-gray-500 hover:bg-gray-100 hover:text-gray-700'
@@ -419,12 +419,14 @@ export default function DashboardContent({ project, outcomes, experiments, metri
               ))}
             </select>
           )}
-          <PlatformFilter
-            platforms={availablePlatforms}
-            labels={PLATFORM_LABELS}
-            selected={platform}
-            onChange={setPlatform}
-          />
+          <div className="overflow-x-auto">
+            <PlatformFilter
+              platforms={availablePlatforms}
+              labels={PLATFORM_LABELS}
+              selected={platform}
+              onChange={setPlatform}
+            />
+          </div>
         </div>
       </div>
 
@@ -495,19 +497,19 @@ export default function DashboardContent({ project, outcomes, experiments, metri
       )}
 
       {/* Timeline Chart */}
-      <div className="mb-6 rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-        <div className="flex items-center justify-between mb-1">
+      <div className="mb-6 rounded-xl border border-gray-200 bg-white p-4 sm:p-6 shadow-sm">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-1">
           <h2 className="text-sm font-semibold text-gray-900">
             {selectedMetric ? selectedMetric.display_name : isAllMode ? `${northStar.label} & Cost` : 'Performance Trend'}
           </h2>
           {isAllMode && chartViewOptions.length > 1 && (
-            <div className="flex gap-1 rounded-lg bg-gray-100 p-0.5">
+            <div className="flex gap-1 rounded-lg bg-gray-100 p-0.5 overflow-x-auto">
               {chartViewOptions.map((opt) => (
                 <button
                   key={opt.id}
                   type="button"
                   onClick={() => setChartView(opt.id)}
-                  className={`rounded-md px-2.5 py-1 text-[11px] font-medium transition-all duration-150 ${
+                  className={`shrink-0 rounded-md px-2.5 py-1 text-[11px] font-medium transition-all duration-150 whitespace-nowrap ${
                     chartView === opt.id
                       ? 'bg-white text-gray-900 shadow-sm'
                       : 'text-gray-500 hover:text-gray-700'
@@ -552,7 +554,7 @@ export default function DashboardContent({ project, outcomes, experiments, metri
       </div>
 
       {/* Recent Experiments */}
-      <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+      <div className="rounded-xl border border-gray-200 bg-white p-4 sm:p-6 shadow-sm">
         <div className="mb-4 flex items-center justify-between">
           <h2 className="text-sm font-semibold text-gray-900">{t('dashboard.recentChanges')}</h2>
           <a

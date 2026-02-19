@@ -117,11 +117,11 @@ export default function ImpactCardPanel({
 
       {/* Panel */}
       <div
-        className={`relative w-full max-w-md overflow-y-auto bg-white shadow-2xl transition-transform duration-300 ease-out ${
+        className={`relative w-full max-w-full md:max-w-md overflow-y-auto bg-white shadow-2xl transition-transform duration-300 ease-out ${
           isVisible ? 'translate-x-0' : 'translate-x-full'
         }`}
       >
-        <div className="p-6">
+        <div className="p-4 sm:p-6">
           {/* Close button */}
           <button
             type="button"
@@ -185,8 +185,8 @@ export default function ImpactCardPanel({
 
           {/* Metrics comparison */}
           {hasData ? (
-            <div className="overflow-hidden rounded-xl border border-gray-200">
-              <table className="w-full">
+            <div className="overflow-hidden rounded-xl border border-gray-200 overflow-x-auto">
+              <table className="w-full min-w-[360px]">
                 <thead>
                   <tr className="bg-gray-50/80 border-b border-gray-200">
                     <th className="py-2.5 pr-3 text-left text-[10px] font-semibold uppercase tracking-wider text-gray-400 pl-4">{t('impact.metric')}</th>

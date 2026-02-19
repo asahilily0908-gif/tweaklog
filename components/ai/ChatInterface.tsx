@@ -33,7 +33,7 @@ function MessageBubble({
         </div>
       )}
       <div
-        className={`max-w-[75%] rounded-2xl px-4 py-3 text-sm leading-relaxed whitespace-pre-wrap ${
+        className={`max-w-[88%] sm:max-w-[75%] rounded-2xl px-4 py-3 text-sm leading-relaxed whitespace-pre-wrap ${
           isUser
             ? 'bg-slate-900 text-white rounded-br-md'
             : 'bg-gray-100 text-gray-800 rounded-bl-md'
@@ -136,8 +136,8 @@ export default function ChatInterface({
   }
 
   const inputBar = (
-    <div className="border-t border-gray-200 bg-white px-6 py-4">
-      <div className="mx-auto flex max-w-2xl items-end gap-3">
+    <div className="border-t border-gray-200 bg-white px-3 sm:px-6 py-3 sm:py-4">
+      <div className="mx-auto flex max-w-2xl items-end gap-2 sm:gap-3">
         <div className="relative flex-1">
           <textarea
             ref={inputRef}
@@ -180,13 +180,13 @@ export default function ChatInterface({
     return (
       <div className="flex h-full flex-col bg-white">
         {/* Header */}
-        <div className="border-b border-gray-100 px-6 py-5">
+        <div className="border-b border-gray-100 px-4 sm:px-6 py-4 sm:py-5">
           <h1 className="text-lg font-bold tracking-tight text-gray-900">{t('chat.title')}</h1>
           <p className="mt-0.5 text-xs text-gray-500">{t('chat.description')}</p>
         </div>
 
         {/* Empty state */}
-        <div className="flex flex-1 flex-col items-center justify-center px-6 text-center">
+        <div className="flex flex-1 flex-col items-center justify-center px-4 sm:px-6 text-center">
           <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-slate-800 to-slate-900 shadow-lg shadow-slate-900/20">
             <svg className="h-7 w-7 text-white" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 00-2.455 2.456z" />
@@ -218,7 +218,7 @@ export default function ChatInterface({
   return (
     <div className="flex h-full flex-col bg-white">
       {/* Header */}
-      <div className="border-b border-gray-100 px-6 py-4 flex items-center gap-3">
+      <div className="border-b border-gray-100 px-4 sm:px-6 py-4 flex items-center gap-3">
         <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-900 text-[10px] font-bold text-white">
           AI
         </div>
@@ -231,7 +231,7 @@ export default function ChatInterface({
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto px-6 py-6">
+      <div className="flex-1 overflow-y-auto px-3 sm:px-6 py-4 sm:py-6">
         <div className="mx-auto max-w-2xl space-y-5">
           {messages.map((msg, i) => (
             <MessageBubble

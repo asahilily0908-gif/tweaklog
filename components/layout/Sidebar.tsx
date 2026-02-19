@@ -81,14 +81,18 @@ export default function Sidebar({ projectId, projectName, userEmail }: SidebarPr
     setMobileOpen(false)
   }, [pathname])
 
-  // Close on escape key
+  // Close on escape key & lock body scroll when open
   useEffect(() => {
     function handleEsc(e: KeyboardEvent) {
       if (e.key === 'Escape') setMobileOpen(false)
     }
     if (mobileOpen) {
+      document.body.style.overflow = 'hidden'
       document.addEventListener('keydown', handleEsc)
-      return () => document.removeEventListener('keydown', handleEsc)
+      return () => {
+        document.body.style.overflow = ''
+        document.removeEventListener('keydown', handleEsc)
+      }
     }
   }, [mobileOpen])
 
