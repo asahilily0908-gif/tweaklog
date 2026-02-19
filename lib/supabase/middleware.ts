@@ -32,7 +32,7 @@ export async function updateSession(request: NextRequest) {
   const { pathname } = request.nextUrl
 
   // Protected routes: redirect to /login if not authenticated
-  const protectedPaths = ['/setup', '/app']
+  const protectedPaths = ['/setup', '/app', '/post-login']
   const isProtected = protectedPaths.some((p) => pathname.startsWith(p))
 
   if (!user && isProtected) {
@@ -44,7 +44,7 @@ export async function updateSession(request: NextRequest) {
   // Redirect authenticated users away from auth pages
   if (user && (pathname === '/login' || pathname === '/signup')) {
     const url = request.nextUrl.clone()
-    url.pathname = '/setup'
+    url.pathname = '/post-login'
     return NextResponse.redirect(url)
   }
 
