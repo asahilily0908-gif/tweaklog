@@ -2,6 +2,7 @@
 
 import { useRef, useState } from 'react'
 import { useTranslation } from '@/lib/i18n/config'
+import { STANDARD_FIELDS, guessField } from '@/lib/import/column-mappings'
 
 interface ColumnMappingStepProps {
   data: {
@@ -12,60 +13,10 @@ interface ColumnMappingStepProps {
   onChange: (data: Partial<ColumnMappingStepProps['data']>) => void
 }
 
-const STANDARD_FIELDS = [
+const DROPDOWN_FIELDS = [
   { value: '', label: '-- Skip --' },
-  { value: 'date', label: 'Date' },
-  { value: 'campaign', label: 'Campaign' },
-  { value: 'platform', label: 'Platform' },
-  { value: 'impressions', label: 'Impressions' },
-  { value: 'clicks', label: 'Clicks' },
-  { value: 'cost', label: 'Cost' },
-  { value: 'conversions', label: 'Conversions' },
-  { value: 'revenue', label: 'Revenue' },
-  { value: 'ctr', label: 'CTR' },
-  { value: 'cpc', label: 'CPC' },
-  { value: 'cpa', label: 'CPA' },
-  { value: 'cvr', label: 'CVR' },
-  { value: 'roas', label: 'ROAS' },
+  ...STANDARD_FIELDS.map(f => ({ value: f.key, label: f.label })),
 ]
-
-const AUTO_GUESS_MAP: Record<string, string> = {
-  date: 'date',
-  day: 'date',
-  '日付': 'date',
-  campaign: 'campaign',
-  'campaign name': 'campaign',
-  'キャンペーン': 'campaign',
-  platform: 'platform',
-  '媒体': 'platform',
-  impressions: 'impressions',
-  impr: 'impressions',
-  'impr.': 'impressions',
-  '表示回数': 'impressions',
-  clicks: 'clicks',
-  'クリック数': 'clicks',
-  cost: 'cost',
-  spend: 'cost',
-  '費用': 'cost',
-  conversions: 'conversions',
-  conv: 'conversions',
-  'conv.': 'conversions',
-  'コンバージョン': 'conversions',
-  revenue: 'revenue',
-  sales: 'revenue',
-  '売上': 'revenue',
-  'conv. value': 'revenue',
-  ctr: 'ctr',
-  cpc: 'cpc',
-  cpa: 'cpa',
-  cvr: 'cvr',
-  roas: 'roas',
-}
-
-function guessMapping(header: string): string {
-  const lower = header.toLowerCase().trim()
-  return AUTO_GUESS_MAP[lower] ?? ''
-}
 
 export default function ColumnMappingStep({
   data,
@@ -87,7 +38,7 @@ export default function ColumnMappingStep({
     const mappings: Record<string, string> = {}
     const usedFields = new Set<string>()
     headers.forEach((header) => {
-      const guessed = guessMapping(header)
+      const guessed = guessField(header)
       if (guessed && !usedFields.has(guessed)) {
         mappings[header] = guessed
         usedFields.add(guessed)
@@ -246,7 +197,7 @@ export default function ColumnMappingStep({
                       onChange={(e) => updateMapping(header, e.target.value)}
                       className="rounded-md border border-gray-300 px-2 py-1 text-sm text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
                     >
-                      {STANDARD_FIELDS.map((f) => (
+                      {DROPDOWN_FIELDS.map((f) => (
                         <option
                           key={f.value}
                           value={f.value}

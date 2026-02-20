@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import { importOutcomes } from '@/app/(app)/app/[project]/import/actions'
 import { useTranslation } from '@/lib/i18n/config'
+import { STANDARD_FIELDS, guessField } from '@/lib/import/column-mappings'
 
 interface Project {
   id: string
@@ -18,44 +19,6 @@ interface Props {
 }
 
 type Step = 'upload' | 'mapping' | 'preview' | 'importing' | 'done'
-
-const STANDARD_FIELDS = [
-  { key: 'date', label: 'Date', required: true },
-  { key: 'platform', label: 'Platform', required: false },
-  { key: 'campaign', label: 'Campaign', required: false },
-  { key: 'impressions', label: 'Impressions', required: false },
-  { key: 'clicks', label: 'Clicks', required: false },
-  { key: 'cost', label: 'Cost', required: false },
-  { key: 'conversions', label: 'Conversions', required: false },
-  { key: 'revenue', label: 'Revenue', required: false },
-  { key: 'ctr', label: 'CTR', required: false },
-  { key: 'cpc', label: 'CPC', required: false },
-  { key: 'cpa', label: 'CPA', required: false },
-  { key: 'cvr', label: 'CVR', required: false },
-  { key: 'roas', label: 'ROAS', required: false },
-]
-
-// Keys are lowercase for case-insensitive matching
-const AUTO_GUESS: Record<string, string> = {
-  date: 'date', '日付': 'date', '日': 'date',
-  platform: 'platform', '媒体': 'platform',
-  campaign: 'campaign', 'campaign name': 'campaign', 'キャンペーン': 'campaign',
-  impressions: 'impressions', 'impr.': 'impressions', '表示回数': 'impressions',
-  clicks: 'clicks', 'クリック数': 'clicks', 'クリック': 'clicks',
-  cost: 'cost', spend: 'cost', '費用': 'cost',
-  conversions: 'conversions', 'conv.': 'conversions', 'コンバージョン': 'conversions',
-  revenue: 'revenue', sales: 'revenue', '売上': 'revenue', 'conv. value': 'revenue',
-  ctr: 'ctr',
-  cpc: 'cpc',
-  cpa: 'cpa',
-  cvr: 'cvr',
-  roas: 'roas',
-}
-
-function guessField(header: string): string {
-  const lower = header.toLowerCase().trim()
-  return AUTO_GUESS[lower] ?? ''
-}
 
 function parseCsv(text: string): { headers: string[]; rows: string[][] } {
   const lines = text.split(/\r?\n/).filter((l) => l.trim() !== '')
@@ -264,13 +227,7 @@ export default function CsvImportContent({ project }: Props) {
   }, [mappings, rows, project.platform])
 
   return (
-    <div className="p-4 sm:p-6 max-w-4xl mx-auto">
-      {/* Header */}
-      <div className="mb-6 sm:mb-8">
-        <h1 className="text-2xl font-bold tracking-tight text-gray-900">{t('import.title')}</h1>
-        <p className="mt-1 text-sm text-gray-500">{t('import.uploadDescription')}</p>
-      </div>
-
+    <div>
       {/* Step indicator */}
       {step !== 'upload' && (
         <div className="mb-6 flex items-center gap-2 overflow-x-auto pb-1">
