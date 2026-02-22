@@ -462,8 +462,9 @@
         "desc": "個人で始める",
         "feature1": "1プロジェクト",
         "feature2": "CSVデータ取込",
-        "feature3": "基本ダッシュボード",
-        "feature4": "変更ログ記録"
+        "feature3": "スプレッドシート連携",
+        "feature4": "基本ダッシュボード",
+        "feature5": "変更ログ記録"
       },
       "pro": {
         "name": "Pro",
@@ -471,8 +472,8 @@
         "priceUnit": "/月",
         "desc": "本格的な運用分析",
         "feature1": "無制限プロジェクト",
-        "feature2": "AI Chat",
-        "feature3": "スプレッドシート連携",
+        "feature2": "変更ログ無制限",
+        "feature3": "AI Chat",
         "feature4": "Impact Card",
         "feature5": "カスタム指標"
       },

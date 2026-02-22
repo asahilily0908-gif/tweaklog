@@ -439,7 +439,7 @@ export default function LandingPage() {
               </div>
               <p className="text-sm text-gray-500 mb-6">{t('landing.pricing.free.desc')}</p>
               <ul className="space-y-3 mb-8">
-                {(['feature1', 'feature2', 'feature3', 'feature4'] as const).map((f) => (
+                {(['feature1', 'feature2', 'feature3', 'feature4', 'feature5'] as const).map((f) => (
                   <li key={f} className="flex items-center gap-2 text-sm text-gray-600">
                     <Check className="h-4 w-4 text-green-500 shrink-0" />
                     {t(`landing.pricing.free.${f}`)}

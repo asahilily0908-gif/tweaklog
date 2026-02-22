@@ -461,8 +461,9 @@
         "desc": "For individuals getting started",
         "feature1": "1 project",
         "feature2": "CSV data import",
-        "feature3": "Basic dashboard",
-        "feature4": "Change logging"
+        "feature3": "Spreadsheet integration",
+        "feature4": "Basic dashboard",
+        "feature5": "Change logging"
       },
       "pro": {
         "name": "Pro",
@@ -470,8 +471,8 @@
         "priceUnit": "/mo",
         "desc": "For serious ad operations",
         "feature1": "Unlimited projects",
-        "feature2": "AI Chat",
-        "feature3": "Spreadsheet integration",
+        "feature2": "Unlimited change logs",
+        "feature3": "AI Chat",
         "feature4": "Impact Cards",
         "feature5": "Custom metrics"
       },
