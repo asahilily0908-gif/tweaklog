@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import { importOutcomes } from '@/app/(app)/app/[project]/import/actions'
 import { saveSpreadsheetConfig, updateLastSynced } from '@/app/(app)/app/[project]/import/actions'
-import { STANDARD_FIELDS, guessField } from '@/lib/import/column-mappings'
+import { STANDARD_FIELDS, guessField, normalizePlatform } from '@/lib/import/column-mappings'
 import { useTranslation } from '@/lib/i18n/config'
 
 interface Project {
@@ -353,6 +353,9 @@ export default function SpreadsheetImport({ project, existingConfig }: Props) {
     return isNaN(num) ? 0 : num
   }
 
+  // Default platform: use the project's first registered platform, fallback to 'google_ads'
+  const defaultPlatform = project.platform[0] ?? 'google_ads'
+
   function buildOutcomeRowsFromData(
     headerList: string[],
     dataRowList: string[][],
@@ -386,9 +389,12 @@ export default function SpreadsheetImport({ project, existingConfig }: Props) {
           return idx !== undefined ? row[idx] : undefined
         }
 
+        const rawPlatform = get('platform')
+        const platform = rawPlatform ? normalizePlatform(rawPlatform) : defaultPlatform
+
         return {
           date: normalizeDate(get('date') ?? '') ?? '',
-          platform: get('platform') ?? 'Other',
+          platform,
           campaign: get('campaign') ?? '',
           impressions: parseNum(get('impressions')),
           clicks: parseNum(get('clicks')),

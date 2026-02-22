@@ -2,6 +2,7 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
+import { normalizePlatform } from '@/lib/import/column-mappings'
 
 interface OutcomeRow {
   date: string
@@ -59,19 +60,47 @@ export async function importOutcomes(projectId: string, rows: OutcomeRow[]) {
     return { error: 'No valid rows to import (check that date values are valid)' }
   }
 
-  // Build insert rows with normalized dates and integer types for bigint columns
-  const insertRows = validRows.map((row) => ({
-    project_id: projectId,
-    date: normalizeDateStr(row.date)!,
-    platform: row.platform || 'Other',
-    campaign: row.campaign || null,
-    impressions: Math.round(row.impressions || 0),
-    clicks: Math.round(row.clicks || 0),
-    cost: row.cost || 0,
-    conversions: row.conversions || 0,
-    revenue: row.revenue || 0,
-    custom_columns: row.custom_columns || {},
-  }))
+  // Look up existing outcomes to detect platform mismatches (prevent duplicates)
+  const { data: existingOutcomes } = await supabase
+    .from('outcomes')
+    .select('date, platform, campaign')
+    .eq('project_id', projectId)
+    .limit(5000)
+
+  // Build a lookup: "date|campaign" → existing platform
+  const existingPlatformMap = new Map<string, string>()
+  if (existingOutcomes) {
+    for (const o of existingOutcomes) {
+      const key = `${o.date}|${o.campaign ?? ''}`
+      existingPlatformMap.set(key, o.platform)
+    }
+  }
+
+  // Build insert rows with normalized dates, platform normalization, and integer types for bigint columns
+  const insertRows = validRows.map((row) => {
+    const normalizedDate = normalizeDateStr(row.date)!
+    const normalizedPlatform = normalizePlatform(row.platform || '')
+    const campaign = row.campaign || null
+
+    // If an outcome already exists for this date+campaign with a different platform,
+    // use the existing platform to avoid creating duplicates
+    const lookupKey = `${normalizedDate}|${campaign ?? ''}`
+    const existingPlatform = existingPlatformMap.get(lookupKey)
+    const platform = existingPlatform ?? (normalizedPlatform || 'google_ads')
+
+    return {
+      project_id: projectId,
+      date: normalizedDate,
+      platform,
+      campaign,
+      impressions: Math.round(row.impressions || 0),
+      clicks: Math.round(row.clicks || 0),
+      cost: row.cost || 0,
+      conversions: row.conversions || 0,
+      revenue: row.revenue || 0,
+      custom_columns: row.custom_columns || {},
+    }
+  })
 
   // Upsert in batches of 500
   const BATCH_SIZE = 500

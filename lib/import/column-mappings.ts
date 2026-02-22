@@ -58,3 +58,42 @@ export function guessField(header: string): string {
   const lower = header.toLowerCase().trim()
   return COLUMN_GUESS_MAP[lower] ?? ''
 }
+
+// Platform name normalization map: various user inputs → internal platform key
+const PLATFORM_NORMALIZE_MAP: Record<string, string> = {
+  // Google Ads
+  'google ads': 'google_ads', 'google_ads': 'google_ads', 'googleads': 'google_ads',
+  'google 広告': 'google_ads', 'google広告': 'google_ads', 'グーグル広告': 'google_ads',
+  'adwords': 'google_ads', 'google adwords': 'google_ads',
+  // Meta / Facebook
+  'meta': 'meta', 'meta ads': 'meta', 'meta_ads': 'meta',
+  'facebook': 'meta', 'facebook ads': 'meta', 'facebook広告': 'meta',
+  'instagram': 'meta', 'instagram ads': 'meta',
+  // TikTok
+  'tiktok': 'tiktok', 'tiktok ads': 'tiktok', 'tiktok_ads': 'tiktok',
+  'tiktok広告': 'tiktok',
+  // Yahoo! Ads
+  'yahoo': 'yahoo_ads', 'yahoo ads': 'yahoo_ads', 'yahoo_ads': 'yahoo_ads',
+  'yahoo!': 'yahoo_ads', 'yahoo! ads': 'yahoo_ads',
+  'yahoo広告': 'yahoo_ads', 'yahoo! 広告': 'yahoo_ads', 'ヤフー広告': 'yahoo_ads',
+  // Microsoft Ads
+  'microsoft ads': 'microsoft_ads', 'microsoft_ads': 'microsoft_ads',
+  'bing ads': 'microsoft_ads', 'bing': 'microsoft_ads',
+  // LINE Ads
+  'line ads': 'line_ads', 'line_ads': 'line_ads',
+  'line広告': 'line_ads', 'line': 'line_ads',
+  // X (Twitter) Ads
+  'x ads': 'x_ads', 'x_ads': 'x_ads', 'twitter': 'x_ads',
+  'twitter ads': 'x_ads', 'x (twitter) ads': 'x_ads',
+}
+
+/**
+ * Normalize a raw platform string to a known internal key.
+ * Returns the normalized key if found, otherwise returns the original trimmed value.
+ */
+export function normalizePlatform(raw: string): string {
+  const trimmed = raw.trim()
+  if (!trimmed) return ''
+  const lower = trimmed.toLowerCase()
+  return PLATFORM_NORMALIZE_MAP[lower] ?? trimmed
+}
