@@ -386,6 +386,130 @@
     "completeDescription": "すべての設定が完了しました。ダッシュボードに移動してデータを確認しましょう。",
     "goToDashboard": "ダッシュボードへ"
   },
+  "landing": {
+    "nav": {
+      "features": "機能",
+      "pricing": "料金",
+      "login": "ログイン",
+      "startFree": "無料で始める"
+    },
+    "hero": {
+      "headline": "広告の\"変えた\"を、成果に変える。",
+      "tagline": "Log the tweak. See the lift.",
+      "subheadline": "広告運用の変更ログ × 効果比較 × AI分析。変更のインパクトを可視化して、チームの判断力を高めるSaaS。",
+      "cta": "無料で始める",
+      "secondaryCta": "機能を見る"
+    },
+    "painPoints": {
+      "title": "広告運用、こんな課題ありませんか？",
+      "problem1Title": "変更の記録がバラバラ",
+      "problem1Desc": "スプレッドシート、Slack、メール…変更履歴が散在して振り返れない。",
+      "solution1": "Tweaklogなら1箇所に集約",
+      "problem2Title": "効果の前後比較が面倒",
+      "problem2Desc": "変更前後のデータを手動で集計。時間がかかる上にミスも起きやすい。",
+      "solution2": "自動でImpact Card生成",
+      "problem3Title": "なぜ効いたか分からない",
+      "problem3Desc": "数字の変動は見えても、どの変更が原因か特定できない。",
+      "solution3": "AIが文脈を理解して分析"
+    },
+    "features": {
+      "title": "Tweaklogの主要機能",
+      "subtitle": "広告運用のPDCAを加速する4つの機能",
+      "changelog": {
+        "title": "Change Log",
+        "subtitle": "変更記録",
+        "desc": "広告の変更をワンクリックで記録。日付、カテゴリ、プラットフォーム、変更前後を構造化して管理。"
+      },
+      "impact": {
+        "title": "Impact Card",
+        "subtitle": "効果分析",
+        "desc": "変更前後7日間のKPIを自動比較。-4〜+4のスコアで変更の効果を定量化。"
+      },
+      "ai": {
+        "title": "AI Chat",
+        "subtitle": "AI分析",
+        "desc": "Claude AIが全データを把握。「先週のCPA悪化の原因は？」のような質問に即座に回答。"
+      },
+      "dashboard": {
+        "title": "Dashboard",
+        "subtitle": "ダッシュボード",
+        "desc": "KPI、カスタム指標、キャンペーン別フィルター。グラフ上に変更マーカーを表示して変化を可視化。"
+      }
+    },
+    "integrations": {
+      "title": "あなたのデータソースに対応",
+      "subtitle": "CSVアップロード、Google Spreadsheet連携。主要な広告プラットフォームのデータを簡単に取り込み。",
+      "csv": "CSVアップロード",
+      "spreadsheet": "Google Spreadsheet",
+      "supportedPlatforms": "対応プラットフォーム"
+    },
+    "howItWorks": {
+      "title": "3ステップで始められる",
+      "step1Title": "データを接続",
+      "step1Desc": "CSVまたはGoogle Spreadsheetからパフォーマンスデータを取り込み。",
+      "step2Title": "変更を記録",
+      "step2Desc": "入札、クリエイティブ、ターゲティングなどの変更をワンクリックで記録。",
+      "step3Title": "AIがインパクトを分析",
+      "step3Desc": "変更前後のKPI変動をAIが自動分析し、次のアクションを提案。"
+    },
+    "pricing": {
+      "title": "料金プラン",
+      "subtitle": "あなたのチームに合ったプランを選択",
+      "comingSoon": "Coming Soon",
+      "free": {
+        "name": "Free",
+        "price": "¥0",
+        "desc": "個人で始める",
+        "feature1": "1プロジェクト",
+        "feature2": "CSVデータ取込",
+        "feature3": "基本ダッシュボード",
+        "feature4": "変更ログ記録"
+      },
+      "pro": {
+        "name": "Pro",
+        "price": "Coming Soon",
+        "desc": "本格的な運用分析",
+        "feature1": "無制限プロジェクト",
+        "feature2": "AI Chat",
+        "feature3": "スプレッドシート連携",
+        "feature4": "Impact Card",
+        "feature5": "カスタム指標"
+      },
+      "team": {
+        "name": "Team",
+        "price": "Coming Soon",
+        "desc": "チーム・代理店向け",
+        "feature1": "Proの全機能",
+        "feature2": "チームメンバー管理",
+        "feature3": "API Export",
+        "feature4": "優先サポート",
+        "feature5": "クライアント共有"
+      },
+      "cta": "無料で始める"
+    },
+    "faq": {
+      "title": "よくある質問",
+      "q1": "無料で使えますか？",
+      "a1": "はい、Freeプランで基本機能（1プロジェクト、CSVインポート、ダッシュボード、変更ログ）をご利用いただけます。",
+      "q2": "どの広告プラットフォームに対応していますか？",
+      "a2": "Google Ads、Meta Ads、Yahoo!広告、TikTok Ads、LINE Ads、Microsoft Ads、X Adsの7プラットフォームに対応。さらにカスタムプラットフォームも追加可能です。",
+      "q3": "データのセキュリティは大丈夫ですか？",
+      "a3": "データはSupabase（PostgreSQL）で管理され、すべての通信は暗号化されています。行レベルセキュリティ（RLS）により、データは組織内でのみアクセス可能です。",
+      "q4": "AIは何を分析できますか？",
+      "a4": "変更前後のKPI変動分析、異常検知、パフォーマンス低下の原因特定、改善提案など。プロジェクトの全データを文脈として理解した上で回答します。"
+    },
+    "footerCta": {
+      "headline": "今すぐ、変更のインパクトを可視化しよう。",
+      "cta": "無料で始める"
+    },
+    "footer": {
+      "features": "機能",
+      "pricing": "料金",
+      "login": "ログイン",
+      "signup": "サインアップ",
+      "copyright": "© 2025 Tweaklog. All rights reserved."
+    }
+  },
   "language": {
     "ja": "日本語",
     "en": "English",

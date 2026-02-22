@@ -385,6 +385,130 @@
     "completeDescription": "All settings are complete. Go to the dashboard to view your data.",
     "goToDashboard": "Go to Dashboard"
   },
+  "landing": {
+    "nav": {
+      "features": "Features",
+      "pricing": "Pricing",
+      "login": "Login",
+      "startFree": "Start Free"
+    },
+    "hero": {
+      "headline": "Turn every ad tweak into measurable impact.",
+      "tagline": "Log the tweak. See the lift.",
+      "subheadline": "Change log × impact comparison × AI analysis. Visualize the impact of your ad changes and sharpen your team's decision-making.",
+      "cta": "Start Free",
+      "secondaryCta": "See Features"
+    },
+    "painPoints": {
+      "title": "Sound familiar?",
+      "problem1Title": "Change logs are scattered",
+      "problem1Desc": "Spreadsheets, Slack, emails… change history is fragmented and impossible to review.",
+      "solution1": "Tweaklog centralizes everything",
+      "problem2Title": "Before/after comparison is painful",
+      "problem2Desc": "Manually aggregating data before and after changes. Time-consuming and error-prone.",
+      "solution2": "Auto-generated Impact Cards",
+      "problem3Title": "Can't tell what actually worked",
+      "problem3Desc": "Numbers fluctuate, but you can't pinpoint which change caused the shift.",
+      "solution3": "AI analyzes with full context"
+    },
+    "features": {
+      "title": "Core Features",
+      "subtitle": "Four features to accelerate your ad ops PDCA cycle",
+      "changelog": {
+        "title": "Change Log",
+        "subtitle": "Structured Recording",
+        "desc": "Log ad changes in one click. Date, category, platform, and before/after values — all structured and searchable."
+      },
+      "impact": {
+        "title": "Impact Card",
+        "subtitle": "Effect Analysis",
+        "desc": "Auto-compare KPIs 7 days before and after each change. Quantify impact with a -4 to +4 score."
+      },
+      "ai": {
+        "title": "AI Chat",
+        "subtitle": "AI Analysis",
+        "desc": "Claude AI understands all your data. Ask \"Why did CPA spike last week?\" and get instant, context-aware answers."
+      },
+      "dashboard": {
+        "title": "Dashboard",
+        "subtitle": "Performance Overview",
+        "desc": "KPIs, custom metrics, campaign filters. Change markers on the chart make impact visible at a glance."
+      }
+    },
+    "integrations": {
+      "title": "Works with your data sources",
+      "subtitle": "CSV upload and Google Spreadsheet integration. Easily import data from major ad platforms.",
+      "csv": "CSV Upload",
+      "spreadsheet": "Google Spreadsheet",
+      "supportedPlatforms": "Supported Platforms"
+    },
+    "howItWorks": {
+      "title": "Get started in 3 steps",
+      "step1Title": "Connect your data",
+      "step1Desc": "Import performance data from CSV or Google Spreadsheet.",
+      "step2Title": "Log your changes",
+      "step2Desc": "Record bid, creative, targeting, and other changes in one click.",
+      "step3Title": "AI analyzes the impact",
+      "step3Desc": "AI automatically analyzes KPI changes and suggests next actions."
+    },
+    "pricing": {
+      "title": "Pricing",
+      "subtitle": "Choose the plan that fits your team",
+      "comingSoon": "Coming Soon",
+      "free": {
+        "name": "Free",
+        "price": "$0",
+        "desc": "For individuals getting started",
+        "feature1": "1 project",
+        "feature2": "CSV data import",
+        "feature3": "Basic dashboard",
+        "feature4": "Change logging"
+      },
+      "pro": {
+        "name": "Pro",
+        "price": "Coming Soon",
+        "desc": "For serious ad operations",
+        "feature1": "Unlimited projects",
+        "feature2": "AI Chat",
+        "feature3": "Spreadsheet integration",
+        "feature4": "Impact Cards",
+        "feature5": "Custom metrics"
+      },
+      "team": {
+        "name": "Team",
+        "price": "Coming Soon",
+        "desc": "For teams & agencies",
+        "feature1": "Everything in Pro",
+        "feature2": "Team member management",
+        "feature3": "API Export",
+        "feature4": "Priority support",
+        "feature5": "Client sharing"
+      },
+      "cta": "Start Free"
+    },
+    "faq": {
+      "title": "FAQ",
+      "q1": "Is it free to use?",
+      "a1": "Yes, the Free plan includes core features: 1 project, CSV import, dashboard, and change logging.",
+      "q2": "Which ad platforms are supported?",
+      "a2": "Google Ads, Meta Ads, Yahoo! Ads, TikTok Ads, LINE Ads, Microsoft Ads, and X Ads — plus custom platforms you can define.",
+      "q3": "Is my data secure?",
+      "a3": "Data is managed on Supabase (PostgreSQL) with encrypted communication. Row-Level Security (RLS) ensures data is only accessible within your organization.",
+      "q4": "What can the AI analyze?",
+      "a4": "Before/after KPI analysis, anomaly detection, root cause identification for performance drops, and improvement suggestions — all with full project context."
+    },
+    "footerCta": {
+      "headline": "Start visualizing the impact of your changes today.",
+      "cta": "Start Free"
+    },
+    "footer": {
+      "features": "Features",
+      "pricing": "Pricing",
+      "login": "Login",
+      "signup": "Sign Up",
+      "copyright": "© 2025 Tweaklog. All rights reserved."
+    }
+  },
   "language": {
     "ja": "日本語",
     "en": "English",
