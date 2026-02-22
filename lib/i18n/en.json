@@ -62,6 +62,8 @@
     "performanceTrend": "Performance Trend",
     "dailyMetrics": "Daily metrics over time",
     "allGroups": "All Groups",
+    "allCampaigns": "All Campaigns",
+    "uncategorized": "Uncategorized",
     "platform": "Platform",
     "dateRange": "Date Range",
     "noChangesYet": "No changes recorded yet",

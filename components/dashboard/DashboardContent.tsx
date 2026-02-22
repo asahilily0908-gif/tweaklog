@@ -6,6 +6,7 @@ import KpiCard from './KpiCard'
 import TimelineChart from './TimelineChart'
 import RecentExperiments from './RecentExperiments'
 import PlatformFilter from './PlatformFilter'
+import CampaignFilter from './CampaignFilter'
 import ImpactCardPanel from '@/components/impact/ImpactCardPanel'
 import AiHighlights from './AiHighlights'
 import { evaluateFormula } from '@/lib/metrics/formula-evaluator'
@@ -161,8 +162,18 @@ export default function DashboardContent({ project, outcomes, experiments, metri
   const [selectedExperiment, setSelectedExperiment] = useState<Experiment | null>(null)
   const [chartView, setChartView] = useState<string>('default') // 'default' or metric config id
   const [groupFilter, setGroupFilter] = useState<string>('all')
+  const [selectedCampaign, setSelectedCampaign] = useState<string>('all')
 
   const selectedGroup = groupFilter !== 'all' ? experimentGroups.find((g) => g.id === groupFilter) : null
+
+  // Derive distinct campaigns from outcomes
+  const allCampaigns = useMemo(() => {
+    const set = new Set<string | null>()
+    for (const o of outcomes) {
+      set.add(o.campaign)
+    }
+    return Array.from(set)
+  }, [outcomes])
 
   const filteredOutcomes = useMemo(() => {
     let filtered = outcomes
@@ -181,8 +192,14 @@ export default function DashboardContent({ project, outcomes, experiments, metri
         o.campaign && selectedGroup.campaignPatterns.some((pat) => o.campaign!.toLowerCase().includes(pat.toLowerCase()))
       )
     }
+    // Filter by campaign
+    if (selectedCampaign === 'uncategorized') {
+      filtered = filtered.filter((o) => o.campaign === null)
+    } else if (selectedCampaign !== 'all') {
+      filtered = filtered.filter((o) => o.campaign === selectedCampaign)
+    }
     return filtered
-  }, [outcomes, platform, dateRange, latestDate, selectedGroup])
+  }, [outcomes, platform, dateRange, latestDate, selectedGroup, selectedCampaign])
 
   const dailyData = useMemo(() => aggregateByDate(filteredOutcomes), [filteredOutcomes])
 
@@ -219,6 +236,16 @@ export default function DashboardContent({ project, outcomes, experiments, metri
     if (platform !== 'ALL') {
       filtered = filtered.filter((o) => o.platform === platform)
     }
+    if (selectedGroup && selectedGroup.campaignPatterns.length > 0) {
+      filtered = filtered.filter((o) =>
+        o.campaign && selectedGroup.campaignPatterns.some((pat) => o.campaign!.toLowerCase().includes(pat.toLowerCase()))
+      )
+    }
+    if (selectedCampaign === 'uncategorized') {
+      filtered = filtered.filter((o) => o.campaign === null)
+    } else if (selectedCampaign !== 'all') {
+      filtered = filtered.filter((o) => o.campaign === selectedCampaign)
+    }
     if (filtered.length === 0) return null
 
     return filtered.reduce(
@@ -237,7 +264,7 @@ export default function DashboardContent({ project, outcomes, experiments, metri
       },
       { impressions: 0, clicks: 0, cost: 0, conversions: 0, revenue: 0, custom: {} as Record<string, number> }
     )
-  }, [outcomes, platform, dateRange, latestDate])
+  }, [outcomes, platform, dateRange, latestDate, selectedGroup, selectedCampaign])
 
   // Evaluate custom metrics from metric_configs
   const customMetricValues = useMemo(() => {
@@ -418,6 +445,13 @@ export default function DashboardContent({ project, outcomes, experiments, metri
                 <option key={g.id} value={g.id}>{g.name}</option>
               ))}
             </select>
+          )}
+          {allCampaigns.length > 1 && (
+            <CampaignFilter
+              campaigns={allCampaigns}
+              selected={selectedCampaign}
+              onChange={setSelectedCampaign}
+            />
           )}
           <div className="overflow-x-auto">
             <PlatformFilter

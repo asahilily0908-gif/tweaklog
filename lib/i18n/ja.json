@@ -62,6 +62,8 @@
     "performanceTrend": "パフォーマンス推移",
     "dailyMetrics": "日次指標推移",
     "allGroups": "全グループ",
+    "allCampaigns": "全キャンペーン",
+    "uncategorized": "未分類",
     "platform": "プラットフォーム",
     "dateRange": "期間",
     "noChangesYet": "まだ変更が記録されていません",
