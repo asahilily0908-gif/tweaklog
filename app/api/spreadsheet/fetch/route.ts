@@ -13,7 +13,9 @@ function extractGid(url: string): string {
 
 function parseCsv(text: string): string[][] {
   const rows: string[][] = []
-  const lines = text.split(/\r?\n/)
+  // Strip BOM (UTF-8 BOM can break first header cell matching)
+  const cleaned = text.replace(/^\uFEFF/, '')
+  const lines = cleaned.split(/\r?\n/)
 
   for (const line of lines) {
     if (line.trim() === '') continue

@@ -15,6 +15,29 @@ interface OutcomeRow {
   custom_columns: Record<string, number>
 }
 
+function normalizeDateStr(raw: string): string | null {
+  const trimmed = raw.trim()
+  if (!trimmed) return null
+  // Already YYYY-MM-DD
+  if (/^\d{4}-\d{2}-\d{2}$/.test(trimmed)) return trimmed
+  // YYYY/M/D or YYYY/MM/DD
+  const slashYmd = trimmed.match(/^(\d{4})[\/.](\d{1,2})[\/.](\d{1,2})$/)
+  if (slashYmd) return `${slashYmd[1]}-${slashYmd[2].padStart(2, '0')}-${slashYmd[3].padStart(2, '0')}`
+  // M/D/YYYY or MM/DD/YYYY
+  const slashMdy = trimmed.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/)
+  if (slashMdy) return `${slashMdy[3]}-${slashMdy[1].padStart(2, '0')}-${slashMdy[2].padStart(2, '0')}`
+  // Japanese: 2025年1月30日
+  const jpDate = trimmed.match(/^(\d{4})年(\d{1,2})月(\d{1,2})日$/)
+  if (jpDate) return `${jpDate[1]}-${jpDate[2].padStart(2, '0')}-${jpDate[3].padStart(2, '0')}`
+  // Fallback
+  const parsed = Date.parse(trimmed)
+  if (!isNaN(parsed)) {
+    const d = new Date(parsed)
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+  }
+  return null
+}
+
 export async function importOutcomes(projectId: string, rows: OutcomeRow[]) {
   const supabase = await createClient()
 
@@ -29,21 +52,21 @@ export async function importOutcomes(projectId: string, rows: OutcomeRow[]) {
     return { error: 'No rows to import' }
   }
 
-  // Filter out rows with invalid dates (e.g. header row leaked into data)
-  const validRows = rows.filter((row) => row.date && !isNaN(Date.parse(row.date)))
+  // Normalize dates and filter out invalid rows
+  const validRows = rows.filter((row) => row.date && normalizeDateStr(row.date) !== null)
 
   if (validRows.length === 0) {
     return { error: 'No valid rows to import (check that date values are valid)' }
   }
 
-  // Build insert rows
+  // Build insert rows with normalized dates and integer types for bigint columns
   const insertRows = validRows.map((row) => ({
     project_id: projectId,
-    date: row.date,
-    platform: row.platform || 'google_ads',
+    date: normalizeDateStr(row.date)!,
+    platform: row.platform || 'Other',
     campaign: row.campaign || null,
-    impressions: row.impressions || 0,
-    clicks: row.clicks || 0,
+    impressions: Math.round(row.impressions || 0),
+    clicks: Math.round(row.clicks || 0),
     cost: row.cost || 0,
     conversions: row.conversions || 0,
     revenue: row.revenue || 0,

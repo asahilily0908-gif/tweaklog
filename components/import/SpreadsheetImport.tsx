@@ -4,8 +4,8 @@ import { useState, useCallback, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import { importOutcomes } from '@/app/(app)/app/[project]/import/actions'
-import { saveSpreadsheetConfig, getSpreadsheetConfig, updateLastSynced } from '@/app/(app)/app/[project]/import/actions'
-import { COLUMN_GUESS_MAP, STANDARD_FIELDS, guessField } from '@/lib/import/column-mappings'
+import { saveSpreadsheetConfig, updateLastSynced } from '@/app/(app)/app/[project]/import/actions'
+import { STANDARD_FIELDS, guessField } from '@/lib/import/column-mappings'
 import { useTranslation } from '@/lib/i18n/config'
 
 interface Project {
@@ -204,18 +204,39 @@ export default function SpreadsheetImport({ project, existingConfig }: Props) {
       setStartCol(config.start_column)
       setEndCol(config.end_column ?? '')
 
-      // Restore saved column mappings
+      // Restore saved column mappings (with BOM/whitespace-tolerant matching)
       const headerCells = data.rows[config.header_row] || []
       const startIdx = columnLetterToIndex(config.start_column)
       const endIdx = config.end_column ? columnLetterToIndex(config.end_column) : headerCells.length - 1
       const slicedHeaders = headerCells.slice(startIdx, endIdx + 1)
       const restored: Record<number, string> = {}
+      // Build a normalized lookup from saved mappings for BOM/whitespace tolerance
+      const savedMappingEntries = Object.entries(config.column_mappings)
       slicedHeaders.forEach((h: string, idx: number) => {
+        const trimmedH = h.replace(/^\uFEFF/, '').trim()
+        // Try exact match first, then trimmed match
         if (config.column_mappings[h]) {
           restored[idx] = config.column_mappings[h]
+        } else if (config.column_mappings[trimmedH]) {
+          restored[idx] = config.column_mappings[trimmedH]
+        } else {
+          // Fallback: find a saved key that matches after trimming both sides
+          const found = savedMappingEntries.find(([key]) =>
+            key.replace(/^\uFEFF/, '').trim() === trimmedH
+          )
+          if (found) restored[idx] = found[1]
         }
       })
       setMappings(restored)
+
+      // Check if we have any mappings to work with
+      if (Object.keys(restored).length === 0) {
+        setError('Could not restore column mappings. Please re-configure.')
+        toast.error('Could not restore column mappings. Please re-configure.')
+        setStep('done')
+        setLoading(false)
+        return
+      }
 
       // Go straight to importing with saved config
       setStep('importing')
@@ -226,6 +247,14 @@ export default function SpreadsheetImport({ project, existingConfig }: Props) {
         data.rows.slice(config.header_row + 1).map((row: string[]) => row.slice(startIdx, endIdx + 1)),
         restored
       )
+
+      if (outcomeRows.length === 0) {
+        setError('No valid rows found. Check date format in your spreadsheet.')
+        toast.error('No valid rows found. Check date format in your spreadsheet.')
+        setStep('done')
+        setLoading(false)
+        return
+      }
 
       const interval = setInterval(() => {
         setProgress((p) => Math.min(p + 10, 90))
@@ -281,6 +310,49 @@ export default function SpreadsheetImport({ project, existingConfig }: Props) {
     return Object.values(mappings).includes('date')
   }
 
+  function normalizeDate(raw: string): string | null {
+    const trimmed = raw.trim()
+    if (!trimmed) return null
+
+    // Already YYYY-MM-DD
+    if (/^\d{4}-\d{2}-\d{2}$/.test(trimmed)) return trimmed
+
+    // YYYY/M/D or YYYY/MM/DD
+    const slashYmd = trimmed.match(/^(\d{4})[\/.](\d{1,2})[\/.](\d{1,2})$/)
+    if (slashYmd) {
+      return `${slashYmd[1]}-${slashYmd[2].padStart(2, '0')}-${slashYmd[3].padStart(2, '0')}`
+    }
+
+    // M/D/YYYY or MM/DD/YYYY (US format)
+    const slashMdy = trimmed.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/)
+    if (slashMdy) {
+      return `${slashMdy[3]}-${slashMdy[1].padStart(2, '0')}-${slashMdy[2].padStart(2, '0')}`
+    }
+
+    // Japanese: 2025年1月30日
+    const jpDate = trimmed.match(/^(\d{4})年(\d{1,2})月(\d{1,2})日$/)
+    if (jpDate) {
+      return `${jpDate[1]}-${jpDate[2].padStart(2, '0')}-${jpDate[3].padStart(2, '0')}`
+    }
+
+    // Fallback: try Date.parse
+    const parsed = Date.parse(trimmed)
+    if (!isNaN(parsed)) {
+      const d = new Date(parsed)
+      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+    }
+
+    return null
+  }
+
+  function parseNum(raw: string | undefined): number {
+    if (!raw) return 0
+    // Strip currency symbols, commas, spaces
+    const cleaned = raw.replace(/[$¥￥,\s]/g, '')
+    const num = parseFloat(cleaned)
+    return isNaN(num) ? 0 : num
+  }
+
   function buildOutcomeRowsFromData(
     headerList: string[],
     dataRowList: string[][],
@@ -296,14 +368,14 @@ export default function SpreadsheetImport({ project, existingConfig }: Props) {
         const dateIdx = fieldToIdx['date']
         if (dateIdx === undefined) return false
         const dateVal = row[dateIdx]?.trim()
-        return dateVal && !isNaN(Date.parse(dateVal))
+        return dateVal && normalizeDate(dateVal) !== null
       })
       .map((row) => {
         const customCols: Record<string, number> = {}
         headerList.forEach((h, i) => {
           if (!(i in mappingMap) && row[i]) {
-            const num = parseFloat(row[i])
-            if (!isNaN(num)) {
+            const num = parseNum(row[i])
+            if (num !== 0) {
               customCols[h] = num
             }
           }
@@ -315,14 +387,14 @@ export default function SpreadsheetImport({ project, existingConfig }: Props) {
         }
 
         return {
-          date: get('date') ?? '',
-          platform: get('platform') ?? 'google_ads',
+          date: normalizeDate(get('date') ?? '') ?? '',
+          platform: get('platform') ?? 'Other',
           campaign: get('campaign') ?? '',
-          impressions: parseFloat(get('impressions') ?? '0') || 0,
-          clicks: parseFloat(get('clicks') ?? '0') || 0,
-          cost: parseFloat(get('cost')?.replace(/[,$¥]/g, '') ?? '0') || 0,
-          conversions: parseFloat(get('conversions') ?? '0') || 0,
-          revenue: parseFloat(get('revenue')?.replace(/[,$¥]/g, '') ?? '0') || 0,
+          impressions: parseNum(get('impressions')),
+          clicks: parseNum(get('clicks')),
+          cost: parseNum(get('cost')),
+          conversions: parseNum(get('conversions')),
+          revenue: parseNum(get('revenue')),
           custom_columns: customCols,
         }
       })
