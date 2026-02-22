@@ -243,13 +243,13 @@ export default function LandingPage() {
 
         <div className="mx-auto max-w-6xl px-4 md:px-6">
           <div className="text-center max-w-3xl mx-auto mb-12 md:mb-16">
-            <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight tracking-tight mb-4">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-[3.25rem] font-bold text-gray-900 leading-tight tracking-tight mb-6">
               {t('landing.hero.headline')}
             </h1>
             <p className="text-lg md:text-xl text-blue-600 font-medium mb-6">
               {t('landing.hero.tagline')}
             </p>
-            <p className="text-base md:text-lg text-gray-600 leading-relaxed mb-8 max-w-2xl mx-auto">
+            <p className="text-base md:text-lg text-gray-600 leading-relaxed mb-10 max-w-2xl mx-auto">
               {t('landing.hero.subheadline')}
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
@@ -274,7 +274,7 @@ export default function LandingPage() {
       </section>
 
       {/* Pain Points */}
-      <Section className="py-20 md:py-28 bg-gray-50/50">
+      <Section className="py-16 md:py-24 bg-gray-50/50">
         <div className="mx-auto max-w-6xl px-4 md:px-6">
           <h2 className="text-2xl md:text-3xl font-bold text-gray-900 text-center mb-12">
             {t('landing.painPoints.title')}
@@ -472,12 +472,12 @@ export default function LandingPage() {
                   </li>
                 ))}
               </ul>
-              <Link
-                href="/signup"
-                className="block w-full rounded-lg bg-blue-600 px-4 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-700 transition-colors"
+              <button
+                disabled
+                className="block w-full rounded-lg bg-gray-100 px-4 py-2.5 text-center text-sm font-medium text-gray-400 cursor-not-allowed"
               >
-                {t('landing.pricing.cta')}
-              </Link>
+                {t('landing.pricing.comingSoonButton')}
+              </button>
             </div>
 
             {/* Team */}
@@ -495,12 +495,12 @@ export default function LandingPage() {
                   </li>
                 ))}
               </ul>
-              <Link
-                href="/signup"
-                className="block w-full rounded-lg border border-gray-200 px-4 py-2.5 text-center text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+              <button
+                disabled
+                className="block w-full rounded-lg bg-gray-100 px-4 py-2.5 text-center text-sm font-medium text-gray-400 cursor-not-allowed"
               >
-                {t('landing.pricing.cta')}
-              </Link>
+                {t('landing.pricing.comingSoonButton')}
+              </button>
             </div>
           </div>
         </div>

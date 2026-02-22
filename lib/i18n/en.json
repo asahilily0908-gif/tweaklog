@@ -484,7 +484,8 @@
         "feature4": "Priority support",
         "feature5": "Client sharing"
       },
-      "cta": "Start Free"
+      "cta": "Start Free",
+      "comingSoonButton": "Coming Soon"
     },
     "faq": {
       "title": "FAQ",
@@ -506,7 +507,7 @@
       "pricing": "Pricing",
       "login": "Login",
       "signup": "Sign Up",
-      "copyright": "© 2025 Tweaklog. All rights reserved."
+      "copyright": "© 2026 Tweaklog. All rights reserved."
     }
   },
   "language": {

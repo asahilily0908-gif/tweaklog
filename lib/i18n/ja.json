@@ -485,7 +485,8 @@
         "feature4": "優先サポート",
         "feature5": "クライアント共有"
       },
-      "cta": "無料で始める"
+      "cta": "無料で始める",
+      "comingSoonButton": "準備中"
     },
     "faq": {
       "title": "よくある質問",
@@ -507,7 +508,7 @@
       "pricing": "料金",
       "login": "ログイン",
       "signup": "サインアップ",
-      "copyright": "© 2025 Tweaklog. All rights reserved."
+      "copyright": "© 2026 Tweaklog. All rights reserved."
     }
   },
   "language": {
