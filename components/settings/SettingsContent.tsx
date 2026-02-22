@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
+import BillingSection from '@/components/settings/BillingSection'
 import {
   updateProject,
   updateKpiSettings,
@@ -48,6 +49,7 @@ interface Props {
   customColumnNames: string[]
   experimentGroups: ExperimentGroup[]
   knownCampaigns: string[]
+  userId?: string
 }
 
 // ─── Constants ────────────────────────────────────────────
@@ -127,6 +129,7 @@ export default function SettingsContent({
   customColumnNames,
   experimentGroups: initialGroups,
   knownCampaigns,
+  userId,
 }: Props) {
   const router = useRouter()
   const { t } = useTranslation()
@@ -477,6 +480,9 @@ export default function SettingsContent({
           {t('settings.description')}
         </p>
       </div>
+
+      {/* ── Billing Section ───────────────────────────── */}
+      {userId && <BillingSection userId={userId} />}
 
       {/* ── Section 1: Project Settings ──────────────── */}
       <section className="rounded-xl border border-gray-200 bg-white shadow-sm">

@@ -536,7 +536,17 @@
       "trialing": "トライアル中",
       "pastDue": "支払い遅延",
       "canceled": "キャンセル済み"
-    }
+    },
+    "planManagement": "プラン管理",
+    "planManagementDesc": "現在のプランの確認とアップグレード",
+    "yourPlan": "ご利用中のプラン",
+    "trialRemaining": "トライアル残り{days}日",
+    "perMonth": "/月",
+    "changePlan": "プランを変更",
+    "manageOnStripe": "Stripeで管理",
+    "upgradeToProDesc": "AI Chat、Impact Card、カスタム指標など全機能をご利用いただけます",
+    "upgradeToTeamDesc": "チームメンバー管理、API Export、優先サポートが含まれます",
+    "redirectingToStripe": "Stripeに移動中..."
   },
   "language": {
     "ja": "日本語",

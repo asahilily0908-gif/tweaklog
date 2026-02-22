@@ -535,7 +535,17 @@
       "trialing": "Trial",
       "pastDue": "Past Due",
       "canceled": "Canceled"
-    }
+    },
+    "planManagement": "Plan Management",
+    "planManagementDesc": "View your current plan and upgrade",
+    "yourPlan": "Your Plan",
+    "trialRemaining": "{days} days left in trial",
+    "perMonth": "/mo",
+    "changePlan": "Change Plan",
+    "manageOnStripe": "Manage on Stripe",
+    "upgradeToProDesc": "Unlock AI Chat, Impact Cards, custom metrics, and more",
+    "upgradeToTeamDesc": "Includes team member management, API Export, and priority support",
+    "redirectingToStripe": "Redirecting to Stripe..."
   },
   "language": {
     "ja": "日本語",

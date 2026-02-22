@@ -2,7 +2,9 @@
 
 import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { useTranslation } from '@/lib/i18n/config'
+import { createClient } from '@/lib/supabase/client'
 import {
   ClipboardList,
   BarChart3,
@@ -159,14 +161,48 @@ function FAQItem({ question, answer }: { question: string; answer: string }) {
 
 export default function LandingPage() {
   const { t, locale, setLocale } = useTranslation()
+  const router = useRouter()
   const [scrolled, setScrolled] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [userId, setUserId] = useState<string | null>(null)
+  const [checkoutLoading, setCheckoutLoading] = useState<string | null>(null)
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 10)
     window.addEventListener('scroll', onScroll)
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
+
+  // Check if user is logged in (for pricing CTA behavior)
+  useEffect(() => {
+    const supabase = createClient()
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (user) setUserId(user.id)
+    })
+  }, [])
+
+  async function handleCheckout(plan: 'pro' | 'team') {
+    if (!userId) {
+      router.push('/signup')
+      return
+    }
+    setCheckoutLoading(plan)
+    try {
+      const res = await fetch('/api/stripe/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ plan }),
+      })
+      const data = await res.json()
+      if (data.url) {
+        window.location.href = data.url
+      }
+    } catch {
+      router.push('/signup')
+    } finally {
+      setCheckoutLoading(null)
+    }
+  }
 
   const platforms = ['Google Ads', 'Meta Ads', 'Yahoo! Ads', 'TikTok Ads', 'LINE Ads', 'Microsoft Ads', 'X Ads']
 
@@ -191,16 +227,33 @@ export default function LandingPage() {
             <a href="#pricing" className="text-sm text-gray-600 hover:text-gray-900 transition-colors">
               {t('landing.nav.pricing')}
             </a>
-            <Link href="/login" className="text-sm text-gray-600 hover:text-gray-900 transition-colors">
-              {t('landing.nav.login')}
-            </Link>
+            {userId ? (
+              <Link href="/post-login" className="text-sm text-gray-600 hover:text-gray-900 transition-colors">
+                {t('nav.dashboard')}
+              </Link>
+            ) : (
+              <>
+                <Link href="/login" className="text-sm text-gray-600 hover:text-gray-900 transition-colors">
+                  {t('landing.nav.login')}
+                </Link>
+              </>
+            )}
             <LanguageSwitcher />
-            <Link
-              href="/signup"
-              className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 transition-colors"
-            >
-              {t('landing.nav.startFree')}
-            </Link>
+            {userId ? (
+              <Link
+                href="/post-login"
+                className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 transition-colors"
+              >
+                {t('nav.dashboard')}
+              </Link>
+            ) : (
+              <Link
+                href="/signup"
+                className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 transition-colors"
+              >
+                {t('landing.nav.startFree')}
+              </Link>
+            )}
           </nav>
 
           {/* Mobile menu button */}
@@ -473,12 +526,13 @@ export default function LandingPage() {
                   </li>
                 ))}
               </ul>
-              <Link
-                href="/signup"
-                className="block w-full rounded-lg bg-blue-600 px-4 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-700 transition-colors"
+              <button
+                onClick={() => handleCheckout('pro')}
+                disabled={checkoutLoading === 'pro'}
+                className="block w-full rounded-lg bg-blue-600 px-4 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-700 transition-colors disabled:opacity-50"
               >
-                {t('billing.tryFree')}
-              </Link>
+                {checkoutLoading === 'pro' ? t('common.loading') : t('billing.tryFree')}
+              </button>
             </div>
 
             {/* Team */}
@@ -497,12 +551,13 @@ export default function LandingPage() {
                   </li>
                 ))}
               </ul>
-              <Link
-                href="/signup"
-                className="block w-full rounded-lg border border-gray-200 px-4 py-2.5 text-center text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+              <button
+                onClick={() => handleCheckout('team')}
+                disabled={checkoutLoading === 'team'}
+                className="block w-full rounded-lg border border-gray-200 px-4 py-2.5 text-center text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors disabled:opacity-50"
               >
-                {t('landing.pricing.cta')}
-              </Link>
+                {checkoutLoading === 'team' ? t('common.loading') : t('landing.pricing.cta')}
+              </button>
             </div>
           </div>
         </div>

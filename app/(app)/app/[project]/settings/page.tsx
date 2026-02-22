@@ -25,6 +25,8 @@ export default async function SettingsPage({
     notFound()
   }
 
+  const { data: { user } } = await supabase.auth.getUser()
+
   // Fetch org name, metric configs, outcomes sample, experiment groups, and distinct campaigns in parallel
   const [orgResult, metricsResult, outcomesResult, groupsResult, campaignsResult] = await Promise.all([
     supabase
@@ -93,6 +95,7 @@ export default async function SettingsPage({
         note: g.note ?? '',
       }))}
       knownCampaigns={Array.from(new Set((campaignsResult.data ?? []).map((r) => r.campaign).filter((c): c is string => !!c)))}
+      userId={user?.id}
     />
     </div>
   )

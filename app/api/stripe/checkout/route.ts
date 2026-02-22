@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { stripe } from '@/lib/stripe/client'
+import { PLANS } from '@/lib/stripe/config'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { createClient } from '@/lib/supabase/server'
 
@@ -11,7 +12,9 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Not authenticated' }, { status: 401 })
   }
 
-  const { priceId, plan } = await request.json()
+  const body = await request.json()
+  const plan = body.plan || 'pro'
+  const priceId = body.priceId || (plan === 'team' ? PLANS.team.priceId : PLANS.pro.priceId)
 
   if (!priceId) {
     return NextResponse.json({ error: 'Missing priceId' }, { status: 400 })
