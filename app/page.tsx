@@ -171,7 +171,7 @@ export default function LandingPage() {
   const platforms = ['Google Ads', 'Meta Ads', 'Yahoo! Ads', 'TikTok Ads', 'LINE Ads', 'Microsoft Ads', 'X Ads']
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white [word-break:keep-all]">
       {/* Header */}
       <header
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
@@ -242,14 +242,14 @@ export default function LandingPage() {
         </div>
 
         <div className="mx-auto max-w-6xl px-4 md:px-6">
-          <div className="text-center max-w-3xl mx-auto mb-12 md:mb-16">
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-[3.25rem] font-bold text-gray-900 leading-tight tracking-tight mb-6">
+          <div className="text-center max-w-4xl mx-auto mb-12 md:mb-16">
+            <h1 className="text-3xl sm:text-4xl md:text-[2.75rem] lg:text-5xl font-bold text-gray-900 leading-tight tracking-tight mb-6">
               {t('landing.hero.headline')}
             </h1>
             <p className="text-lg md:text-xl text-blue-600 font-medium mb-6">
               {t('landing.hero.tagline')}
             </p>
-            <p className="text-base md:text-lg text-gray-600 leading-relaxed mb-10 max-w-2xl mx-auto">
+            <p className="text-base md:text-lg text-gray-600 leading-relaxed mb-10 max-w-3xl mx-auto">
               {t('landing.hero.subheadline')}
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
@@ -357,7 +357,7 @@ export default function LandingPage() {
           <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-3">
             {t('landing.integrations.title')}
           </h2>
-          <p className="text-gray-600 mb-10 max-w-2xl mx-auto">
+          <p className="text-gray-600 mb-10 max-w-3xl mx-auto">
             {t('landing.integrations.subtitle')}
           </p>
 
