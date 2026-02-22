@@ -5,6 +5,7 @@ import { usePathname, useRouter } from 'next/navigation'
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useTranslation } from '@/lib/i18n/config'
+import PlanBadge from './PlanBadge'
 
 const NAV_ITEMS = [
   {
@@ -59,9 +60,10 @@ interface SidebarProps {
   projectId: string
   projectName: string
   userEmail: string | null
+  userId?: string
 }
 
-export default function Sidebar({ projectId, projectName, userEmail }: SidebarProps) {
+export default function Sidebar({ projectId, projectName, userEmail, userId }: SidebarProps) {
   const pathname = usePathname()
   const router = useRouter()
   const { t, locale, setLocale } = useTranslation()
@@ -166,6 +168,7 @@ export default function Sidebar({ projectId, projectName, userEmail }: SidebarPr
             <p className="truncate text-xs text-slate-300">
               {userEmail ?? 'Account'}
             </p>
+            {userId && <PlanBadge userId={userId} />}
           </div>
           <button
             type="button"

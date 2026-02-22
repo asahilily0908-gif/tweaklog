@@ -26,7 +26,7 @@ export default async function ProjectLayout({
 
   return (
     <div className="flex h-screen overflow-hidden bg-gray-50">
-      <Sidebar projectId={project.id} projectName={project.name} userEmail={user?.email ?? null} />
+      <Sidebar projectId={project.id} projectName={project.name} userEmail={user?.email ?? null} userId={user?.id} />
       <main className="flex-1 overflow-y-auto pt-14 md:pt-0">
         {children}
       </main>

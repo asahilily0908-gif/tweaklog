@@ -466,7 +466,8 @@
       },
       "pro": {
         "name": "Pro",
-        "price": "Coming Soon",
+        "price": "$39",
+        "priceUnit": "/mo",
         "desc": "For serious ad operations",
         "feature1": "Unlimited projects",
         "feature2": "AI Chat",
@@ -476,7 +477,8 @@
       },
       "team": {
         "name": "Team",
-        "price": "Coming Soon",
+        "price": "$98",
+        "priceUnit": "/mo",
         "desc": "For teams & agencies",
         "feature1": "Everything in Pro",
         "feature2": "Team member management",
@@ -508,6 +510,30 @@
       "login": "Login",
       "signup": "Sign Up",
       "copyright": "© 2026 Tweaklog. All rights reserved."
+    }
+  },
+  "billing": {
+    "currentPlan": "Current Plan",
+    "upgrade": "Upgrade",
+    "downgrade": "Downgrade",
+    "managePlan": "Manage Plan",
+    "trialDays": "14-day free trial",
+    "tryFree": "Try free for 14 days",
+    "upgradeModal": {
+      "title": "Upgrade Required",
+      "description": "This feature requires a Pro plan or higher.",
+      "button": "View Plans"
+    },
+    "plan": {
+      "free": "Free",
+      "pro": "Pro",
+      "team": "Team"
+    },
+    "status": {
+      "active": "Active",
+      "trialing": "Trial",
+      "pastDue": "Past Due",
+      "canceled": "Canceled"
     }
   },
   "language": {

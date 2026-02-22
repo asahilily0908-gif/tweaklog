@@ -461,7 +461,8 @@ export default function LandingPage() {
               </div>
               <h3 className="text-lg font-bold text-gray-900">{t('landing.pricing.pro.name')}</h3>
               <div className="mt-2 mb-1">
-                <span className="text-lg font-semibold text-gray-400">{t('landing.pricing.pro.price')}</span>
+                <span className="text-3xl font-bold text-gray-900">{t('landing.pricing.pro.price')}</span>
+                <span className="text-sm text-gray-500">{t('landing.pricing.pro.priceUnit')}</span>
               </div>
               <p className="text-sm text-gray-500 mb-6">{t('landing.pricing.pro.desc')}</p>
               <ul className="space-y-3 mb-8">
@@ -472,19 +473,20 @@ export default function LandingPage() {
                   </li>
                 ))}
               </ul>
-              <button
-                disabled
-                className="block w-full rounded-lg bg-gray-100 px-4 py-2.5 text-center text-sm font-medium text-gray-400 cursor-not-allowed"
+              <Link
+                href="/signup"
+                className="block w-full rounded-lg bg-blue-600 px-4 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-700 transition-colors"
               >
-                {t('landing.pricing.comingSoonButton')}
-              </button>
+                {t('billing.tryFree')}
+              </Link>
             </div>
 
             {/* Team */}
             <div className="rounded-xl border border-gray-200 bg-white p-6 md:p-8">
               <h3 className="text-lg font-bold text-gray-900">{t('landing.pricing.team.name')}</h3>
               <div className="mt-2 mb-1">
-                <span className="text-lg font-semibold text-gray-400">{t('landing.pricing.team.price')}</span>
+                <span className="text-3xl font-bold text-gray-900">{t('landing.pricing.team.price')}</span>
+                <span className="text-sm text-gray-500">{t('landing.pricing.team.priceUnit')}</span>
               </div>
               <p className="text-sm text-gray-500 mb-6">{t('landing.pricing.team.desc')}</p>
               <ul className="space-y-3 mb-8">
@@ -495,12 +497,12 @@ export default function LandingPage() {
                   </li>
                 ))}
               </ul>
-              <button
-                disabled
-                className="block w-full rounded-lg bg-gray-100 px-4 py-2.5 text-center text-sm font-medium text-gray-400 cursor-not-allowed"
+              <Link
+                href="/signup"
+                className="block w-full rounded-lg border border-gray-200 px-4 py-2.5 text-center text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
               >
-                {t('landing.pricing.comingSoonButton')}
-              </button>
+                {t('landing.pricing.cta')}
+              </Link>
             </div>
           </div>
         </div>

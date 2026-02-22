@@ -467,7 +467,8 @@
       },
       "pro": {
         "name": "Pro",
-        "price": "Coming Soon",
+        "price": "¥3,980",
+        "priceUnit": "/月",
         "desc": "本格的な運用分析",
         "feature1": "無制限プロジェクト",
         "feature2": "AI Chat",
@@ -477,7 +478,8 @@
       },
       "team": {
         "name": "Team",
-        "price": "Coming Soon",
+        "price": "¥9,800",
+        "priceUnit": "/月",
         "desc": "チーム・代理店向け",
         "feature1": "Proの全機能",
         "feature2": "チームメンバー管理",
@@ -509,6 +511,30 @@
       "login": "ログイン",
       "signup": "サインアップ",
       "copyright": "© 2026 Tweaklog. All rights reserved."
+    }
+  },
+  "billing": {
+    "currentPlan": "現在のプラン",
+    "upgrade": "アップグレード",
+    "downgrade": "ダウングレード",
+    "managePlan": "プラン管理",
+    "trialDays": "14日間無料トライアル",
+    "tryFree": "14日間無料で試す",
+    "upgradeModal": {
+      "title": "アップグレードが必要です",
+      "description": "この機能を利用するにはProプラン以上へのアップグレードが必要です。",
+      "button": "プランを見る"
+    },
+    "plan": {
+      "free": "Free",
+      "pro": "Pro",
+      "team": "Team"
+    },
+    "status": {
+      "active": "有効",
+      "trialing": "トライアル中",
+      "pastDue": "支払い遅延",
+      "canceled": "キャンセル済み"
     }
   },
   "language": {
