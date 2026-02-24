@@ -32,6 +32,9 @@ Records advertising changes (bid, creative, targeting, budget, structure), compa
 9. **Custom Metrics** — Formula evaluator supporting `+ - * / ()` `IF` `SUM` `AVG` `MIN` `MAX`, stored in metric_configs, evaluated at render time, displayed as first-class metrics on dashboard with chart tab switching
 10. **Experiment Groups** (検証グループ) — Campaign grouping by name patterns (testing/steady/completed status), searchable picker UI, dashboard + experiment list group filter
 11. **i18n** (Japanese/English) — 16 components translated, 200+ translation keys, language switcher in sidebar and auth pages, default locale: Japanese
+12. **Stripe Billing** — Checkout sessions (Pro $19/Team $99), webhook handler (checkout.completed, subscription updates), Customer Portal, BillingSection in settings, LP pricing CTAs with auth detection
+13. **Landing Page** — Full marketing LP with hero, pain points, features, pricing, FAQ, CTA sections. Mobile responsive. Auth-aware (logged-in users see Dashboard link, pricing CTAs go to Stripe Checkout)
+14. **SEO / OGP** — Dynamic OG image (1200x630, code-generated), Twitter Card, dynamic favicon & Apple Touch Icon, rich metadata (keywords, robots, locale)
 
 ## Database
 
@@ -59,14 +62,21 @@ NEXT_PUBLIC_SUPABASE_URL
 NEXT_PUBLIC_SUPABASE_ANON_KEY
 SUPABASE_SERVICE_ROLE_KEY
 ANTHROPIC_API_KEY
+STRIPE_SECRET_KEY
+STRIPE_WEBHOOK_SECRET
+NEXT_PUBLIC_APP_URL
 ```
 
 ## File Structure
 
 ```
 app/
-├── layout.tsx                          # Root layout (Toaster, LocaleProvider, global styles)
-├── page.tsx                            # Root redirect → /login
+├── layout.tsx                          # Root layout (metadata, OGP, Toaster, LocaleProvider)
+├── page.tsx                            # Landing page (LP) with pricing CTAs
+├── opengraph-image.tsx                 # Dynamic OG image generation (1200x630)
+├── twitter-image.tsx                   # Twitter Card image (re-exports OG)
+├── icon.tsx                            # Dynamic favicon (32x32)
+├── apple-icon.tsx                      # Apple Touch Icon (180x180)
 ├── (auth)/
 │   ├── layout.tsx                      # Auth pages layout (language switcher)
 │   ├── login/page.tsx
@@ -95,7 +105,11 @@ app/
 └── api/
     ├── ai/chat/route.ts                # Claude streaming endpoint
     ├── metric-configs/preview/route.ts  # Formula preview endpoint
-    └── spreadsheet/fetch/route.ts       # Google Sheets CSV export fetch
+    ├── spreadsheet/fetch/route.ts       # Google Sheets CSV export fetch
+    └── stripe/
+        ├── checkout/route.ts            # Stripe Checkout session creation
+        ├── portal/route.ts              # Stripe Customer Portal redirect
+        └── webhook/route.ts             # Stripe webhook handler
 
 components/
 ├── layout/Sidebar.tsx                  # Responsive sidebar + logout + language switcher
@@ -124,7 +138,9 @@ components/
 │   ├── CsvImportContent.tsx            # CSV upload + mapping + import flow
 │   └── SpreadsheetImport.tsx           # Spreadsheet URL input, header detection, mapping, resync
 ├── ai/ChatInterface.tsx                # AI chat with streaming
-└── settings/SettingsContent.tsx        # All settings sections (platform mgmt, groups, KPIs)
+├── settings/
+│   ├── SettingsContent.tsx             # All settings sections (platform mgmt, groups, KPIs)
+│   └── BillingSection.tsx              # Plan/billing management (Stripe portal link)
 
 lib/
 ├── supabase/
@@ -141,6 +157,8 @@ lib/
 │   ├── config.tsx                      # LocaleProvider + useTranslation hook
 │   ├── en.json                         # English translations (200+ keys)
 │   └── ja.json                         # Japanese translations (200+ keys)
+├── stripe/
+│   └── config.ts                       # Stripe client, PLANS config (price IDs, features)
 └── ai/
     ├── claude-client.ts                # Anthropic SDK wrapper
     └── context-builder.ts              # Build AI context from project data
@@ -180,7 +198,7 @@ middleware.ts                           # Supabase session refresh on all routes
 - BigQuery / Snowflake daily sync (Agency plan)
 - API Export endpoints (`/api/export/experiments`, `/api/export/outcomes`)
 - Google OAuth setup
-- Stripe billing integration (Personal $19/Team $99/Agency $499)
+- Stripe billing full flow (subscription lifecycle, plan enforcement, usage limits)
 - Multi-project switcher UI
 - Slack `/tweaklog` command integration
 - LINE Bot integration (Japan market)
@@ -237,3 +255,33 @@ middleware.ts                           # Supabase session refresh on all routes
    - Custom formula cards (Profit, CTR, etc.) displayed as first-class metrics on dashboard
    - Chart tab switching (CPA & Cost / Profit / CTR)
    - Smart number formatting per metric type
+
+### 2026-02-24 Updates
+
+1. **Stripe Integration**
+   - `lib/stripe/config.ts` — Stripe client + PLANS config (Pro $19/mo, Team $99/mo)
+   - `app/api/stripe/checkout/route.ts` — Creates Checkout sessions, resolves priceId from plan name
+   - `app/api/stripe/webhook/route.ts` — Handles checkout.completed, subscription.updated/deleted
+   - `app/api/stripe/portal/route.ts` — Redirects to Stripe Customer Portal
+   - `components/settings/BillingSection.tsx` — Current plan display, upgrade cards, portal link
+   - `subscriptions` table in Supabase for subscription tracking
+
+2. **Landing Page**
+   - Full marketing LP at `/` with hero, pain points, features, pricing, FAQ, CTA
+   - Auth-aware: logged-in users see Dashboard nav link, pricing CTAs trigger Stripe Checkout
+   - Middleware updated to allow authenticated users on `/`
+
+3. **SEO / OGP / Favicon**
+   - `app/layout.tsx` — Rich metadata (OGP, Twitter Card, keywords, robots, metadataBase)
+   - `app/opengraph-image.tsx` — Dynamic OG image (1200x630) with brand gradient + tagline
+   - `app/twitter-image.tsx` — Twitter Card image (re-exports OG)
+   - `app/icon.tsx` — Dynamic favicon (32x32, blue-purple gradient "T")
+   - `app/apple-icon.tsx` — Apple Touch Icon (180x180)
+   - `html lang` changed from `en` to `ja`
+
+4. **Mobile Responsive Fixes**
+   - Viewport `maximumScale: 1` to prevent zoom issues
+   - LP: responsive font sizes, grid layouts, spacing, mockup scaling, pricing card ordering
+   - KpiCard: smaller padding/fonts on mobile, badges hidden, value truncation
+   - PlatformFilter: overflow-x-auto, smaller buttons, whitespace-nowrap
+   - DashboardContent: responsive grid gaps for KPI cards
