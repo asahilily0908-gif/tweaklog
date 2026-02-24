@@ -6,6 +6,7 @@ import ScoreBadge from '@/components/impact/ScoreBadge'
 import ImpactCardPanel from '@/components/impact/ImpactCardPanel'
 import { computeImpactForExperiment, type OutcomeRow } from '@/lib/metrics/score-calculator'
 import { useTranslation } from '@/lib/i18n/config'
+import { usePlan } from '@/lib/plan-context'
 
 interface Project {
   id: string
@@ -85,10 +86,20 @@ function formatDate(dateStr: string) {
 
 export default function ExperimentsContent({ project, experiments, outcomes, experimentGroups }: Props) {
   const { t } = useTranslation()
+  const { plan } = usePlan()
   const [showModal, setShowModal] = useState(false)
   const [filterCategory, setFilterCategory] = useState<string>('all')
   const [filterGroup, setFilterGroup] = useState<string>('all')
   const [selectedExperiment, setSelectedExperiment] = useState<Experiment | null>(null)
+
+  // Free plan: 10 experiments per month limit
+  const FREE_MONTHLY_LIMIT = 10
+  const thisMonthCount = useMemo(() => {
+    const now = new Date()
+    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString()
+    return experiments.filter((e) => e.created_at >= monthStart).length
+  }, [experiments])
+  const isAtLimit = plan === 'free' && thisMonthCount >= FREE_MONTHLY_LIMIT
 
   const scoreMap = useMemo(() => {
     if (!project.north_star_kpi) return null
@@ -122,8 +133,13 @@ export default function ExperimentsContent({ project, experiments, outcomes, exp
         </div>
         <button
           type="button"
-          onClick={() => setShowModal(true)}
-          className="flex items-center gap-2 rounded-lg bg-slate-900 px-4 py-2.5 text-sm font-medium text-white shadow-sm hover:bg-slate-800 transition-all duration-150"
+          onClick={() => !isAtLimit && setShowModal(true)}
+          disabled={isAtLimit}
+          className={`flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium shadow-sm transition-all duration-150 ${
+            isAtLimit
+              ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+              : 'bg-slate-900 text-white hover:bg-slate-800'
+          }`}
         >
           <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
@@ -131,6 +147,25 @@ export default function ExperimentsContent({ project, experiments, outcomes, exp
           {t('experiments.logChange')}
         </button>
       </div>
+
+      {/* Free plan experiment limit banner */}
+      {isAtLimit && (
+        <div className="mb-5 flex items-center gap-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3">
+          <svg className="h-5 w-5 shrink-0 text-amber-500" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+          </svg>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-medium text-amber-800">{t('upgrade.experimentLimit')}</p>
+            <p className="text-xs text-amber-600 mt-0.5">{t('upgrade.experimentLimitCta')}</p>
+          </div>
+          <a
+            href={`/app/${project.id}/settings`}
+            className="shrink-0 rounded-lg bg-amber-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-amber-700 transition-colors"
+          >
+            {t('upgrade.cta')}
+          </a>
+        </div>
+      )}
 
       {/* Filters */}
       <div className="mb-5 flex items-center gap-3 flex-wrap">

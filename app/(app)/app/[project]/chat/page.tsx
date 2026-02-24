@@ -1,6 +1,8 @@
 import { createClient } from '@/lib/supabase/server'
 import { notFound } from 'next/navigation'
 import ChatInterface from '@/components/ai/ChatInterface'
+import { getUserPlan, canUseFeature } from '@/lib/stripe/check-plan'
+import ChatUpgradeGate from './ChatUpgradeGate'
 
 export const metadata = {
   title: 'AI Chat | Tweaklog',
@@ -25,10 +27,19 @@ export default async function ChatPage({
     notFound()
   }
 
-  // Fetch the most recent chat for this user and project
   const {
     data: { user },
   } = await supabase.auth.getUser()
+
+  // Check plan access
+  const plan = user ? await getUserPlan(user.id) : 'free'
+  if (!canUseFeature(plan, 'ai-chat')) {
+    return (
+      <div className="animate-fade-in-up">
+        <ChatUpgradeGate projectId={projectId} />
+      </div>
+    )
+  }
 
   let initialMessages: Array<{ role: 'user' | 'assistant'; content: string }> = []
   let chatId: string | null = null

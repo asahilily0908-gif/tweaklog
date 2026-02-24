@@ -548,6 +548,14 @@
     "upgradeToTeamDesc": "チームメンバー管理、API Export、優先サポートが含まれます",
     "redirectingToStripe": "Stripeに移動中..."
   },
+  "upgrade": {
+    "title": "Proプランで利用可能",
+    "description": "この機能を使うにはProプランへのアップグレードが必要です。",
+    "cta": "Proにアップグレード",
+    "aiChatDescription": "AI Chatを使ってデータの分析や改善提案を受けるにはProプランが必要です。",
+    "experimentLimit": "今月の変更ログ上限（10件）に達しました",
+    "experimentLimitCta": "無制限に記録するにはProへアップグレード"
+  },
   "language": {
     "ja": "日本語",
     "en": "English",

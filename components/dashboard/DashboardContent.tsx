@@ -11,6 +11,8 @@ import ImpactCardPanel from '@/components/impact/ImpactCardPanel'
 import AiHighlights from './AiHighlights'
 import { evaluateFormula } from '@/lib/metrics/formula-evaluator'
 import { computeImpactForExperiment } from '@/lib/metrics/score-calculator'
+import UpgradeGate from '@/components/layout/UpgradeGate'
+import { usePlan } from '@/lib/plan-context'
 
 interface Project {
   id: string
@@ -155,8 +157,44 @@ function daysBeforeDate(dateStr: string, days: number): string {
   return d.toISOString().split('T')[0]
 }
 
+function ImpactUpgradeModal({ onClose }: { onClose: () => void }) {
+  const { t } = useTranslation()
+  const pathname = typeof window !== 'undefined' ? window.location.pathname : ''
+  const segments = pathname.split('/')
+  const projectIdx = segments.indexOf('app') + 1
+  const projectId = segments[projectIdx] || ''
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm" onClick={onClose}>
+      <div className="relative mx-4 flex flex-col items-center gap-4 rounded-2xl border border-gray-200 bg-white px-8 py-8 shadow-xl max-w-sm text-center" onClick={(e) => e.stopPropagation()}>
+        <button type="button" onClick={onClose} className="absolute top-3 right-3 rounded-lg p-1 text-gray-400 hover:text-gray-600">
+          <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-50">
+          <svg className="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+          </svg>
+        </div>
+        <div>
+          <h3 className="text-base font-semibold text-gray-900">{t('upgrade.title')}</h3>
+          <p className="mt-1 text-sm text-gray-500">{t('upgrade.description')}</p>
+        </div>
+        <a
+          href={`/app/${projectId}/settings`}
+          className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-medium text-white shadow-sm hover:bg-blue-700 transition-colors"
+        >
+          {t('upgrade.cta')}
+        </a>
+      </div>
+    </div>
+  )
+}
+
 export default function DashboardContent({ project, outcomes, experiments, metricConfigs, latestDate, aiHighlights, experimentGroups }: Props) {
   const { t } = useTranslation()
+  const { canUseFeature } = usePlan()
   const [platform, setPlatform] = useState('ALL')
   const [dateRange, setDateRange] = useState<DateRange>(30)
   const [selectedExperiment, setSelectedExperiment] = useState<Experiment | null>(null)
@@ -481,23 +519,25 @@ export default function DashboardContent({ project, outcomes, experiments, metri
             />
           </div>
           {customMetricValues.length > 0 && (
-            <div className="mb-6 grid grid-cols-2 gap-2 sm:gap-4 sm:grid-cols-3 lg:grid-cols-4">
-              {customMetricValues.map((cm) => (
-                <KpiCard
-                  key={cm.id}
-                  label={cm.name}
-                  value={
-                    cm.value !== null
-                      ? formatCustomMetric(cm.name, cm.formula, cm.value)
-                      : '—'
-                  }
-                  badge={t('dashboard.custom')}
-                  accentColor="blue"
-                  change={cm.change}
-                  improvementDirection={cm.improvementDirection}
-                />
-              ))}
-            </div>
+            <UpgradeGate feature="custom-metrics">
+              <div className="mb-6 grid grid-cols-2 gap-2 sm:gap-4 sm:grid-cols-3 lg:grid-cols-4">
+                {customMetricValues.map((cm) => (
+                  <KpiCard
+                    key={cm.id}
+                    label={cm.name}
+                    value={
+                      cm.value !== null
+                        ? formatCustomMetric(cm.name, cm.formula, cm.value)
+                        : '—'
+                    }
+                    badge={t('dashboard.custom')}
+                    accentColor="blue"
+                    change={cm.change}
+                    improvementDirection={cm.improvementDirection}
+                  />
+                ))}
+              </div>
+            </UpgradeGate>
           )}
         </>
       ) : (
@@ -617,13 +657,17 @@ export default function DashboardContent({ project, outcomes, experiments, metri
 
       {/* Impact Card Panel */}
       {selectedExperiment && project.north_star_kpi && (
-        <ImpactCardPanel
-          experiment={selectedExperiment}
-          outcomes={outcomes}
-          northStarKpi={project.north_star_kpi}
-          subKpis={project.sub_kpis}
-          onClose={() => setSelectedExperiment(null)}
-        />
+        canUseFeature('impact-card') ? (
+          <ImpactCardPanel
+            experiment={selectedExperiment}
+            outcomes={outcomes}
+            northStarKpi={project.north_star_kpi}
+            subKpis={project.sub_kpis}
+            onClose={() => setSelectedExperiment(null)}
+          />
+        ) : (
+          <ImpactUpgradeModal onClose={() => setSelectedExperiment(null)} />
+        )
       )}
     </div>
   )

@@ -6,6 +6,11 @@ import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useTranslation } from '@/lib/i18n/config'
 import PlanBadge from './PlanBadge'
+import { usePlan } from '@/lib/plan-context'
+
+const LOCKED_FEATURES: Record<string, string> = {
+  chat: 'ai-chat',
+}
 
 const NAV_ITEMS = [
   {
@@ -67,6 +72,7 @@ export default function Sidebar({ projectId, projectName, userEmail, userId }: S
   const pathname = usePathname()
   const router = useRouter()
   const { t, locale, setLocale } = useTranslation()
+  const { canUseFeature } = usePlan()
   const basePath = `/app/${projectId}`
   const [mobileOpen, setMobileOpen] = useState(false)
   const [loggingOut, setLoggingOut] = useState(false)
@@ -122,6 +128,8 @@ export default function Sidebar({ projectId, projectName, userEmail, userId }: S
           {NAV_ITEMS.map((item) => {
             const href = `${basePath}/${item.href}`
             const isActive = pathname.startsWith(href)
+            const lockedFeature = LOCKED_FEATURES[item.href]
+            const isLocked = lockedFeature ? !canUseFeature(lockedFeature) : false
 
             return (
               <li key={item.href}>
@@ -137,6 +145,11 @@ export default function Sidebar({ projectId, projectName, userEmail, userId }: S
                     {item.icon}
                   </span>
                   {t(item.labelKey)}
+                  {isLocked && (
+                    <svg className="ml-auto h-3.5 w-3.5 text-slate-500" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+                    </svg>
+                  )}
                 </Link>
               </li>
             )

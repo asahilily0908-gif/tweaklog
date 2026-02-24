@@ -1,6 +1,8 @@
 import { createClient } from '@/lib/supabase/server'
 import { notFound } from 'next/navigation'
 import Sidebar from '@/components/layout/Sidebar'
+import { getUserPlan } from '@/lib/stripe/check-plan'
+import { PlanProvider } from '@/lib/plan-context'
 
 export default async function ProjectLayout({
   children,
@@ -23,13 +25,16 @@ export default async function ProjectLayout({
   }
 
   const { data: { user } } = await supabase.auth.getUser()
+  const plan = user ? await getUserPlan(user.id) : 'free'
 
   return (
-    <div className="flex h-screen overflow-hidden bg-gray-50">
-      <Sidebar projectId={project.id} projectName={project.name} userEmail={user?.email ?? null} userId={user?.id} />
-      <main className="flex-1 overflow-y-auto pt-14 md:pt-0">
-        {children}
-      </main>
-    </div>
+    <PlanProvider plan={plan}>
+      <div className="flex h-screen overflow-hidden bg-gray-50">
+        <Sidebar projectId={project.id} projectName={project.name} userEmail={user?.email ?? null} userId={user?.id} />
+        <main className="flex-1 overflow-y-auto pt-14 md:pt-0">
+          {children}
+        </main>
+      </div>
+    </PlanProvider>
   )
 }

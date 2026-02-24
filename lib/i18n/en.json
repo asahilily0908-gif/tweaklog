@@ -547,6 +547,14 @@
     "upgradeToTeamDesc": "Includes team member management, API Export, and priority support",
     "redirectingToStripe": "Redirecting to Stripe..."
   },
+  "upgrade": {
+    "title": "Available on Pro plan",
+    "description": "Upgrade to Pro to unlock this feature.",
+    "cta": "Upgrade to Pro",
+    "aiChatDescription": "Upgrade to Pro to use AI Chat for data analysis and improvement suggestions.",
+    "experimentLimit": "You've reached the monthly change log limit (10)",
+    "experimentLimitCta": "Upgrade to Pro for unlimited logs"
+  },
   "language": {
     "ja": "日本語",
     "en": "English",
