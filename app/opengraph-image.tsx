@@ -10,6 +10,11 @@ export const size = {
 export const contentType = "image/png";
 
 export default async function Image() {
+  // Google Fonts から Noto Sans JP を取得
+  const fontData = await fetch(
+    "https://fonts.gstatic.com/s/notosansjp/v53/Ia2dPDRBsgtCOluzwMKjYRGCxSM.ttf"
+  ).then((res) => res.arrayBuffer());
+
   return new ImageResponse(
     (
       <div
@@ -21,21 +26,11 @@ export default async function Image() {
           justifyContent: "center",
           alignItems: "center",
           background: "linear-gradient(135deg, #1e3a5f 0%, #0f172a 50%, #1e1b4b 100%)",
+          fontFamily: "Noto Sans JP",
           position: "relative",
           overflow: "hidden",
         }}
       >
-        {/* Background grid pattern */}
-        <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            backgroundImage:
-              "linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)",
-            backgroundSize: "40px 40px",
-          }}
-        />
-
         {/* Glow effects */}
         <div
           style={{
@@ -45,7 +40,8 @@ export default async function Image() {
             width: 400,
             height: 400,
             borderRadius: "50%",
-            background: "radial-gradient(circle, rgba(59,130,246,0.15) 0%, transparent 70%)",
+            background:
+              "radial-gradient(circle, rgba(59,130,246,0.15) 0%, transparent 70%)",
           }}
         />
         <div
@@ -56,7 +52,8 @@ export default async function Image() {
             width: 300,
             height: 300,
             borderRadius: "50%",
-            background: "radial-gradient(circle, rgba(139,92,246,0.12) 0%, transparent 70%)",
+            background:
+              "radial-gradient(circle, rgba(139,92,246,0.12) 0%, transparent 70%)",
           }}
         />
 
@@ -119,14 +116,12 @@ export default async function Image() {
               fontWeight: 700,
               color: "white",
               textAlign: "center",
-              lineHeight: 1.2,
+              lineHeight: 1.3,
               maxWidth: 900,
               letterSpacing: "-0.02em",
             }}
           >
-            広告運用の変更を、
-            <br />
-            成果に変える。
+            広告運用の変更を、成果に変える。
           </div>
 
           {/* Subtitle */}
@@ -177,13 +172,22 @@ export default async function Image() {
             left: 0,
             right: 0,
             height: 4,
-            background: "linear-gradient(90deg, #3b82f6, #8b5cf6, #3b82f6)",
+            background:
+              "linear-gradient(90deg, #3b82f6, #8b5cf6, #3b82f6)",
           }}
         />
       </div>
     ),
     {
       ...size,
+      fonts: [
+        {
+          name: "Noto Sans JP",
+          data: fontData,
+          style: "normal",
+          weight: 700,
+        },
+      ],
     }
   );
 }
