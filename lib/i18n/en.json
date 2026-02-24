@@ -39,7 +39,13 @@
     "createAccount": "Create account",
     "createAccountDescription": "Create your Tweaklog account",
     "signingIn": "Signing in...",
-    "creatingAccount": "Creating account..."
+    "creatingAccount": "Creating account...",
+    "checkEmail": "Check your email",
+    "checkEmailDescription": "We sent a confirmation email to {email}. Click the link in the email to activate your account.",
+    "checkEmailSpam": "If you don't see it, check your spam folder.",
+    "goToLogin": "Go to login",
+    "rateLimitError": "Please wait a moment before trying again.",
+    "alreadyRegistered": "This email is already registered."
   },
   "dashboard": {
     "title": "Dashboard",

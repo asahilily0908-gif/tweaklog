@@ -39,7 +39,13 @@
     "createAccount": "アカウントを作成",
     "createAccountDescription": "Tweaklogアカウントを作成",
     "signingIn": "サインイン中...",
-    "creatingAccount": "作成中..."
+    "creatingAccount": "作成中...",
+    "checkEmail": "確認メールを送信しました",
+    "checkEmailDescription": "{email} に確認メールを送信しました。メール内のリンクをクリックしてアカウントを有効化してください。",
+    "checkEmailSpam": "メールが届かない場合は迷惑メールフォルダを確認してください。",
+    "goToLogin": "ログインページへ",
+    "rateLimitError": "セキュリティのため、しばらく待ってから再度お試しください。",
+    "alreadyRegistered": "このメールアドレスは既に登録されています。"
   },
   "dashboard": {
     "title": "ダッシュボード",

@@ -6,12 +6,23 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { useTranslation } from '@/lib/i18n/config'
 
+function mapSignupError(message: string, t: (key: string) => string): string {
+  if (message.includes('you can only request this after')) {
+    return t('auth.rateLimitError')
+  }
+  if (message.includes('already registered') || message.includes('already been registered')) {
+    return t('auth.alreadyRegistered')
+  }
+  return message
+}
+
 export default function SignupPage() {
   const router = useRouter()
   const supabase = createClient()
   const { t } = useTranslation()
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
+  const [confirmEmail, setConfirmEmail] = useState<string | null>(null)
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -22,7 +33,7 @@ export default function SignupPage() {
     const email = formData.get('email') as string
     const password = formData.get('password') as string
 
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
@@ -31,11 +42,16 @@ export default function SignupPage() {
     })
 
     if (error) {
-      setError(error.message)
+      setError(mapSignupError(error.message, t))
       setLoading(false)
-    } else {
+    } else if (data.session) {
+      // Email confirmation disabled — proceed directly
       router.push('/post-login')
       router.refresh()
+    } else {
+      // Email confirmation required — show check-email screen
+      setConfirmEmail(email)
+      setLoading(false)
     }
   }
 
@@ -50,6 +66,32 @@ export default function SignupPage() {
     if (error) {
       setError(error.message)
     }
+  }
+
+  // Email confirmation screen
+  if (confirmEmail) {
+    return (
+      <div className="rounded-xl border border-gray-200 bg-white p-8 shadow-sm text-center">
+        <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-blue-50">
+          <svg className="h-7 w-7 text-blue-600" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+          </svg>
+        </div>
+        <h1 className="text-xl font-bold text-gray-900">{t('auth.checkEmail')}</h1>
+        <p className="mt-3 text-sm text-gray-600">
+          {t('auth.checkEmailDescription').replace('{email}', confirmEmail)}
+        </p>
+        <p className="mt-3 text-xs text-gray-400">
+          {t('auth.checkEmailSpam')}
+        </p>
+        <Link
+          href="/login"
+          className="mt-6 inline-flex items-center gap-2 rounded-lg bg-slate-900 px-5 py-2.5 text-sm font-medium text-white hover:bg-slate-800 transition-colors"
+        >
+          {t('auth.goToLogin')}
+        </Link>
+      </div>
+    )
   }
 
   return (
