@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useTranslation } from '@/lib/i18n/config'
+import { usePlan } from '@/lib/plan-context'
 
 type PlanType = 'free' | 'pro' | 'team'
 
@@ -28,6 +29,7 @@ const PLAN_COLORS: Record<PlanType, { badge: string; border: string }> = {
 
 export default function BillingSection({ userId }: { userId: string }) {
   const { t } = useTranslation()
+  const { plan: currentPlan } = usePlan()
   const [sub, setSub] = useState<SubscriptionData | null>(null)
   const [loading, setLoading] = useState(true)
   const [actionLoading, setActionLoading] = useState<string | null>(null)
@@ -54,10 +56,6 @@ export default function BillingSection({ userId }: { userId: string }) {
     }
     fetchSubscription()
   }, [userId])
-
-  const currentPlan: PlanType = sub && ['active', 'trialing'].includes(sub.status)
-    ? sub.plan
-    : 'free'
 
   const isActive = sub && ['active', 'trialing'].includes(sub.status)
   const isTrial = sub?.status === 'trialing'
