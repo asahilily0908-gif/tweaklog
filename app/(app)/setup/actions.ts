@@ -28,46 +28,34 @@ export async function completeSetup(input: SetupInput) {
     return { error: 'Not authenticated' }
   }
 
-  // 1. Create organization
+  // 1. Create organization + add user as owner (atomic, bypasses RLS)
   const slug = input.orgName
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-|-$/g, '')
     .concat('-', Date.now().toString(36))
 
-  const { data: org, error: orgError } = await supabase
-    .from('organizations')
-    .insert({
-      name: input.orgName,
-      slug,
-      plan: 'free',
-      trial_ends_at: new Date(
+  const { data: orgId, error: orgError } = await supabase.rpc(
+    'create_org_with_owner',
+    {
+      org_name: input.orgName,
+      org_slug: slug,
+      org_plan: 'free',
+      org_trial_ends_at: new Date(
         Date.now() + 14 * 24 * 60 * 60 * 1000
       ).toISOString(),
-    })
-    .select('id')
-    .single()
+    }
+  )
 
   if (orgError) {
     return { error: `Failed to create organization: ${orgError.message}` }
   }
 
-  // 2. Add user as owner
-  const { error: memberError } = await supabase.from('org_members').insert({
-    org_id: org.id,
-    user_id: user.id,
-    role: 'owner',
-  })
-
-  if (memberError) {
-    return { error: `Failed to add member: ${memberError.message}` }
-  }
-
-  // 3. Create project
+  // 2. Create project (user is now an org member, so RLS passes)
   const { data: project, error: projectError } = await supabase
     .from('projects')
     .insert({
-      org_id: org.id,
+      org_id: orgId,
       name: input.projectName,
       platform: input.platform,
       north_star_kpi: input.northStarKpi,
@@ -83,7 +71,7 @@ export async function completeSetup(input: SetupInput) {
     return { error: `Failed to create project: ${projectError.message}` }
   }
 
-  // 4. Save metric configs
+  // 3. Save metric configs
   if (input.metricConfigs.length > 0) {
     const metricRows = input.metricConfigs.map((m, i) => ({
       project_id: project.id,
