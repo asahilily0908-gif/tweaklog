@@ -1,7 +1,7 @@
 'use client'
 
 import { createClient } from '@/lib/supabase/client'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { useState } from 'react'
 import Link from 'next/link'
 import { useTranslation } from '@/lib/i18n/config'
@@ -18,6 +18,8 @@ function mapSignupError(message: string, t: (key: string) => string): string {
 
 export default function SignupPage() {
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const redirectTo = searchParams.get('redirect')
   const supabase = createClient()
   const { t } = useTranslation()
   const [error, setError] = useState<string | null>(null)
@@ -46,7 +48,7 @@ export default function SignupPage() {
       setLoading(false)
     } else if (data.session) {
       // Email confirmation disabled — proceed directly
-      router.push('/post-login')
+      router.push(redirectTo || '/post-login')
       router.refresh()
     } else {
       // Email confirmation required — show check-email screen
@@ -60,7 +62,7 @@ export default function SignupPage() {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: `${location.origin}/auth/callback`,
+        redirectTo: `${location.origin}/auth/callback${redirectTo ? `?next=${encodeURIComponent(redirectTo)}` : ''}`,
       },
     })
     if (error) {
@@ -191,7 +193,7 @@ export default function SignupPage() {
       <p className="mt-6 text-center text-sm text-gray-600">
         {t('auth.alreadyHaveAccount')}{' '}
         <Link
-          href="/login"
+          href={redirectTo ? `/login?redirect=${encodeURIComponent(redirectTo)}` : '/login'}
           className="font-medium text-blue-600 hover:text-blue-500"
         >
           {t('auth.signIn')}

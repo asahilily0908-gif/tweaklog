@@ -1,13 +1,15 @@
 'use client'
 
 import { createClient } from '@/lib/supabase/client'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { useState } from 'react'
 import Link from 'next/link'
 import { useTranslation } from '@/lib/i18n/config'
 
 export default function LoginPage() {
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const redirectTo = searchParams.get('redirect')
   const supabase = createClient()
   const { t } = useTranslation()
   const [error, setError] = useState<string | null>(null)
@@ -31,7 +33,7 @@ export default function LoginPage() {
       setError(error.message)
       setLoading(false)
     } else {
-      router.push('/post-login')
+      router.push(redirectTo || '/post-login')
       router.refresh()
     }
   }
@@ -41,7 +43,7 @@ export default function LoginPage() {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: `${location.origin}/auth/callback`,
+        redirectTo: `${location.origin}/auth/callback${redirectTo ? `?next=${encodeURIComponent(redirectTo)}` : ''}`,
       },
     })
     if (error) {
@@ -145,7 +147,7 @@ export default function LoginPage() {
       <p className="mt-6 text-center text-sm text-gray-600">
         {t('auth.dontHaveAccount')}{' '}
         <Link
-          href="/signup"
+          href={redirectTo ? `/signup?redirect=${encodeURIComponent(redirectTo)}` : '/signup'}
           className="font-medium text-blue-600 hover:text-blue-500"
         >
           {t('auth.signUp')}

@@ -562,6 +562,73 @@
     "experimentLimit": "今月の変更ログ上限（10件）に達しました",
     "experimentLimitCta": "無制限に記録するにはProへアップグレード"
   },
+  "team": {
+    "title": "チームメンバー",
+    "description": "組織のメンバーを管理します（最大5名）",
+    "inviteMember": "メンバーを招待",
+    "memberCount": "{count}/5 メンバー",
+    "role": "ロール",
+    "roles": {
+      "owner": "オーナー",
+      "manager": "マネージャー",
+      "operator": "オペレーター",
+      "viewer": "閲覧者"
+    },
+    "roleDescriptions": {
+      "manager": "プロジェクト管理、メンバー招待、データ管理",
+      "operator": "データ取込、変更ログ記録、分析",
+      "viewer": "ダッシュボードと実験ログの閲覧のみ"
+    },
+    "inviteModal": {
+      "title": "メンバーを招待",
+      "emailLabel": "メールアドレス",
+      "emailPlaceholder": "例: member@example.com",
+      "roleLabel": "ロールを選択",
+      "invite": "招待する",
+      "inviting": "招待中...",
+      "inviteSent": "招待を送信しました",
+      "copyLink": "招待リンクをコピー",
+      "linkCopied": "コピーしました"
+    },
+    "memberList": {
+      "you": "あなた",
+      "changeRole": "ロールを変更",
+      "removeMember": "メンバーを削除",
+      "removeConfirm": "このメンバーを削除しますか？",
+      "cannotRemoveOwner": "オーナーは削除できません",
+      "cannotRemoveSelf": "自分自身は削除できません"
+    },
+    "pendingInvitations": "招待中",
+    "noPendingInvitations": "招待中のメンバーはいません",
+    "invitationExpires": "有効期限: 残り{days}日",
+    "revokeInvitation": "取消",
+    "revokeConfirm": "この招待を取り消しますか？",
+    "invitationRevoked": "招待を取り消しました",
+    "errors": {
+      "planRequired": "チーム機能はTeamプランで利用できます",
+      "memberLimitReached": "メンバー上限（5名）に達しています",
+      "alreadyMember": "このユーザーは既にメンバーです",
+      "alreadyInvited": "このメールアドレスには既に招待を送信済みです",
+      "invalidEmail": "有効なメールアドレスを入力してください",
+      "cannotChangeOwnerRole": "オーナーのロールは変更できません",
+      "insufficientPermissions": "この操作を行う権限がありません"
+    },
+    "acceptInvitation": {
+      "title": "チームに参加",
+      "description": "{orgName} に招待されました",
+      "invitedBy": "招待者",
+      "assignedRole": "割り当てロール",
+      "expiresAt": "有効期限",
+      "accept": "参加する",
+      "accepting": "参加中...",
+      "accepted": "参加しました！リダイレクト中...",
+      "expired": "この招待は期限切れです",
+      "invalid": "無効な招待リンクです",
+      "loginRequired": "参加するにはログインが必要です",
+      "loginAndJoin": "ログインして参加",
+      "signupAndJoin": "アカウントを作成して参加"
+    }
+  },
   "language": {
     "ja": "日本語",
     "en": "English",

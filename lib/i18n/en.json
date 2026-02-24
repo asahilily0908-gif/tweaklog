@@ -561,6 +561,73 @@
     "experimentLimit": "You've reached the monthly change log limit (10)",
     "experimentLimitCta": "Upgrade to Pro for unlimited logs"
   },
+  "team": {
+    "title": "Team Members",
+    "description": "Manage your organization members (up to 5)",
+    "inviteMember": "Invite Member",
+    "memberCount": "{count}/5 members",
+    "role": "Role",
+    "roles": {
+      "owner": "Owner",
+      "manager": "Manager",
+      "operator": "Operator",
+      "viewer": "Viewer"
+    },
+    "roleDescriptions": {
+      "manager": "Project management, invite members, data management",
+      "operator": "Data import, change logging, analysis",
+      "viewer": "View-only access to dashboard and experiments"
+    },
+    "inviteModal": {
+      "title": "Invite Member",
+      "emailLabel": "Email address",
+      "emailPlaceholder": "e.g. member@example.com",
+      "roleLabel": "Select role",
+      "invite": "Send Invite",
+      "inviting": "Sending...",
+      "inviteSent": "Invitation sent",
+      "copyLink": "Copy invite link",
+      "linkCopied": "Copied!"
+    },
+    "memberList": {
+      "you": "You",
+      "changeRole": "Change role",
+      "removeMember": "Remove member",
+      "removeConfirm": "Are you sure you want to remove this member?",
+      "cannotRemoveOwner": "Cannot remove the owner",
+      "cannotRemoveSelf": "Cannot remove yourself"
+    },
+    "pendingInvitations": "Pending Invitations",
+    "noPendingInvitations": "No pending invitations",
+    "invitationExpires": "Expires in {days} days",
+    "revokeInvitation": "Revoke",
+    "revokeConfirm": "Are you sure you want to revoke this invitation?",
+    "invitationRevoked": "Invitation revoked",
+    "errors": {
+      "planRequired": "Team features require the Team plan",
+      "memberLimitReached": "Member limit reached (max 5)",
+      "alreadyMember": "This user is already a member",
+      "alreadyInvited": "An invitation has already been sent to this email",
+      "invalidEmail": "Please enter a valid email address",
+      "cannotChangeOwnerRole": "Cannot change the owner's role",
+      "insufficientPermissions": "You don't have permission to perform this action"
+    },
+    "acceptInvitation": {
+      "title": "Join Team",
+      "description": "You've been invited to {orgName}",
+      "invitedBy": "Invited by",
+      "assignedRole": "Assigned role",
+      "expiresAt": "Expires",
+      "accept": "Join Team",
+      "accepting": "Joining...",
+      "accepted": "Joined! Redirecting...",
+      "expired": "This invitation has expired",
+      "invalid": "Invalid invitation link",
+      "loginRequired": "You need to log in to join",
+      "loginAndJoin": "Log in and join",
+      "signupAndJoin": "Sign up and join"
+    }
+  },
   "language": {
     "ja": "日本語",
     "en": "English",

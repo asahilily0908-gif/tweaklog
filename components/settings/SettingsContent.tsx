@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import BillingSection from '@/components/settings/BillingSection'
+import TeamSection from '@/components/settings/TeamSection'
 import {
   updateProject,
   updateKpiSettings,
@@ -483,6 +484,9 @@ export default function SettingsContent({
 
       {/* ── Billing Section ───────────────────────────── */}
       {userId && <BillingSection userId={userId} />}
+
+      {/* ── Team Section ────────────────────────────── */}
+      {userId && <TeamSection orgId={project.org_id} currentUserId={userId} />}
 
       {/* ── Section 1: Project Settings ──────────────── */}
       <section className="rounded-xl border border-gray-200 bg-white shadow-sm">

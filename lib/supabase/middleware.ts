@@ -42,9 +42,12 @@ export async function updateSession(request: NextRequest) {
   }
 
   // Redirect authenticated users away from auth pages (but allow landing page)
+  // If ?redirect= param exists, honor it instead of /post-login
   if (user && (pathname === '/login' || pathname === '/signup')) {
+    const redirect = request.nextUrl.searchParams.get('redirect')
     const url = request.nextUrl.clone()
-    url.pathname = '/post-login'
+    url.pathname = redirect || '/post-login'
+    url.search = ''
     return NextResponse.redirect(url)
   }
 
