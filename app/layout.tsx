@@ -18,11 +18,11 @@ const siteUrl = "https://tweaklog.vercel.app";
 
 export const metadata: Metadata = {
   title: {
-    default: "Tweaklog — 広告運用の変更を、成果に変える",
+    default: "Tweaklog — Ad Change Logs × Impact Analysis × AI Insights",
     template: "%s | Tweaklog",
   },
   description:
-    "広告の変更ログと効果を自動で紐づけ、AIが分析。CPA改善の要因を即座に特定できる広告運用者向けSaaS。",
+    "Track every ad change, automatically measure its impact on KPIs, and get AI-powered insights. The all-in-one platform for Google Ads, Meta Ads, and more.",
   keywords: [
     "広告運用",
     "変更ログ",
@@ -44,9 +44,9 @@ export const metadata: Metadata = {
     alternateLocale: "en_US",
     url: siteUrl,
     siteName: "Tweaklog",
-    title: "Tweaklog — 広告運用の変更を、成果に変える",
+    title: "Tweaklog — Ad Change Logs × Impact Analysis × AI Insights",
     description:
-      "広告の変更ログと効果を自動で紐づけ、AIが分析。CPA改善の要因を即座に特定できる広告運用者向けSaaS。",
+      "Track every ad change, automatically measure its impact on KPIs, and get AI-powered insights. The all-in-one platform for Google Ads, Meta Ads, and more.",
     images: [
       {
         url: "/og-image.png",
@@ -58,9 +58,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Tweaklog — 広告運用の変更を、成果に変える",
+    title: "Tweaklog — Ad Change Logs × Impact Analysis × AI Insights",
     description:
-      "広告の変更ログと効果を自動で紐づけ、AIが分析。CPA改善の要因を即座に特定。",
+      "Track every ad change, automatically measure its impact on KPIs, and get AI-powered insights. The all-in-one platform for Google Ads, Meta Ads, and more.",
     images: ["/og-image.png"],
   },
   robots: {
