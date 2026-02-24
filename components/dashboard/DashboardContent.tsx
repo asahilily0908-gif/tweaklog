@@ -467,7 +467,7 @@ export default function DashboardContent({ project, outcomes, experiments, metri
       {/* KPI Cards */}
       {isAllMode ? (
         <>
-          <div className="mb-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div className="mb-4 grid grid-cols-1 gap-2 sm:gap-4 sm:grid-cols-2">
             <KpiCard
               label={northStar.label}
               value={formatValue(northStar.value, northStar.format)}
@@ -481,7 +481,7 @@ export default function DashboardContent({ project, outcomes, experiments, metri
             />
           </div>
           {customMetricValues.length > 0 && (
-            <div className="mb-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+            <div className="mb-6 grid grid-cols-2 gap-2 sm:gap-4 sm:grid-cols-3 lg:grid-cols-4">
               {customMetricValues.map((cm) => (
                 <KpiCard
                   key={cm.id}
@@ -501,7 +501,7 @@ export default function DashboardContent({ project, outcomes, experiments, metri
           )}
         </>
       ) : (
-        <div className="mb-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+        <div className="mb-6 grid grid-cols-2 gap-2 sm:gap-4 sm:grid-cols-3 lg:grid-cols-5">
           <KpiCard label="Impressions" value={formatValue(totals.impressions, 'number')} />
           <KpiCard label="Clicks" value={formatValue(totals.clicks, 'number')} />
           <KpiCard

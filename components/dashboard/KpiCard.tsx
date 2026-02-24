@@ -30,27 +30,27 @@ export default function KpiCard({ label, value, badge, accentColor, change, impr
 
   return (
     <div
-      className={`relative overflow-hidden rounded-xl border bg-white p-6 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md ${
+      className={`relative overflow-hidden rounded-xl border bg-white p-3 sm:p-6 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md ${
         hasBadge ? 'border-blue-200' : 'border-gray-200'
       }`}
     >
       {hasBadge && (
         <div className={`absolute inset-x-0 top-0 h-0.5 ${accentGradient}`} />
       )}
-      <div className="flex items-center gap-2">
-        <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">{label}</p>
+      <div className="flex items-center gap-1 sm:gap-2">
+        <p className="text-[10px] sm:text-xs font-medium text-gray-500 uppercase tracking-wider truncate">{label}</p>
         {badge && (
-          <span className={`inline-flex rounded-full px-2 py-0.5 text-[10px] font-semibold ${badgeBg}`}>
+          <span className={`hidden sm:inline-flex rounded-full px-2 py-0.5 text-[10px] font-semibold ${badgeBg}`}>
             {badge === 'メインKPI' ? t('dashboard.mainKpi') : badge === 'Custom' ? t('dashboard.custom') : badge}
           </span>
         )}
       </div>
-      <div className="mt-2 flex items-baseline gap-2">
-        <p className={`font-bold tabular-nums text-gray-900 ${hasBadge ? 'text-3xl' : 'text-2xl'}`}>
+      <div className="mt-1 sm:mt-2 flex items-baseline gap-1 sm:gap-2">
+        <p className={`font-bold tabular-nums text-gray-900 truncate ${hasBadge ? 'text-xl sm:text-3xl' : 'text-lg sm:text-2xl'}`}>
           {value}
         </p>
         {change !== undefined && change !== null && (
-          <span className={`inline-flex items-center gap-0.5 text-xs font-medium tabular-nums ${changeColor}`}>
+          <span className={`inline-flex items-center gap-0.5 text-[10px] sm:text-xs font-medium tabular-nums shrink-0 ${changeColor}`}>
             {change !== 0 && (
               <svg className="h-3 w-3" viewBox="0 0 12 12" fill="currentColor">
                 {change > 0 ? (

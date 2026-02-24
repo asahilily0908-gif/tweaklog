@@ -17,7 +17,7 @@ const PLATFORM_COLORS: Record<string, string> = {
 
 export default function PlatformFilter({ platforms, labels, selected, onChange }: PlatformFilterProps) {
   return (
-    <div className="flex gap-1 rounded-lg bg-gray-100 p-1">
+    <div className="flex gap-1 rounded-lg bg-gray-100 p-1 overflow-x-auto">
       {platforms.map((p) => {
         const isActive = selected === p
         const colorClass = PLATFORM_COLORS[p] ?? 'data-[active=true]:bg-gray-900'
@@ -28,7 +28,7 @@ export default function PlatformFilter({ platforms, labels, selected, onChange }
             type="button"
             data-active={isActive}
             onClick={() => onChange(p)}
-            className={`rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${colorClass} ${
+            className={`shrink-0 whitespace-nowrap rounded-md px-2 sm:px-3 py-1 sm:py-1.5 text-[11px] sm:text-xs font-medium transition-colors ${colorClass} ${
               isActive
                 ? 'text-white shadow-sm'
                 : 'text-gray-600 hover:text-gray-900'
