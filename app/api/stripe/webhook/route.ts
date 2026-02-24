@@ -43,6 +43,27 @@ export async function POST(request: NextRequest) {
 
   const admin = createAdminClient()
 
+  // Helper: sync organizations.plan for the user's owned org
+  async function syncOrgPlan(userId: string, plan: string) {
+    // Map subscription plan name to organizations.plan value
+    const orgPlan = plan === 'pro' ? 'personal' : plan // 'pro' → 'personal', 'team' → 'team', 'free' → 'free'
+
+    // Find org where user is owner
+    const { data: membership } = await admin
+      .from('org_members')
+      .select('org_id')
+      .eq('user_id', userId)
+      .eq('role', 'owner')
+      .single()
+
+    if (membership) {
+      await admin
+        .from('organizations')
+        .update({ plan: orgPlan })
+        .eq('id', membership.org_id)
+    }
+  }
+
   switch (event.type) {
     case 'checkout.session.completed': {
       const session = event.data.object as Stripe.Checkout.Session
@@ -65,6 +86,9 @@ export async function POST(request: NextRequest) {
           ...periods,
           cancel_at_period_end: subscription.cancel_at_period_end,
         }, { onConflict: 'user_id' })
+
+        // Sync org plan
+        await syncOrgPlan(userId, plan)
       }
       break
     }
@@ -98,6 +122,9 @@ export async function POST(request: NextRequest) {
           ...periods,
           cancel_at_period_end: subscription.cancel_at_period_end,
         }).eq('user_id', sub.user_id)
+
+        // Sync org plan
+        await syncOrgPlan(sub.user_id, plan)
       }
       break
     }
@@ -118,6 +145,9 @@ export async function POST(request: NextRequest) {
           status: 'canceled',
           cancel_at_period_end: false,
         }).eq('user_id', sub.user_id)
+
+        // Sync org plan to free
+        await syncOrgPlan(sub.user_id, 'free')
       }
       break
     }

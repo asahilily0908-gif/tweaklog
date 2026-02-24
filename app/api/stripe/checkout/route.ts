@@ -47,6 +47,14 @@ export async function POST(request: NextRequest) {
     }, { onConflict: 'user_id' })
   }
 
+  // Find user's org for metadata
+  const { data: orgMembership } = await admin
+    .from('org_members')
+    .select('org_id')
+    .eq('user_id', user.id)
+    .eq('role', 'owner')
+    .single()
+
   const origin = request.headers.get('origin') || 'https://tweaklog.vercel.app'
 
   const session = await stripe.checkout.sessions.create({
@@ -57,7 +65,11 @@ export async function POST(request: NextRequest) {
     cancel_url: `${origin}/post-login?upgrade=canceled`,
     subscription_data: plan === 'pro' ? { trial_period_days: 14 } : undefined,
     allow_promotion_codes: true,
-    metadata: { userId: user.id, plan: plan || 'pro' },
+    metadata: {
+      userId: user.id,
+      plan: plan || 'pro',
+      ...(orgMembership?.org_id ? { orgId: orgMembership.org_id } : {}),
+    },
   })
 
   return NextResponse.json({ url: session.url })
