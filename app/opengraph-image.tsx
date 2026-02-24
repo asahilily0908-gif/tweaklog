@@ -10,11 +10,6 @@ export const size = {
 export const contentType = "image/png";
 
 export default async function Image() {
-  // Google Fonts から Noto Sans JP を取得
-  const fontData = await fetch(
-    "https://fonts.gstatic.com/s/notosansjp/v53/Ia2dPDRBsgtCOluzwMKjYRGCxSM.ttf"
-  ).then((res) => res.arrayBuffer());
-
   return new ImageResponse(
     (
       <div
@@ -26,7 +21,6 @@ export default async function Image() {
           justifyContent: "center",
           alignItems: "center",
           background: "linear-gradient(135deg, #1e3a5f 0%, #0f172a 50%, #1e1b4b 100%)",
-          fontFamily: "Noto Sans JP",
           position: "relative",
           overflow: "hidden",
         }}
@@ -121,7 +115,7 @@ export default async function Image() {
               letterSpacing: "-0.02em",
             }}
           >
-            広告運用の変更を、成果に変える。
+            Log the tweak. See the lift.
           </div>
 
           {/* Subtitle */}
@@ -134,7 +128,7 @@ export default async function Image() {
               lineHeight: 1.5,
             }}
           >
-            Log the tweak. See the lift.
+            Ad change logs × Impact analysis × AI insights
           </div>
 
           {/* Feature pills */}
@@ -145,7 +139,7 @@ export default async function Image() {
               marginTop: 8,
             }}
           >
-            {["変更ログ", "効果比較", "AI分析"].map((label) => (
+            {["Change Log", "Impact Card", "AI Chat"].map((label) => (
               <div
                 key={label}
                 style={{
@@ -180,14 +174,6 @@ export default async function Image() {
     ),
     {
       ...size,
-      fonts: [
-        {
-          name: "Noto Sans JP",
-          data: fontData,
-          style: "normal",
-          weight: 700,
-        },
-      ],
     }
   );
 }
