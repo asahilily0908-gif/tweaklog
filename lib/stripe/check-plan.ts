@@ -1,7 +1,6 @@
 import { createAdminClient } from '@/lib/supabase/admin'
 import { PLAN_FEATURES, type PlanType } from './config'
 
-// Map organizations.plan values to PlanType
 function mapOrgPlan(orgPlan: string | null): PlanType {
   if (orgPlan === 'team') return 'team'
   if (orgPlan === 'personal') return 'pro'
@@ -11,6 +10,8 @@ function mapOrgPlan(orgPlan: string | null): PlanType {
 export async function getUserPlan(userId: string): Promise<PlanType> {
   const supabase = createAdminClient()
 
+  console.log('[getUserPlan] userId:', userId)
+
   // 1. Check personal subscription first
   const { data } = await supabase
     .from('subscriptions')
@@ -18,34 +19,52 @@ export async function getUserPlan(userId: string): Promise<PlanType> {
     .eq('user_id', userId)
     .single()
 
+  console.log('[getUserPlan] subscription data:', JSON.stringify(data))
+
   if (data && ['active', 'trialing'].includes(data.status) && data.plan !== 'free') {
+    console.log('[getUserPlan] returning subscription plan:', data.plan)
     return (data.plan as PlanType) ?? 'free'
   }
 
-  // 2. Fall back to org plan via org_members → organizations
-  const { data: orgMemberships } = await supabase
+  // 2. Fall back: get org_ids from org_members
+  const { data: memberships, error: memErr } = await supabase
     .from('org_members')
-    .select('org_id, organizations(plan)')
+    .select('org_id')
     .eq('user_id', userId)
 
-  if (orgMemberships && orgMemberships.length > 0) {
-    // Find the highest plan among all orgs the user belongs to
-    const planRank: Record<PlanType, number> = { free: 0, pro: 1, team: 2 }
-    let bestPlan: PlanType = 'free'
+  console.log('[getUserPlan] memberships:', JSON.stringify(memberships), 'error:', memErr)
 
-    for (const membership of orgMemberships) {
-      const org = membership.organizations as unknown as { plan: string } | null
-      if (org) {
+  if (memberships && memberships.length > 0) {
+    const orgIds = memberships.map(m => m.org_id)
+
+    // 3. Get org plans directly
+    const { data: orgs, error: orgErr } = await supabase
+      .from('organizations')
+      .select('id, plan')
+      .in('id', orgIds)
+
+    console.log('[getUserPlan] orgs:', JSON.stringify(orgs), 'error:', orgErr)
+
+    if (orgs && orgs.length > 0) {
+      const planRank: Record<PlanType, number> = { free: 0, pro: 1, team: 2 }
+      let bestPlan: PlanType = 'free'
+
+      for (const org of orgs) {
         const mapped = mapOrgPlan(org.plan)
+        console.log('[getUserPlan] org:', org.id, 'plan:', org.plan, 'mapped:', mapped)
         if (planRank[mapped] > planRank[bestPlan]) {
           bestPlan = mapped
         }
       }
-    }
 
-    if (bestPlan !== 'free') return bestPlan
+      if (bestPlan !== 'free') {
+        console.log('[getUserPlan] returning org plan:', bestPlan)
+        return bestPlan
+      }
+    }
   }
 
+  console.log('[getUserPlan] returning free')
   return 'free'
 }
 
