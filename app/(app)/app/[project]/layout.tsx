@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import { createClient } from '@/lib/supabase/server'
 import { notFound } from 'next/navigation'
 import Sidebar from '@/components/layout/Sidebar'
@@ -30,7 +32,7 @@ export default async function ProjectLayout({
   return (
     <PlanProvider plan={plan}>
       <div className="flex h-screen overflow-hidden bg-gray-50">
-        <Sidebar projectId={project.id} projectName={project.name} userEmail={user?.email ?? null} userId={user?.id} />
+        <Sidebar projectId={project.id} projectName={project.name} userEmail={user?.email ?? null} />
         <main className="flex-1 overflow-y-auto pt-14 md:pt-0">
           {children}
         </main>
