@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation'
 import Sidebar from '@/components/layout/Sidebar'
 import { getUserPlan } from '@/lib/stripe/check-plan'
 import { PlanProvider } from '@/lib/plan-context'
+import CommandPaletteProvider from '@/components/command-palette/CommandPaletteProvider'
 
 export default async function ProjectLayout({
   children,
@@ -36,6 +37,7 @@ export default async function ProjectLayout({
         <main className="flex-1 overflow-y-auto pt-14 md:pt-0">
           {children}
         </main>
+        <CommandPaletteProvider projectId={project.id} />
       </div>
     </PlanProvider>
   )

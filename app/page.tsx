@@ -21,6 +21,8 @@ import {
   Check,
   Menu,
   X,
+  Pencil,
+  Cpu,
 } from 'lucide-react'
 
 function useScrollAnimation() {
@@ -463,6 +465,63 @@ export default function LandingPage() {
                 </p>
               </div>
             ))}
+          </div>
+        </div>
+      </Section>
+
+      {/* MCP / Agent AI */}
+      <Section className="py-16 sm:py-20 md:py-28 bg-gradient-to-b from-white to-slate-50">
+        <div className="mx-auto max-w-6xl px-4 md:px-6">
+          <div className="text-center mb-10 sm:mb-14">
+            <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 mb-3">
+              エージェントAIが、直接つながる。
+            </h2>
+            <p className="text-sm sm:text-base md:text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed">
+              MCP (Model Context Protocol) 対応。Claude Desktop や OpenClaw などのAIエージェントが、Tweaklog に直接アクセスして変更ログの記録・分析ができます。
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 mb-10 sm:mb-14">
+            {[
+              {
+                icon: Pencil,
+                title: '自動で記録',
+                desc: 'AIエージェントが広告を変更したら、Tweaklogに自動で変更ログを書き込み。手動入力ゼロ。',
+              },
+              {
+                icon: BarChart3,
+                title: '即座に分析',
+                desc: 'エージェントがKPIデータを取得して、変更のインパクトをリアルタイムで判断。',
+              },
+              {
+                icon: Cpu,
+                title: 'どのAIでも',
+                desc: 'MCP標準プロトコル対応。Claude Desktop, OpenClaw, その他MCP対応エージェントですぐ使える。',
+              },
+            ].map(({ icon: Icon, title, desc }) => (
+              <div key={title} className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+                <div className="mb-4 inline-flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600">
+                  <Icon className="h-5 w-5 text-white" />
+                </div>
+                <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-1.5">{title}</h3>
+                <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">{desc}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="flex flex-col md:flex-row items-center gap-6 md:gap-10 max-w-3xl mx-auto">
+            <div className="w-full md:flex-1 rounded-xl bg-slate-900 p-6 font-mono text-sm text-green-400 overflow-x-auto">
+              <pre className="whitespace-pre">{`{
+  "mcpServers": {
+    "tweaklog": {
+      "url": "https://tweaklog.vercel.app/api/mcp/mcp"
+    }
+  }
+}`}</pre>
+            </div>
+            <p className="text-sm sm:text-base text-slate-600 md:max-w-[200px] text-center md:text-left leading-relaxed">
+              この設定をClaude Desktopに追加するだけ。
+            </p>
           </div>
         </div>
       </Section>

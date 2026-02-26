@@ -1,237 +1,186 @@
 'use client'
 
 import { useState } from 'react'
+import { useParams, useRouter } from 'next/navigation'
 import NorthStarKpiStep from './NorthStarKpiStep'
 import ColumnMappingStep from './ColumnMappingStep'
-import MetricConfigStep, { type MetricConfig } from './MetricConfigStep'
+import MetricConfigStep from './MetricConfigStep'
 import SetupCompleteStep from './SetupCompleteStep'
-import { completeSetup } from '@/app/(app)/setup/actions'
-import { useTranslation } from '@/lib/i18n/config'
 
 export interface WizardData {
-  // Step 1
-  orgName: string
-  projectName: string
-  platform: string[]
   northStarKpi: string
-  customNorthStarKpi: string
+  northStarKpiCustomName: string
   subKpis: string[]
-  // Step 2
-  csvHeaders: string[]
-  csvPreview: string[][]
   columnMappings: Record<string, string>
-  // Step 3
-  metricConfigs: MetricConfig[]
+  csvHeaders: string[]
+  metricConfigs: Array<{
+    name: string
+    displayName: string
+    formula: string
+    improvementDirection: 'up' | 'down'
+  }>
 }
 
-// STEPS is defined inside the component to access t()
+const STEPS = [
+  { num: 1, label: 'KPI設定' },
+  { num: 2, label: 'データ連携' },
+  { num: 3, label: '指標設定' },
+  { num: 4, label: '完了' },
+]
 
 export default function SetupWizard() {
-  const [step, setStep] = useState(0)
-  const [saving, setSaving] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const { t } = useTranslation()
+  const params = useParams()
+  const router = useRouter()
+  const projectId = params.project as string
 
-  const STEPS = [
-    { title: t('setup.mainKpiStep'), description: t('setup.mainKpiStepDesc') },
-    { title: t('setup.dataMappingStep'), description: t('setup.dataMappingStepDesc') },
-    { title: t('setup.derivedMetricsStep'), description: t('setup.derivedMetricsStepDesc') },
-    { title: t('setup.completeStep'), description: t('setup.completeStepDesc') },
-  ]
-
-  const [data, setData] = useState<WizardData>({
-    orgName: '',
-    projectName: '',
-    platform: [],
+  const [currentStep, setCurrentStep] = useState(1)
+  const [wizardData, setWizardData] = useState<WizardData>({
     northStarKpi: '',
-    customNorthStarKpi: '',
+    northStarKpiCustomName: '',
     subKpis: [],
-    csvHeaders: [],
-    csvPreview: [],
     columnMappings: {},
+    csvHeaders: [],
     metricConfigs: [],
   })
 
   function updateData(partial: Partial<WizardData>) {
-    setData((prev) => ({ ...prev, ...partial }))
+    setWizardData((prev) => ({ ...prev, ...partial }))
   }
 
   function canProceed(): boolean {
-    switch (step) {
-      case 0:
-        return (
-          data.orgName.trim() !== '' &&
-          data.projectName.trim() !== '' &&
-          data.northStarKpi !== '' &&
-          (data.northStarKpi !== 'custom' || data.customNorthStarKpi.trim() !== '')
-        )
-      case 1:
-        return true // CSV mapping is optional
-      case 2:
-        return true // Metrics are optional
-      case 3:
-        return true
-      default:
+    if (currentStep === 1) {
+      if (!wizardData.northStarKpi) return false
+      if (wizardData.northStarKpi === 'custom' && !wizardData.northStarKpiCustomName.trim())
         return false
+      return true
     }
+    return true
   }
 
-  async function handleComplete() {
-    setSaving(true)
-    setError(null)
-
-    const result = await completeSetup({
-      orgName: data.orgName,
-      projectName: data.projectName,
-      platform: data.platform,
-      northStarKpi:
-        data.northStarKpi === 'custom'
-          ? data.customNorthStarKpi
-          : data.northStarKpi,
-      subKpis: data.subKpis,
-      columnMappings: data.columnMappings,
-      metricConfigs: data.metricConfigs,
-    })
-
-    if (result?.error) {
-      setError(result.error)
-      setSaving(false)
-    }
-    // On success, the server action redirects to /app/[project]/dashboard
+  function handleNext() {
+    if (currentStep < 4) setCurrentStep((s) => s + 1)
   }
 
-  // Derive available variables from mapped CSV columns
-  const availableVariables = data.csvHeaders.filter(
-    (h) => data.columnMappings[h] !== ''
-  )
+  function handleBack() {
+    if (currentStep > 1) setCurrentStep((s) => s - 1)
+  }
+
+  function handleComplete() {
+    // TODO: Save to Supabase via API
+    console.log('Setup wizard data:', wizardData)
+    router.push(`/app/${projectId}/dashboard`)
+  }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50/30">
-      <div className="mx-auto max-w-2xl px-4 py-12">
-        {/* Header */}
-        <div className="mb-8 text-center">
-          <h1 className="text-2xl font-bold text-gray-900">{t('setup.setupProject')}</h1>
-          <p className="mt-1 text-sm text-gray-500">
-            {STEPS[step].description}
-          </p>
-        </div>
-
-        {/* Progress bar */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between mb-2">
-            {STEPS.map((s, i) => (
-              <div key={s.title} className="flex items-center">
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-gradient-to-b from-slate-50 to-white">
+      {/* Progress bar */}
+      <div className="mx-auto max-w-3xl px-6 pt-8 pb-4">
+        <div className="flex items-center justify-between">
+          {STEPS.map((step, i) => (
+            <div key={step.label} className="flex items-center">
+              <div className="flex flex-col items-center">
                 <div
-                  className={`flex h-8 w-8 items-center justify-center rounded-full text-xs font-semibold transition-colors ${
-                    i < step
-                      ? 'bg-gradient-to-br from-[#2563EB] to-[#9333EA] text-white'
-                      : i === step
-                      ? 'bg-gradient-to-br from-[#2563EB] to-[#9333EA] text-white ring-4 ring-indigo-100'
-                      : 'bg-gray-200 text-gray-500'
+                  className={`flex h-10 w-10 items-center justify-center rounded-full text-sm font-semibold transition-all duration-200 ${
+                    step.num < currentStep
+                      ? 'bg-green-500 text-white'
+                      : step.num === currentStep
+                        ? 'bg-indigo-600 text-white ring-4 ring-indigo-100'
+                        : 'bg-gray-300 text-white'
                   }`}
                 >
-                  {i < step ? (
-                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                  {step.num < currentStep ? (
+                    <svg
+                      className="h-5 w-5"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={2.5}
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M4.5 12.75l6 6 9-13.5"
+                      />
                     </svg>
                   ) : (
-                    i + 1
+                    step.num
                   )}
                 </div>
-                {i < STEPS.length - 1 && (
-                  <div
-                    className={`mx-2 h-0.5 w-12 sm:w-24 md:w-32 ${
-                      i < step ? 'bg-gradient-to-r from-[#2563EB] to-[#9333EA]' : 'bg-gray-200'
-                    }`}
-                  />
-                )}
+                <span
+                  className={`mt-2 text-xs font-medium ${
+                    step.num < currentStep
+                      ? 'text-green-600'
+                      : step.num === currentStep
+                        ? 'text-indigo-600'
+                        : 'text-gray-400'
+                  }`}
+                >
+                  {step.label}
+                </span>
               </div>
-            ))}
-          </div>
-          <div className="flex justify-between">
-            {STEPS.map((s, i) => (
-              <span
-                key={s.title}
-                className={`text-xs ${
-                  i <= step ? 'text-indigo-600 font-medium' : 'text-gray-400'
-                }`}
-              >
-                {s.title}
-              </span>
-            ))}
-          </div>
+              {i < STEPS.length - 1 && (
+                <div
+                  className={`mx-3 h-0.5 w-12 sm:w-20 md:w-28 transition-colors ${
+                    step.num < currentStep ? 'bg-green-500' : 'bg-gray-200'
+                  }`}
+                />
+              )}
+            </div>
+          ))}
         </div>
+      </div>
 
-        {/* Step content */}
-        <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-          {step === 0 && (
-            <NorthStarKpiStep
-              data={{
-                orgName: data.orgName,
-                projectName: data.projectName,
-                platform: data.platform,
-                northStarKpi: data.northStarKpi,
-                customNorthStarKpi: data.customNorthStarKpi,
-                subKpis: data.subKpis,
-              }}
-              onChange={updateData}
-            />
-          )}
-          {step === 1 && (
-            <ColumnMappingStep
-              data={{
-                csvHeaders: data.csvHeaders,
-                csvPreview: data.csvPreview,
-                columnMappings: data.columnMappings,
-              }}
-              onChange={updateData}
-            />
-          )}
-          {step === 2 && (
-            <MetricConfigStep
-              data={{ metricConfigs: data.metricConfigs }}
-              availableVariables={availableVariables}
-              onChange={updateData}
-            />
-          )}
-          {step === 3 && <SetupCompleteStep data={data} />}
-        </div>
-
-        {/* Error message */}
-        {error && (
-          <div className="mt-4 rounded-lg bg-red-50 p-3 text-sm text-red-700">
-            {error}
-          </div>
+      {/* Content area */}
+      <div className="mx-auto max-w-3xl px-6 py-8 pb-28">
+        {currentStep === 1 && (
+          <NorthStarKpiStep data={wizardData} onChange={updateData} />
         )}
+        {currentStep === 2 && (
+          <ColumnMappingStep
+            data={wizardData}
+            onChange={updateData}
+            onSkip={handleNext}
+          />
+        )}
+        {currentStep === 3 && (
+          <MetricConfigStep data={wizardData} onChange={updateData} />
+        )}
+        {currentStep === 4 && (
+          <SetupCompleteStep data={wizardData} />
+        )}
+      </div>
 
-        {/* Navigation buttons */}
-        <div className="mt-6 flex justify-between">
-          <button
-            type="button"
-            onClick={() => setStep((s) => s - 1)}
-            disabled={step === 0}
-            className="rounded-lg border border-gray-300 bg-white px-5 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-          >
-            {t('common.back')}
-          </button>
-
-          {step < STEPS.length - 1 ? (
+      {/* Bottom navigation */}
+      <div className="fixed bottom-0 left-0 right-0 border-t border-gray-200 bg-white/80 backdrop-blur-sm">
+        <div className="mx-auto max-w-3xl flex justify-between px-6 py-4">
+          {currentStep > 1 ? (
             <button
               type="button"
-              onClick={() => setStep((s) => s + 1)}
-              disabled={!canProceed()}
-              className="rounded-lg bg-gradient-to-r from-[#2563EB] to-[#9333EA] px-5 py-2.5 text-sm font-medium text-white hover:shadow-sm hover:shadow-indigo-500/15 disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-200"
+              onClick={handleBack}
+              className="rounded-xl border border-gray-300 bg-white px-6 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-all duration-200"
             >
-              {t('common.next')}
+              戻る
+            </button>
+          ) : (
+            <div />
+          )}
+
+          {currentStep < 4 ? (
+            <button
+              type="button"
+              onClick={handleNext}
+              disabled={!canProceed()}
+              className="rounded-xl bg-indigo-600 px-6 py-2.5 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-200"
+            >
+              次へ
             </button>
           ) : (
             <button
               type="button"
               onClick={handleComplete}
-              disabled={saving}
-              className="rounded-lg bg-gradient-to-r from-[#2563EB] to-[#9333EA] px-6 py-2.5 text-sm font-medium text-white hover:shadow-sm hover:shadow-indigo-500/15 disabled:opacity-50 transition-all duration-200"
+              className="rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 px-8 py-3 text-lg font-semibold text-white hover:shadow-lg transition-all duration-200"
             >
-              {saving ? t('setup.settingUp') : t('setup.completeSetup')}
+              ダッシュボードへ
             </button>
           )}
         </div>

@@ -1,55 +1,59 @@
 'use client'
 
 import { useRef, useState } from 'react'
-import { useTranslation } from '@/lib/i18n/config'
-import { STANDARD_FIELDS, guessField } from '@/lib/import/column-mappings'
+import { Upload } from 'lucide-react'
+import { guessField } from '@/lib/import/column-mappings'
+import type { WizardData } from './SetupWizard'
 
 interface ColumnMappingStepProps {
-  data: {
-    csvHeaders: string[]
-    csvPreview: string[][]
-    columnMappings: Record<string, string>
-  }
-  onChange: (data: Partial<ColumnMappingStepProps['data']>) => void
+  data: WizardData
+  onChange: (data: Partial<WizardData>) => void
+  onSkip: () => void
 }
 
-const DROPDOWN_FIELDS = [
-  { value: '', label: '-- Skip --' },
-  ...STANDARD_FIELDS.map(f => ({ value: f.key, label: f.label })),
+const MAPPING_OPTIONS = [
+  { value: '', label: '(マッピングしない)' },
+  { value: 'date', label: 'Date（日付）' },
+  { value: 'campaign', label: 'Campaign（キャンペーン）' },
+  { value: 'impressions', label: 'Impressions（表示回数）' },
+  { value: 'clicks', label: 'Clicks（クリック数）' },
+  { value: 'cost', label: 'Cost（費用）' },
+  { value: 'conversions', label: 'Conversions（コンバージョン）' },
+  { value: 'revenue', label: 'Revenue（売上）' },
+  { value: 'platform', label: 'Platform（プラットフォーム）' },
 ]
+
+const VALID_MAPPING_VALUES = new Set(
+  MAPPING_OPTIONS.filter((o) => o.value).map((o) => o.value)
+)
 
 export default function ColumnMappingStep({
   data,
   onChange,
+  onSkip,
 }: ColumnMappingStepProps) {
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [dragOver, setDragOver] = useState(false)
-  const { t } = useTranslation()
 
   function parseCSV(text: string) {
     const lines = text.trim().split('\n')
     if (lines.length === 0) return
 
-    const headers = lines[0].split(',').map((h) => h.trim().replace(/^"|"$/g, ''))
-    const preview = lines.slice(1, 4).map((line) =>
-      line.split(',').map((v) => v.trim().replace(/^"|"$/g, ''))
-    )
+    const headers = lines[0]
+      .split(',')
+      .map((h) => h.trim().replace(/^"|"$/g, ''))
 
     const mappings: Record<string, string> = {}
     const usedFields = new Set<string>()
     headers.forEach((header) => {
       const guessed = guessField(header)
-      if (guessed && !usedFields.has(guessed)) {
+      if (guessed && VALID_MAPPING_VALUES.has(guessed) && !usedFields.has(guessed)) {
         mappings[header] = guessed
         usedFields.add(guessed)
       }
     })
 
-    onChange({
-      csvHeaders: headers,
-      csvPreview: preview,
-      columnMappings: mappings,
-    })
+    onChange({ csvHeaders: headers, columnMappings: mappings })
   }
 
   function handleFile(file: File) {
@@ -74,18 +78,17 @@ export default function ColumnMappingStep({
     if (file) handleFile(file)
   }
 
-  function updateMapping(csvHeader: string, standardField: string) {
+  function updateMapping(csvHeader: string, field: string) {
     const next = { ...data.columnMappings }
-    if (standardField === '') {
+    if (field === '') {
       delete next[csvHeader]
     } else {
-      // Remove any existing mapping to this field from other columns
       for (const key of Object.keys(next)) {
-        if (next[key] === standardField && key !== csvHeader) {
+        if (next[key] === field && key !== csvHeader) {
           delete next[key]
         }
       }
-      next[csvHeader] = standardField
+      next[csvHeader] = field
     }
     onChange({ columnMappings: next })
   }
@@ -93,24 +96,24 @@ export default function ColumnMappingStep({
   const hasHeaders = data.csvHeaders.length > 0
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <div>
-        <p className="text-sm text-gray-600">
-          {t('setup.uploadCsvDescription')}
-        </p>
-        <p className="mt-1 text-xs text-gray-500">
-          {t('setup.optionalStep')}
+        <h2 className="text-2xl font-bold text-gray-900">
+          データを接続しましょう
+        </h2>
+        <p className="mt-2 text-sm text-gray-500">
+          CSVファイルをアップロードして、Tweaklogの標準スキーマにマッピングします。後からでも設定できます。
         </p>
       </div>
 
       {/* Upload area */}
       <div
-        className={`flex flex-col items-center justify-center rounded-lg border-2 border-dashed p-8 transition-colors ${
+        className={`flex flex-col items-center justify-center rounded-xl border-2 border-dashed p-12 text-center transition-colors cursor-pointer ${
           dragOver
-            ? 'border-blue-400 bg-blue-50'
+            ? 'border-indigo-400 bg-indigo-50'
             : hasHeaders
-            ? 'border-green-300 bg-green-50'
-            : 'border-gray-300 bg-gray-50'
+              ? 'border-green-300 bg-green-50'
+              : 'border-slate-300 bg-white hover:border-slate-400'
         }`}
         onDragOver={(e) => {
           e.preventDefault()
@@ -118,40 +121,38 @@ export default function ColumnMappingStep({
         }}
         onDragLeave={() => setDragOver(false)}
         onDrop={handleDrop}
+        onClick={() => fileInputRef.current?.click()}
       >
         {hasHeaders ? (
           <>
-            <div className="text-green-600 mb-2">
-              <svg className="h-8 w-8 mx-auto" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            <div className="mb-2 text-green-600">
+              <svg
+                className="mx-auto h-10 w-10"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={2}
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
               </svg>
             </div>
             <p className="text-sm font-medium text-green-700">
-              {t('setup.csvLoaded').replace('{count}', String(data.csvHeaders.length))}
+              CSVファイルを読み込みました（{data.csvHeaders.length}列）
             </p>
-            <button
-              type="button"
-              onClick={() => fileInputRef.current?.click()}
-              className="mt-2 text-xs text-green-600 underline"
-            >
-              {t('setup.uploadDifferent')}
-            </button>
+            <p className="mt-1 text-xs text-green-600">
+              クリックして別のファイルを選択
+            </p>
           </>
         ) : (
           <>
-            <svg className="h-10 w-10 text-gray-400 mb-3" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
-            </svg>
+            <Upload className="mx-auto mb-3 h-10 w-10 text-gray-400" />
             <p className="text-sm font-medium text-gray-700">
-              {t('setup.dragDropCsv')}
+              CSVファイルをドラッグ&ドロップ、またはクリックして選択
             </p>
-            <button
-              type="button"
-              onClick={() => fileInputRef.current?.click()}
-              className="mt-2 text-sm text-blue-600 underline"
-            >
-              {t('setup.orClickBrowse')}
-            </button>
           </>
         )}
         <input
@@ -165,54 +166,49 @@ export default function ColumnMappingStep({
 
       {/* Mapping table */}
       {hasHeaders && (
-        <div className="overflow-hidden rounded-lg border border-gray-200">
+        <div className="overflow-hidden rounded-xl border border-gray-200">
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
-                <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500">
-                  {t('setup.csvColumn')}
+                <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                  CSVの列名
                 </th>
-                <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500">
-                  {t('setup.mapsTo')}
-                </th>
-                <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500">
-                  {t('import.preview')}
+                <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                  マッピング先
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-200 bg-white">
-              {data.csvHeaders.map((header, idx) => (
+            <tbody className="divide-y divide-gray-100 bg-white">
+              {data.csvHeaders.map((header) => (
                 <tr key={header}>
-                  <td className="whitespace-nowrap px-4 py-3 text-sm font-medium text-gray-900">
-                    {header}
+                  <td className="whitespace-nowrap px-4 py-3 text-sm text-gray-900">
+                    <span className="font-medium">{header}</span>
                     {data.columnMappings[header] && (
-                      <span className="ml-2 text-green-500" title="Auto-detected">
-                        &#10003;
-                      </span>
+                      <span className="ml-2 text-green-500">&#10003;</span>
                     )}
                   </td>
                   <td className="px-4 py-3">
                     <select
                       value={data.columnMappings[header] ?? ''}
                       onChange={(e) => updateMapping(header, e.target.value)}
-                      className="rounded-md border border-gray-300 px-2 py-1 text-sm text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                      className="rounded-lg border border-gray-300 px-3 py-1.5 text-sm text-gray-900 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
                     >
-                      {DROPDOWN_FIELDS.map((f) => (
+                      {MAPPING_OPTIONS.map((opt) => (
                         <option
-                          key={f.value}
-                          value={f.value}
-                          disabled={f.value !== '' && Object.values(data.columnMappings).includes(f.value) && data.columnMappings[header] !== f.value}
+                          key={opt.value}
+                          value={opt.value}
+                          disabled={
+                            opt.value !== '' &&
+                            Object.values(data.columnMappings).includes(
+                              opt.value
+                            ) &&
+                            data.columnMappings[header] !== opt.value
+                          }
                         >
-                          {f.label}
+                          {opt.label}
                         </option>
                       ))}
                     </select>
-                  </td>
-                  <td className="px-4 py-3 text-xs text-gray-500 font-mono">
-                    {data.csvPreview
-                      .slice(0, 2)
-                      .map((row) => row[idx] ?? '')
-                      .join(', ')}
                   </td>
                 </tr>
               ))}
@@ -220,6 +216,17 @@ export default function ColumnMappingStep({
           </table>
         </div>
       )}
+
+      {/* Skip link */}
+      <div className="text-center">
+        <button
+          type="button"
+          onClick={onSkip}
+          className="text-sm text-gray-500 hover:text-gray-700 underline transition-colors"
+        >
+          後で設定する
+        </button>
+      </div>
     </div>
   )
 }

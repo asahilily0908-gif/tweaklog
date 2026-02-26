@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import BillingSection from '@/components/settings/BillingSection'
 import TeamSection from '@/components/settings/TeamSection'
+import ApiSection from '@/components/settings/ApiSection'
 import {
   updateProject,
   updateKpiSettings,
@@ -487,6 +488,9 @@ export default function SettingsContent({
 
       {/* ── Team Section ────────────────────────────── */}
       {userId && <TeamSection orgId={project.org_id} currentUserId={userId} />}
+
+      {/* ── API Integration Section ──────────────────── */}
+      <ApiSection />
 
       {/* ── Section 1: Project Settings ──────────────── */}
       <section className="rounded-xl border border-gray-200 bg-white shadow-sm">

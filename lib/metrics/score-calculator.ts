@@ -1,5 +1,7 @@
 // Pure score calculation functions — no external imports
 
+// ─── Types ──────────────────────────────────────────────
+
 export interface OutcomeRow {
   date: string
   impressions: number
@@ -27,7 +29,108 @@ export interface ImpactResult {
   metrics: MetricResult[]
 }
 
-// Improvement direction for known KPIs
+// ─── New public API ─────────────────────────────────────
+
+/**
+ * 北極星KPIの変化率から9段階スコア(-4〜+4)を算出する
+ *
+ * Thresholds (after direction normalization):
+ *  +30% 以上 → +4,  +20%〜+30% → +3,  +10%〜+20% → +2,
+ *  +5%〜+10% → +1,  -5%〜+5% → 0,     -10%〜-5% → -1,
+ *  -20%〜-10% → -2,  -30%〜-20% → -3,  -30% 以下 → -4
+ */
+export function calculateScore(
+  changePercent: number,
+  improvementDirection: ImprovementDirection
+): number {
+  // For 'down' direction (e.g. CPA), a decrease is good → invert
+  const effective =
+    improvementDirection === 'down' ? -changePercent : changePercent
+
+  if (effective >= 30) return 4
+  if (effective >= 20) return 3
+  if (effective >= 10) return 2
+  if (effective >= 5) return 1
+  if (effective > -5) return 0
+  if (effective > -10) return -1
+  if (effective > -20) return -2
+  if (effective > -30) return -3
+  return -4
+}
+
+/**
+ * 変化率を算出する。beforeValue が 0 の場合は null を返す。
+ */
+export function calculateChangePercent(
+  beforeValue: number,
+  afterValue: number
+): number | null {
+  if (beforeValue === 0) return null
+  return ((afterValue - beforeValue) / beforeValue) * 100
+}
+
+/**
+ * スコアに対応する色情報を返す
+ */
+export function getScoreColor(score: number): {
+  bg: string
+  text: string
+  border: string
+  label: string
+} {
+  if (score >= 3)
+    return {
+      bg: 'bg-green-100',
+      text: 'text-green-700',
+      border: 'border-green-300',
+      label: '大幅改善',
+    }
+  if (score === 2)
+    return {
+      bg: 'bg-green-50',
+      text: 'text-green-600',
+      border: 'border-green-200',
+      label: '改善',
+    }
+  if (score === 1)
+    return {
+      bg: 'bg-emerald-50',
+      text: 'text-emerald-600',
+      border: 'border-emerald-200',
+      label: 'やや改善',
+    }
+  if (score === 0)
+    return {
+      bg: 'bg-slate-50',
+      text: 'text-slate-500',
+      border: 'border-slate-200',
+      label: '変化なし',
+    }
+  if (score === -1)
+    return {
+      bg: 'bg-orange-50',
+      text: 'text-orange-600',
+      border: 'border-orange-200',
+      label: 'やや悪化',
+    }
+  if (score === -2)
+    return {
+      bg: 'bg-red-50',
+      text: 'text-red-600',
+      border: 'border-red-200',
+      label: '悪化',
+    }
+  // -3 or -4
+  return {
+    bg: 'bg-red-100',
+    text: 'text-red-700',
+    border: 'border-red-300',
+    label: '大幅悪化',
+  }
+}
+
+// ─── Direction & display name lookups ───────────────────
+
 const KPI_DIRECTION: Record<string, ImprovementDirection> = {
   revenue: 'up',
   conversions: 'up',
@@ -54,7 +157,7 @@ const KPI_DISPLAY_NAMES: Record<string, string> = {
   ctr: 'CTR',
 }
 
-// --- Date helpers ---
+// ─── Date helpers ───────────────────────────────────────
 
 function toDateStr(d: Date): string {
   return d.toISOString().split('T')[0]
@@ -69,7 +172,12 @@ function addDays(dateStr: string, days: number): string {
 export function getDateRange(
   createdAt: string,
   days = 7
-): { beforeStart: string; beforeEnd: string; afterStart: string; afterEnd: string } {
+): {
+  beforeStart: string
+  beforeEnd: string
+  afterStart: string
+  afterEnd: string
+} {
   const changeDate = createdAt.split('T')[0]
   return {
     beforeStart: addDays(changeDate, -days),
@@ -79,9 +187,13 @@ export function getDateRange(
   }
 }
 
-// --- Aggregation helpers ---
+// ─── Aggregation helpers ────────────────────────────────
 
-function filterByPeriod(outcomes: OutcomeRow[], start: string, end: string): OutcomeRow[] {
+function filterByPeriod(
+  outcomes: OutcomeRow[],
+  start: string,
+  end: string
+): OutcomeRow[] {
   return outcomes.filter((o) => o.date >= start && o.date <= end)
 }
 
@@ -96,7 +208,13 @@ interface DailyTotals {
 function aggregateByDate(outcomes: OutcomeRow[]): DailyTotals[] {
   const map = new Map<string, DailyTotals>()
   for (const o of outcomes) {
-    const existing = map.get(o.date) ?? { impressions: 0, clicks: 0, cost: 0, conversions: 0, revenue: 0 }
+    const existing = map.get(o.date) ?? {
+      impressions: 0,
+      clicks: 0,
+      cost: 0,
+      conversions: 0,
+      revenue: 0,
+    }
     existing.impressions += Number(o.impressions)
     existing.clicks += Number(o.clicks)
     existing.cost += Number(o.cost)
@@ -107,56 +225,59 @@ function aggregateByDate(outcomes: OutcomeRow[]): DailyTotals[] {
   return Array.from(map.values())
 }
 
-function avgOfDays(days: DailyTotals[], extractor: (d: DailyTotals) => number): number | null {
+function avgOfDays(
+  days: DailyTotals[],
+  extractor: (d: DailyTotals) => number
+): number | null {
   if (days.length === 0) return null
   const sum = days.reduce((acc, d) => acc + extractor(d), 0)
   return sum / days.length
 }
 
-// --- KPI value extraction ---
+// ─── KPI value extraction ───────────────────────────────
 
 function extractKpiValue(kpi: string, totals: DailyTotals): number {
   switch (kpi) {
-    case 'revenue': return totals.revenue
-    case 'conversions': return totals.conversions
-    case 'impressions': return totals.impressions
-    case 'clicks': return totals.clicks
-    case 'cost': return totals.cost
-    case 'cpa': return totals.conversions > 0 ? totals.cost / totals.conversions : 0
-    case 'cpc': return totals.clicks > 0 ? totals.cost / totals.clicks : 0
-    case 'roas': return totals.cost > 0 ? totals.revenue / totals.cost : 0
-    case 'cvr': return totals.clicks > 0 ? (totals.conversions / totals.clicks) * 100 : 0
-    case 'ctr': return totals.impressions > 0 ? (totals.clicks / totals.impressions) * 100 : 0
-    default: return totals.conversions
+    case 'revenue':
+      return totals.revenue
+    case 'conversions':
+      return totals.conversions
+    case 'impressions':
+      return totals.impressions
+    case 'clicks':
+      return totals.clicks
+    case 'cost':
+      return totals.cost
+    case 'cpa':
+      return totals.conversions > 0 ? totals.cost / totals.conversions : 0
+    case 'cpc':
+      return totals.clicks > 0 ? totals.cost / totals.clicks : 0
+    case 'roas':
+      return totals.cost > 0 ? totals.revenue / totals.cost : 0
+    case 'cvr':
+      return totals.clicks > 0
+        ? (totals.conversions / totals.clicks) * 100
+        : 0
+    case 'ctr':
+      return totals.impressions > 0
+        ? (totals.clicks / totals.impressions) * 100
+        : 0
+    default:
+      return totals.conversions
   }
 }
 
-// --- Score mapping ---
+// ─── Internal score mapping (used by computeImpactForExperiment) ──
 
-function changePctToScore(changePct: number | null, direction: ImprovementDirection): number {
-  if (changePct === null) return 0
-
-  // For 'down' direction, a decrease is good → invert sign
-  const effective = direction === 'down' ? -changePct : changePct
-
-  const abs = Math.abs(effective)
-  let magnitude: number
-  if (abs < 2) magnitude = 0
-  else if (abs < 5) magnitude = 1
-  else if (abs < 10) magnitude = 2
-  else if (abs < 20) magnitude = 3
-  else magnitude = 4
-
-  const score = effective >= 0 ? magnitude : -magnitude
-  return Math.max(-4, Math.min(4, score))
-}
-
-function computeChangePct(before: number | null, after: number | null): number | null {
+function computeChangePct(
+  before: number | null,
+  after: number | null
+): number | null {
   if (before === null || after === null || before === 0) return null
   return ((after - before) / Math.abs(before)) * 100
 }
 
-// --- Main orchestrator ---
+// ─── Metric computation ─────────────────────────────────
 
 function computeMetric(
   kpi: string,
@@ -184,6 +305,8 @@ function computeMetric(
   }
 }
 
+// ─── Main orchestrator (backward compatible) ────────────
+
 export function computeImpactForExperiment(
   experiment: { created_at: string },
   outcomes: OutcomeRow[],
@@ -192,24 +315,29 @@ export function computeImpactForExperiment(
 ): ImpactResult {
   const range = getDateRange(experiment.created_at)
 
-  const beforeOutcomes = filterByPeriod(outcomes, range.beforeStart, range.beforeEnd)
-  const afterOutcomes = filterByPeriod(outcomes, range.afterStart, range.afterEnd)
+  const beforeOutcomes = filterByPeriod(
+    outcomes,
+    range.beforeStart,
+    range.beforeEnd
+  )
+  const afterOutcomes = filterByPeriod(
+    outcomes,
+    range.afterStart,
+    range.afterEnd
+  )
 
   const beforeDays = aggregateByDate(beforeOutcomes)
   const afterDays = aggregateByDate(afterOutcomes)
 
-  // Compute metrics: North Star, Cost, then sub KPIs
   const metrics: MetricResult[] = []
 
   const northStarMetric = computeMetric(northStarKpi, beforeDays, afterDays)
   metrics.push(northStarMetric)
 
-  // Always include Cost unless it's already the north star
   if (northStarKpi !== 'cost') {
     metrics.push(computeMetric('cost', beforeDays, afterDays))
   }
 
-  // Sub KPIs (skip if already included)
   const included = new Set(metrics.map((m) => m.metricName))
   for (const kpi of subKpis) {
     if (!included.has(kpi)) {
@@ -219,7 +347,10 @@ export function computeImpactForExperiment(
   }
 
   const northStarDirection = KPI_DIRECTION[northStarKpi] ?? 'up'
-  const score = changePctToScore(northStarMetric.changePct, northStarDirection)
+  const score = calculateScore(
+    northStarMetric.changePct ?? 0,
+    northStarDirection
+  )
 
   return {
     score,
