@@ -236,14 +236,14 @@ export default function LandingPage() {
             {userId ? (
               <Link
                 href="/post-login"
-                className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 transition-colors"
+                className="rounded-lg bg-gradient-to-r from-[#2563EB] to-[#9333EA] px-4 py-2 text-sm font-medium text-white hover:shadow-lg hover:shadow-indigo-500/25 transition-all duration-200"
               >
                 {t('nav.dashboard')}
               </Link>
             ) : (
               <Link
                 href="/signup"
-                className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 transition-colors"
+                className="rounded-lg bg-gradient-to-r from-[#2563EB] to-[#9333EA] px-4 py-2 text-sm font-medium text-white hover:shadow-lg hover:shadow-indigo-500/25 transition-all duration-200"
               >
                 {t('landing.nav.startFree')}
               </Link>
@@ -273,7 +273,7 @@ export default function LandingPage() {
             </Link>
             <Link
               href="/signup"
-              className="block rounded-lg bg-blue-600 px-4 py-2.5 text-center text-sm font-medium text-white"
+              className="block rounded-lg bg-gradient-to-r from-[#2563EB] to-[#9333EA] px-4 py-2.5 text-center text-sm font-medium text-white"
             >
               {t('landing.nav.startFree')}
             </Link>
@@ -289,7 +289,7 @@ export default function LandingPage() {
 
         <div className="mx-auto max-w-6xl px-4 md:px-6">
           <div className="text-center max-w-4xl mx-auto mb-10 sm:mb-12 md:mb-16">
-            <h1 className="text-2xl sm:text-3xl md:text-[2.75rem] lg:text-5xl font-bold text-gray-900 leading-tight tracking-tight mb-4 sm:mb-6">
+            <h1 className="text-2xl sm:text-3xl md:text-[2.75rem] lg:text-5xl font-bold leading-tight tracking-tight mb-4 sm:mb-6 bg-gradient-to-r from-[#2563EB] to-[#9333EA] bg-clip-text text-transparent">
               {t('landing.hero.headline')}
             </h1>
             <p className="text-base sm:text-lg md:text-xl text-blue-600 font-medium mb-4 sm:mb-6">
@@ -301,7 +301,7 @@ export default function LandingPage() {
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
               <Link
                 href="/signup"
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-6 py-3 text-base font-medium text-white hover:bg-blue-700 transition-colors shadow-lg shadow-blue-500/25"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#2563EB] to-[#9333EA] px-6 py-3 text-base font-medium text-white hover:shadow-lg hover:shadow-indigo-500/25 transition-all duration-200 shadow-lg shadow-indigo-500/20"
               >
                 {t('landing.hero.cta')}
                 <ArrowRight className="h-4 w-4" />
@@ -332,8 +332,8 @@ export default function LandingPage() {
               { titleKey: 'problem3Title', descKey: 'problem3Desc', solutionKey: 'solution3', icon: Sparkles },
             ].map(({ titleKey, descKey, solutionKey, icon: Icon }) => (
               <div key={titleKey} className="rounded-xl border border-gray-200 bg-white p-5 sm:p-6 md:p-8">
-                <div className="mb-3 sm:mb-4 inline-flex rounded-lg bg-red-50 p-2.5">
-                  <Icon className="h-5 w-5 text-red-500" />
+                <div className="mb-3 sm:mb-4 inline-flex rounded-lg bg-gradient-to-br from-blue-100 to-purple-100 p-2.5">
+                  <Icon className="h-5 w-5 text-[#2563EB]" />
                 </div>
                 <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">
                   {t(`landing.painPoints.${titleKey}`)}
@@ -377,8 +377,8 @@ export default function LandingPage() {
               }
               const c = colorMap[color]
               return (
-                <div key={key} className={`rounded-xl border ${c.border} ${c.bg}/30 p-5 sm:p-6 md:p-8`}>
-                  <div className={`mb-3 sm:mb-4 inline-flex rounded-lg ${c.bg} p-2.5`}>
+                <div key={key} className={`rounded-xl border-2 ${c.border} bg-white p-5 sm:p-6 md:p-8 hover:border-[#2563EB] transition-colors duration-200`}>
+                  <div className="mb-3 sm:mb-4 inline-flex rounded-lg bg-gradient-to-br from-blue-100 to-purple-100 p-2.5">
                     <Icon className={`h-5 w-5 ${c.icon}`} />
                   </div>
                   <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-1">
@@ -447,7 +447,7 @@ export default function LandingPage() {
               { step: 3, icon: Sparkles, titleKey: 'step3Title', descKey: 'step3Desc' },
             ].map(({ step, icon: Icon, titleKey, descKey }) => (
               <div key={step} className="text-center">
-                <div className="mx-auto mb-4 flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-blue-600 text-white font-bold text-base sm:text-lg">
+                <div className="mx-auto mb-4 flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-gradient-to-br from-[#2563EB] to-[#9333EA] text-white font-bold text-base sm:text-lg shadow-lg shadow-indigo-500/20">
                   {step}
                 </div>
                 <div className="mb-3 inline-flex rounded-lg bg-blue-50 p-2.5">
@@ -501,9 +501,9 @@ export default function LandingPage() {
             </div>
 
             {/* Pro — order-first on mobile so it appears at top */}
-            <div className="rounded-xl border-2 border-blue-600 bg-white p-5 sm:p-6 md:p-8 relative order-first md:order-none">
-              <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-blue-600 px-3 py-0.5 text-xs font-medium text-white">
-                Popular
+            <div className="rounded-xl border-2 border-[#2563EB] bg-white p-5 sm:p-6 md:p-8 relative order-first md:order-none shadow-lg shadow-blue-500/10">
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-gradient-to-r from-[#2563EB] to-[#9333EA] px-3 py-0.5 text-xs font-medium text-white">
+                {t('landing.pricing.popular')}
               </div>
               <h3 className="text-lg font-bold text-gray-900">{t('landing.pricing.pro.name')}</h3>
               <div className="mt-2 mb-1">
@@ -522,7 +522,7 @@ export default function LandingPage() {
               <button
                 onClick={() => handleCheckout('pro')}
                 disabled={checkoutLoading === 'pro'}
-                className="block w-full rounded-lg bg-blue-600 px-4 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-700 transition-colors disabled:opacity-50"
+                className="block w-full rounded-lg bg-gradient-to-r from-[#2563EB] to-[#9333EA] px-4 py-2.5 text-center text-sm font-medium text-white hover:shadow-lg hover:shadow-indigo-500/25 transition-all duration-200 disabled:opacity-50"
               >
                 {checkoutLoading === 'pro' ? t('common.loading') : t('billing.tryFree')}
               </button>
@@ -572,14 +572,14 @@ export default function LandingPage() {
       </Section>
 
       {/* Footer CTA */}
-      <Section className="py-16 sm:py-20 md:py-28 bg-gradient-to-br from-blue-600 to-blue-700">
+      <Section className="py-16 sm:py-20 md:py-28 bg-gradient-to-r from-[#2563EB] to-[#9333EA]">
         <div className="mx-auto max-w-6xl px-4 md:px-6 text-center">
           <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-white mb-4 sm:mb-6">
             {t('landing.footerCta.headline')}
           </h2>
           <Link
             href="/signup"
-            className="inline-flex items-center gap-2 rounded-lg bg-white px-6 py-3 text-sm sm:text-base font-medium text-blue-600 hover:bg-blue-50 transition-colors shadow-lg"
+            className="inline-flex items-center gap-2 rounded-xl bg-white px-6 py-3 text-sm sm:text-base font-medium text-[#2563EB] hover:bg-blue-50 transition-colors shadow-lg"
           >
             {t('landing.footerCta.cta')}
             <ArrowRight className="h-4 w-4" />
@@ -588,26 +588,26 @@ export default function LandingPage() {
       </Section>
 
       {/* Footer */}
-      <footer className="border-t border-gray-200 bg-white py-8 sm:py-10">
+      <footer className="bg-gray-900 py-8 sm:py-10">
         <div className="mx-auto max-w-6xl px-4 md:px-6">
           <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-between">
-            <div className="text-lg font-bold text-gray-900">Tweaklog</div>
+            <div className="text-lg font-bold text-white">Tweaklog</div>
             <nav className="flex flex-wrap items-center justify-center gap-4 sm:gap-6">
-              <a href="#features" className="text-sm text-gray-500 hover:text-gray-700 transition-colors">
+              <a href="#features" className="text-sm text-gray-400 hover:text-gray-200 transition-colors">
                 {t('landing.footer.features')}
               </a>
-              <a href="#pricing" className="text-sm text-gray-500 hover:text-gray-700 transition-colors">
+              <a href="#pricing" className="text-sm text-gray-400 hover:text-gray-200 transition-colors">
                 {t('landing.footer.pricing')}
               </a>
-              <Link href="/login" className="text-sm text-gray-500 hover:text-gray-700 transition-colors">
+              <Link href="/login" className="text-sm text-gray-400 hover:text-gray-200 transition-colors">
                 {t('landing.footer.login')}
               </Link>
-              <Link href="/signup" className="text-sm text-gray-500 hover:text-gray-700 transition-colors">
+              <Link href="/signup" className="text-sm text-gray-400 hover:text-gray-200 transition-colors">
                 {t('landing.footer.signup')}
               </Link>
             </nav>
           </div>
-          <div className="mt-6 text-center text-xs text-gray-400">
+          <div className="mt-6 text-center text-xs text-gray-500">
             {t('landing.footer.copyright')}
           </div>
         </div>

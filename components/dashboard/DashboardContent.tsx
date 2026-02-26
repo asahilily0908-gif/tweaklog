@@ -13,6 +13,7 @@ import { evaluateFormula } from '@/lib/metrics/formula-evaluator'
 import { computeImpactForExperiment } from '@/lib/metrics/score-calculator'
 import UpgradeGate from '@/components/layout/UpgradeGate'
 import { usePlan } from '@/lib/plan-context'
+import { Sparkles } from 'lucide-react'
 
 interface Project {
   id: string
@@ -444,11 +445,14 @@ export default function DashboardContent({ project, outcomes, experiments, metri
   const availablePlatforms = ['ALL', ...project.platform]
 
   return (
-    <div className="p-4 sm:p-6 max-w-7xl mx-auto">
+    <div className="p-4 sm:p-6 max-w-7xl mx-auto min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50/30">
       {/* Header */}
       <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-gray-900">{t('dashboard.title')}</h1>
+          <h1 className="text-2xl font-bold tracking-tight text-gray-900 flex items-center gap-2">
+            <Sparkles className="w-5 h-5 text-indigo-500" />
+            {t('dashboard.title')}
+          </h1>
           <p className="mt-1 text-sm text-gray-500">
             {dateRange === 'all'
               ? t('common.all')
@@ -456,7 +460,7 @@ export default function DashboardContent({ project, outcomes, experiments, metri
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-          <div className="flex overflow-x-auto rounded-lg border border-gray-200 bg-white p-0.5 shadow-sm">
+          <div className="flex overflow-x-auto rounded-lg border border-gray-200 bg-white/80 backdrop-blur-sm p-0.5 shadow-sm hover:shadow-md transition-shadow">
             {([7, 14, 30, 90, 'all'] as DateRange[]).map((range) => (
               <button
                 key={String(range)}
@@ -476,7 +480,7 @@ export default function DashboardContent({ project, outcomes, experiments, metri
             <select
               value={groupFilter}
               onChange={(e) => setGroupFilter(e.target.value)}
-              className="rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 shadow-sm focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500"
+              className="rounded-lg border border-gray-200 bg-white/80 backdrop-blur-sm px-3 py-1.5 text-xs font-medium text-gray-700 shadow-sm hover:shadow-md transition-shadow focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
             >
               <option value="all">{t('dashboard.allGroups')}</option>
               {experimentGroups.map((g) => (
@@ -571,7 +575,7 @@ export default function DashboardContent({ project, outcomes, experiments, metri
       )}
 
       {/* Timeline Chart */}
-      <div className="mb-6 rounded-xl border border-gray-200 bg-white p-4 sm:p-6 shadow-sm">
+      <div className="mb-6 rounded-xl border-0 bg-white p-4 sm:p-6 shadow-lg">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-1">
           <h2 className="text-sm font-semibold text-gray-900">
             {selectedMetric ? selectedMetric.display_name : isAllMode ? `${northStar.label} & Cost` : 'Performance Trend'}
@@ -628,7 +632,7 @@ export default function DashboardContent({ project, outcomes, experiments, metri
       </div>
 
       {/* Recent Experiments */}
-      <div className="rounded-xl border border-gray-200 bg-white p-4 sm:p-6 shadow-sm">
+      <div className="rounded-xl border-0 bg-white p-4 sm:p-6 shadow-lg">
         <div className="mb-4 flex items-center justify-between">
           <h2 className="text-sm font-semibold text-gray-900">{t('dashboard.recentChanges')}</h2>
           <a

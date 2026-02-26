@@ -460,6 +460,7 @@
     "pricing": {
       "title": "Pricing",
       "subtitle": "Choose the plan that fits your team",
+      "popular": "Most Popular",
       "comingSoon": "Coming Soon",
       "free": {
         "name": "Free",

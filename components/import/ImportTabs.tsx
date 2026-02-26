@@ -51,7 +51,7 @@ export default function ImportTabs({ project, spreadsheetConfig }: Props) {
           onClick={() => setActiveTab('csv')}
           className={`px-4 py-2.5 text-sm font-medium border-b-2 transition-all duration-150 ${
             activeTab === 'csv'
-              ? 'border-slate-900 text-slate-900'
+              ? 'border-indigo-500 text-indigo-600'
               : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
           }`}
         >
@@ -67,7 +67,7 @@ export default function ImportTabs({ project, spreadsheetConfig }: Props) {
           onClick={() => setActiveTab('spreadsheet')}
           className={`px-4 py-2.5 text-sm font-medium border-b-2 transition-all duration-150 ${
             activeTab === 'spreadsheet'
-              ? 'border-slate-900 text-slate-900'
+              ? 'border-indigo-500 text-indigo-600'
               : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
           }`}
         >

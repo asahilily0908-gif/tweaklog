@@ -106,7 +106,7 @@ export default function SetupWizard() {
   )
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50/30">
       <div className="mx-auto max-w-2xl px-4 py-12">
         {/* Header */}
         <div className="mb-8 text-center">
@@ -124,9 +124,9 @@ export default function SetupWizard() {
                 <div
                   className={`flex h-8 w-8 items-center justify-center rounded-full text-xs font-semibold transition-colors ${
                     i < step
-                      ? 'bg-blue-600 text-white'
+                      ? 'bg-gradient-to-br from-[#2563EB] to-[#9333EA] text-white'
                       : i === step
-                      ? 'bg-blue-600 text-white ring-4 ring-blue-100'
+                      ? 'bg-gradient-to-br from-[#2563EB] to-[#9333EA] text-white ring-4 ring-indigo-100'
                       : 'bg-gray-200 text-gray-500'
                   }`}
                 >
@@ -141,7 +141,7 @@ export default function SetupWizard() {
                 {i < STEPS.length - 1 && (
                   <div
                     className={`mx-2 h-0.5 w-12 sm:w-24 md:w-32 ${
-                      i < step ? 'bg-blue-600' : 'bg-gray-200'
+                      i < step ? 'bg-gradient-to-r from-[#2563EB] to-[#9333EA]' : 'bg-gray-200'
                     }`}
                   />
                 )}
@@ -153,7 +153,7 @@ export default function SetupWizard() {
               <span
                 key={s.title}
                 className={`text-xs ${
-                  i <= step ? 'text-blue-600 font-medium' : 'text-gray-400'
+                  i <= step ? 'text-indigo-600 font-medium' : 'text-gray-400'
                 }`}
               >
                 {s.title}
@@ -220,7 +220,7 @@ export default function SetupWizard() {
               type="button"
               onClick={() => setStep((s) => s + 1)}
               disabled={!canProceed()}
-              className="rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+              className="rounded-lg bg-gradient-to-r from-[#2563EB] to-[#9333EA] px-5 py-2.5 text-sm font-medium text-white hover:shadow-lg hover:shadow-indigo-500/25 disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-200"
             >
               {t('common.next')}
             </button>
@@ -229,7 +229,7 @@ export default function SetupWizard() {
               type="button"
               onClick={handleComplete}
               disabled={saving}
-              className="rounded-lg bg-blue-600 px-6 py-2.5 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50 transition-colors"
+              className="rounded-lg bg-gradient-to-r from-[#2563EB] to-[#9333EA] px-6 py-2.5 text-sm font-medium text-white hover:shadow-lg hover:shadow-indigo-500/25 disabled:opacity-50 transition-all duration-200"
             >
               {saving ? t('setup.settingUp') : t('setup.completeSetup')}
             </button>

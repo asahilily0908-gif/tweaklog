@@ -461,6 +461,7 @@
     "pricing": {
       "title": "料金プラン",
       "subtitle": "あなたのチームに合ったプランを選択",
+      "popular": "人気No.1",
       "comingSoon": "Coming Soon",
       "free": {
         "name": "Free",

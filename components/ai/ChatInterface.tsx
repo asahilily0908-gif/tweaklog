@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react'
 import { useTranslation } from '@/lib/i18n/config'
+import { Sparkles, User } from 'lucide-react'
 
 interface Message {
   role: 'user' | 'assistant'
@@ -28,15 +29,20 @@ function MessageBubble({
   return (
     <div className={`flex ${isUser ? 'justify-end' : 'justify-start'}`}>
       {!isUser && (
-        <div className="mr-2.5 mt-1 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-slate-900 text-[10px] font-bold text-white">
-          AI
+        <div className="mr-2.5 mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-indigo-500 to-purple-600">
+          <Sparkles className="h-4 w-4 text-white" />
+        </div>
+      )}
+      {isUser && (
+        <div className="order-1 ml-2.5 mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gray-200">
+          <User className="h-4 w-4 text-gray-600" />
         </div>
       )}
       <div
         className={`max-w-[88%] sm:max-w-[75%] rounded-2xl px-4 py-3 text-sm leading-relaxed whitespace-pre-wrap ${
           isUser
-            ? 'bg-slate-900 text-white rounded-br-md'
-            : 'bg-gray-100 text-gray-800 rounded-bl-md'
+            ? 'bg-[#2563EB] text-white rounded-br-md'
+            : 'bg-gray-100 text-gray-900 rounded-bl-md'
         }`}
       >
         {content || (isStreaming && (
@@ -159,7 +165,7 @@ export default function ChatInterface({
           type="button"
           onClick={() => handleSend()}
           disabled={!input.trim() || isStreaming}
-          className="flex h-[46px] w-[46px] shrink-0 items-center justify-center rounded-xl bg-slate-900 text-white shadow-sm hover:bg-slate-800 disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-150"
+          className="flex h-[46px] w-[46px] shrink-0 items-center justify-center rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-sm hover:shadow-md disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-150"
         >
           {isStreaming ? (
             <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
@@ -187,10 +193,8 @@ export default function ChatInterface({
 
         {/* Empty state */}
         <div className="flex flex-1 flex-col items-center justify-center px-4 sm:px-6 text-center">
-          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-slate-800 to-slate-900 shadow-lg shadow-slate-900/20">
-            <svg className="h-7 w-7 text-white" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 00-2.455 2.456z" />
-            </svg>
+          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 shadow-lg shadow-indigo-500/20">
+            <Sparkles className="h-7 w-7 text-white" />
           </div>
           <h2 className="mt-4 text-xl font-bold tracking-tight text-gray-900">{t('chat.emptyTitle')}</h2>
           <p className="mt-2 max-w-sm text-sm leading-relaxed text-gray-500">
@@ -219,11 +223,14 @@ export default function ChatInterface({
     <div className="flex h-full flex-col bg-white">
       {/* Header */}
       <div className="border-b border-gray-100 px-4 sm:px-6 py-4 flex items-center gap-3">
-        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-900 text-[10px] font-bold text-white">
-          AI
+        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-indigo-500 to-purple-600">
+          <Sparkles className="h-4 w-4 text-white" />
+        </div>
+        <div className="flex items-center gap-2">
+          <h1 className="text-sm font-bold text-gray-900">{t('chat.emptyTitle')}</h1>
+          <span className="inline-flex items-center rounded-full bg-gradient-to-r from-[#2563EB] to-[#9333EA] px-2 py-0.5 text-[10px] font-semibold text-white">Beta</span>
         </div>
         <div>
-          <h1 className="text-sm font-bold text-gray-900">{t('chat.emptyTitle')}</h1>
           <p className="text-[11px] text-gray-400">
             {isStreaming ? t('chat.thinking') : t('chat.askAbout')}
           </p>

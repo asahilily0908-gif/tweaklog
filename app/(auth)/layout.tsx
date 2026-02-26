@@ -10,7 +10,7 @@ export default function AuthLayout({
   const { locale, setLocale } = useTranslation()
 
   return (
-    <div className="relative flex min-h-screen items-center justify-center bg-gray-50">
+    <div className="relative flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-50 to-purple-50">
       {/* Language switcher */}
       <button
         type="button"

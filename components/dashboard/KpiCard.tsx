@@ -1,6 +1,7 @@
 'use client'
 
 import { useTranslation } from '@/lib/i18n/config'
+import { TrendingUp, TrendingDown } from 'lucide-react'
 
 interface KpiCardProps {
   label: string
@@ -22,21 +23,14 @@ export default function KpiCard({ label, value, badge, accentColor, change, impr
     changeColor = isGood ? 'text-green-600' : 'text-red-500'
   }
 
-  const accentGradient = 'bg-gradient-to-r from-blue-500 to-blue-600'
-
   const badgeBg = accentColor === 'blue'
     ? 'bg-blue-50 text-blue-600'
     : 'bg-gray-100 text-gray-500'
 
   return (
     <div
-      className={`relative overflow-hidden rounded-xl border bg-white p-3 sm:p-6 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md ${
-        hasBadge ? 'border-blue-200' : 'border-gray-200'
-      }`}
+      className="relative overflow-hidden rounded-xl border-0 bg-white p-3 sm:p-6 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
     >
-      {hasBadge && (
-        <div className={`absolute inset-x-0 top-0 h-0.5 ${accentGradient}`} />
-      )}
       <div className="flex items-center gap-1 sm:gap-2">
         <p className="text-[10px] sm:text-xs font-medium text-gray-500 uppercase tracking-wider truncate">{label}</p>
         {badge && (
@@ -52,13 +46,7 @@ export default function KpiCard({ label, value, badge, accentColor, change, impr
         {change !== undefined && change !== null && (
           <span className={`inline-flex items-center gap-0.5 text-[10px] sm:text-xs font-medium tabular-nums shrink-0 ${changeColor}`}>
             {change !== 0 && (
-              <svg className="h-3 w-3" viewBox="0 0 12 12" fill="currentColor">
-                {change > 0 ? (
-                  <path d="M6 2.5l3.5 4h-7z" />
-                ) : (
-                  <path d="M6 9.5l3.5-4h-7z" />
-                )}
-              </svg>
+              change > 0 ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />
             )}
             {change > 0 ? '+' : ''}{change.toFixed(1)}%
           </span>

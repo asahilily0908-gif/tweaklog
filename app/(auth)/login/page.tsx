@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { useState } from 'react'
 import Link from 'next/link'
 import { useTranslation } from '@/lib/i18n/config'
+import { Logo } from '@/components/ui/Logo'
 
 export default function LoginPage() {
   const router = useRouter()
@@ -54,6 +55,9 @@ export default function LoginPage() {
   return (
     <div className="rounded-xl border border-gray-200 bg-white p-8 shadow-sm">
       <div className="mb-8 text-center">
+        <div className="flex justify-center mb-4">
+          <Logo size="lg" />
+        </div>
         <h1 className="text-2xl font-bold text-gray-900">{t('auth.welcomeBack')}</h1>
         <p className="mt-2 text-sm text-gray-600">
           {t('auth.signInDescription')}

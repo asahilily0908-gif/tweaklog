@@ -4,9 +4,9 @@ import { useTranslation } from '@/lib/i18n/config'
 import { usePlan } from '@/lib/plan-context'
 
 const BADGE_STYLES: Record<string, string> = {
-  free: 'bg-slate-700 text-slate-300',
-  pro: 'bg-blue-600/20 text-blue-400 border border-blue-500/30',
-  team: 'bg-purple-600/20 text-purple-400 border border-purple-500/30',
+  free: 'bg-slate-100 text-slate-500',
+  pro: 'bg-blue-50 text-blue-600 border border-blue-200/50',
+  team: 'bg-purple-50 text-purple-600 border border-purple-200/50',
 }
 
 export default function PlanBadge() {

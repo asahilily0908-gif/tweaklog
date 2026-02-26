@@ -135,10 +135,10 @@ export default function ExperimentsContent({ project, experiments, outcomes, exp
           type="button"
           onClick={() => !isAtLimit && setShowModal(true)}
           disabled={isAtLimit}
-          className={`flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium shadow-sm transition-all duration-150 ${
+          className={`flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium shadow-sm transition-all duration-200 ${
             isAtLimit
               ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-              : 'bg-slate-900 text-white hover:bg-slate-800'
+              : 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white hover:shadow-lg hover:shadow-indigo-500/25'
           }`}
         >
           <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
@@ -175,9 +175,9 @@ export default function ExperimentsContent({ project, experiments, outcomes, exp
               key={cat}
               type="button"
               onClick={() => setFilterCategory(cat)}
-              className={`rounded-lg px-3 py-1.5 text-xs font-medium transition-all duration-150 ${
+              className={`rounded-lg px-3 py-1.5 text-xs font-medium transition-all duration-200 ${
                 filterCategory === cat
-                  ? 'bg-slate-900 text-white shadow-sm'
+                  ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-sm'
                   : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 hover:border-gray-300'
               }`}
             >
@@ -210,7 +210,7 @@ export default function ExperimentsContent({ project, experiments, outcomes, exp
           <button
             type="button"
             onClick={() => setShowModal(true)}
-            className="mt-5 inline-flex items-center gap-2 rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-800 transition-colors"
+            className="mt-5 inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-indigo-500 to-purple-600 px-4 py-2 text-sm font-medium text-white hover:shadow-lg hover:shadow-indigo-500/25 transition-all duration-200"
           >
             <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
