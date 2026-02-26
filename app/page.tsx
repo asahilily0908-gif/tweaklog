@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useTranslation } from '@/lib/i18n/config'
 import { createClient } from '@/lib/supabase/client'
+import { Logo } from '@/components/ui/Logo'
 import {
   ClipboardList,
   BarChart3,
@@ -211,8 +212,9 @@ export default function LandingPage() {
         }`}
       >
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 md:px-6 py-4">
-          <Link href="/" className="text-xl font-bold text-gray-900">
-            Tweaklog
+          <Link href="/" className="flex items-center gap-2">
+            <Logo size="sm" />
+            <span className="text-xl font-bold text-gray-900">Tweaklog</span>
           </Link>
 
           {/* Desktop nav */}
