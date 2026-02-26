@@ -581,7 +581,7 @@ export default function SettingsContent({
               type="button"
               onClick={handleSaveProject}
               disabled={projectSaving}
-              className="rounded-lg bg-gradient-to-r from-indigo-500 to-purple-600 px-5 py-2 text-sm font-medium text-white transition-all duration-200 hover:shadow-lg hover:shadow-indigo-500/25 disabled:opacity-50"
+              className="rounded-lg bg-gradient-to-r from-indigo-500 to-purple-600 px-5 py-2 text-sm font-medium text-white transition-all duration-200 hover:shadow-sm hover:shadow-indigo-500/15 disabled:opacity-50"
             >
               {projectSaving ? t('settings.saving') : t('common.save')}
             </button>
@@ -674,7 +674,7 @@ export default function SettingsContent({
               type="button"
               onClick={handleSaveKpi}
               disabled={kpiSaving}
-              className="rounded-lg bg-gradient-to-r from-indigo-500 to-purple-600 px-5 py-2 text-sm font-medium text-white transition-all duration-200 hover:shadow-lg hover:shadow-indigo-500/25 disabled:opacity-50"
+              className="rounded-lg bg-gradient-to-r from-indigo-500 to-purple-600 px-5 py-2 text-sm font-medium text-white transition-all duration-200 hover:shadow-sm hover:shadow-indigo-500/15 disabled:opacity-50"
             >
               {kpiSaving ? t('settings.saving') : t('common.save')}
             </button>
@@ -690,7 +690,7 @@ export default function SettingsContent({
             <button
               type="button"
               onClick={() => openEditor()}
-              className="flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-indigo-500 to-purple-600 px-3.5 py-1.5 text-sm font-medium text-white transition-all duration-200 hover:shadow-lg hover:shadow-indigo-500/25"
+              className="flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-indigo-500 to-purple-600 px-3.5 py-1.5 text-sm font-medium text-white transition-all duration-200 hover:shadow-sm hover:shadow-indigo-500/15"
             >
               <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
@@ -967,7 +967,7 @@ export default function SettingsContent({
                   type="button"
                   onClick={handleSaveMetric}
                   disabled={metricSaving}
-                  className="rounded-lg bg-gradient-to-r from-indigo-500 to-purple-600 px-5 py-2 text-sm font-medium text-white transition-all duration-200 hover:shadow-lg hover:shadow-indigo-500/25 disabled:opacity-50"
+                  className="rounded-lg bg-gradient-to-r from-indigo-500 to-purple-600 px-5 py-2 text-sm font-medium text-white transition-all duration-200 hover:shadow-sm hover:shadow-indigo-500/15 disabled:opacity-50"
                 >
                   {metricSaving ? t('settings.saving') : editingId ? t('settings.updateMetric') : t('settings.addMetric')}
                 </button>
@@ -995,7 +995,7 @@ export default function SettingsContent({
             <button
               type="button"
               onClick={() => openGroupEditor()}
-              className="flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-indigo-500 to-purple-600 px-3.5 py-1.5 text-sm font-medium text-white transition-all duration-200 hover:shadow-lg hover:shadow-indigo-500/25"
+              className="flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-indigo-500 to-purple-600 px-3.5 py-1.5 text-sm font-medium text-white transition-all duration-200 hover:shadow-sm hover:shadow-indigo-500/15"
             >
               <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
@@ -1241,7 +1241,7 @@ export default function SettingsContent({
                   type="button"
                   onClick={handleSaveGroup}
                   disabled={groupSaving}
-                  className="rounded-lg bg-gradient-to-r from-indigo-500 to-purple-600 px-5 py-2 text-sm font-medium text-white transition-all duration-200 hover:shadow-lg hover:shadow-indigo-500/25 disabled:opacity-50"
+                  className="rounded-lg bg-gradient-to-r from-indigo-500 to-purple-600 px-5 py-2 text-sm font-medium text-white transition-all duration-200 hover:shadow-sm hover:shadow-indigo-500/15 disabled:opacity-50"
                 >
                   {groupSaving ? t('settings.saving') : editingGroupId ? t('settings.updateGroup') : t('settings.createGroup')}
                 </button>

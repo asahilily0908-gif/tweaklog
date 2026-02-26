@@ -29,7 +29,7 @@ export default function KpiCard({ label, value, badge, accentColor, change, impr
 
   return (
     <div
-      className="relative overflow-hidden rounded-xl border-0 bg-white p-3 sm:p-6 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
+      className="relative overflow-hidden rounded-xl border-0 bg-white p-3 sm:p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md"
     >
       <div className="flex items-center gap-1 sm:gap-2">
         <p className="text-[10px] sm:text-xs font-medium text-gray-500 uppercase tracking-wider truncate">{label}</p>

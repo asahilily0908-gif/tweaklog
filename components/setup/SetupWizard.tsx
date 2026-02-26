@@ -220,7 +220,7 @@ export default function SetupWizard() {
               type="button"
               onClick={() => setStep((s) => s + 1)}
               disabled={!canProceed()}
-              className="rounded-lg bg-gradient-to-r from-[#2563EB] to-[#9333EA] px-5 py-2.5 text-sm font-medium text-white hover:shadow-lg hover:shadow-indigo-500/25 disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-200"
+              className="rounded-lg bg-gradient-to-r from-[#2563EB] to-[#9333EA] px-5 py-2.5 text-sm font-medium text-white hover:shadow-sm hover:shadow-indigo-500/15 disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-200"
             >
               {t('common.next')}
             </button>
@@ -229,7 +229,7 @@ export default function SetupWizard() {
               type="button"
               onClick={handleComplete}
               disabled={saving}
-              className="rounded-lg bg-gradient-to-r from-[#2563EB] to-[#9333EA] px-6 py-2.5 text-sm font-medium text-white hover:shadow-lg hover:shadow-indigo-500/25 disabled:opacity-50 transition-all duration-200"
+              className="rounded-lg bg-gradient-to-r from-[#2563EB] to-[#9333EA] px-6 py-2.5 text-sm font-medium text-white hover:shadow-sm hover:shadow-indigo-500/15 disabled:opacity-50 transition-all duration-200"
             >
               {saving ? t('setup.settingUp') : t('setup.completeSetup')}
             </button>

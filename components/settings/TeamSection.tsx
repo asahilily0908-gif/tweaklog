@@ -363,7 +363,7 @@ export default function TeamSection({
             onClick={() => setShowInviteModal(false)}
           >
             <div
-              className="w-full max-w-md mx-4 rounded-2xl bg-white p-5 sm:p-6 shadow-xl"
+              className="w-full max-w-md mx-4 rounded-2xl bg-white p-5 sm:p-6 shadow-sm"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex items-center justify-between mb-5">

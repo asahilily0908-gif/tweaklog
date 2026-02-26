@@ -167,7 +167,7 @@ function ImpactUpgradeModal({ onClose }: { onClose: () => void }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm" onClick={onClose}>
-      <div className="relative mx-4 flex flex-col items-center gap-4 rounded-2xl border border-gray-200 bg-white px-8 py-8 shadow-xl max-w-sm text-center" onClick={(e) => e.stopPropagation()}>
+      <div className="relative mx-4 flex flex-col items-center gap-4 rounded-2xl border border-gray-200 bg-white px-8 py-8 shadow-sm max-w-sm text-center" onClick={(e) => e.stopPropagation()}>
         <button type="button" onClick={onClose} className="absolute top-3 right-3 rounded-lg p-1 text-gray-400 hover:text-gray-600">
           <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -460,7 +460,7 @@ export default function DashboardContent({ project, outcomes, experiments, metri
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-          <div className="flex overflow-x-auto rounded-lg border border-gray-200 bg-white/80 backdrop-blur-sm p-0.5 shadow-sm hover:shadow-md transition-shadow">
+          <div className="flex overflow-x-auto rounded-lg border border-gray-200 bg-white/80 backdrop-blur-sm p-0.5 shadow-sm hover:shadow-sm transition-shadow">
             {([7, 14, 30, 90, 'all'] as DateRange[]).map((range) => (
               <button
                 key={String(range)}
@@ -480,7 +480,7 @@ export default function DashboardContent({ project, outcomes, experiments, metri
             <select
               value={groupFilter}
               onChange={(e) => setGroupFilter(e.target.value)}
-              className="rounded-lg border border-gray-200 bg-white/80 backdrop-blur-sm px-3 py-1.5 text-xs font-medium text-gray-700 shadow-sm hover:shadow-md transition-shadow focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+              className="rounded-lg border border-gray-200 bg-white/80 backdrop-blur-sm px-3 py-1.5 text-xs font-medium text-gray-700 shadow-sm hover:shadow-sm transition-shadow focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
             >
               <option value="all">{t('dashboard.allGroups')}</option>
               {experimentGroups.map((g) => (
@@ -575,7 +575,7 @@ export default function DashboardContent({ project, outcomes, experiments, metri
       )}
 
       {/* Timeline Chart */}
-      <div className="mb-6 rounded-xl border-0 bg-white p-4 sm:p-6 shadow-lg">
+      <div className="mb-6 rounded-xl border-0 bg-white p-4 sm:p-6 shadow-sm">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-1">
           <h2 className="text-sm font-semibold text-gray-900">
             {selectedMetric ? selectedMetric.display_name : isAllMode ? `${northStar.label} & Cost` : 'Performance Trend'}
@@ -632,7 +632,7 @@ export default function DashboardContent({ project, outcomes, experiments, metri
       </div>
 
       {/* Recent Experiments */}
-      <div className="rounded-xl border-0 bg-white p-4 sm:p-6 shadow-lg">
+      <div className="rounded-xl border-0 bg-white p-4 sm:p-6 shadow-sm">
         <div className="mb-4 flex items-center justify-between">
           <h2 className="text-sm font-semibold text-gray-900">{t('dashboard.recentChanges')}</h2>
           <a

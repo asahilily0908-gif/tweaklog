@@ -165,7 +165,7 @@ export default function ChatInterface({
           type="button"
           onClick={() => handleSend()}
           disabled={!input.trim() || isStreaming}
-          className="flex h-[46px] w-[46px] shrink-0 items-center justify-center rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-sm hover:shadow-md disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-150"
+          className="flex h-[46px] w-[46px] shrink-0 items-center justify-center rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-sm hover:shadow-sm disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-150"
         >
           {isStreaming ? (
             <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
@@ -193,7 +193,7 @@ export default function ChatInterface({
 
         {/* Empty state */}
         <div className="flex flex-1 flex-col items-center justify-center px-4 sm:px-6 text-center">
-          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 shadow-lg shadow-indigo-500/20">
+          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 shadow-sm shadow-indigo-500/10">
             <Sparkles className="h-7 w-7 text-white" />
           </div>
           <h2 className="mt-4 text-xl font-bold tracking-tight text-gray-900">{t('chat.emptyTitle')}</h2>

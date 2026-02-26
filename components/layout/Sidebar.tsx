@@ -96,7 +96,7 @@ export default function Sidebar({ projectId, projectName, userEmail }: SidebarPr
                   href={href}
                   className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200 ${
                     isActive
-                      ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-lg shadow-indigo-500/30'
+                      ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-sm shadow-indigo-500/20'
                       : 'text-slate-700 hover:bg-slate-50'
                   }`}
                 >
@@ -156,7 +156,7 @@ export default function Sidebar({ projectId, projectName, userEmail }: SidebarPr
       <button
         type="button"
         onClick={() => setMobileOpen(true)}
-        className="fixed top-3 left-3 z-40 flex h-10 w-10 items-center justify-center rounded-lg bg-white/80 backdrop-blur-sm text-slate-700 shadow-lg border border-slate-200/60 md:hidden"
+        className="fixed top-3 left-3 z-40 flex h-10 w-10 items-center justify-center rounded-lg bg-white/80 backdrop-blur-sm text-slate-700 shadow-sm border border-slate-200/60 md:hidden"
         aria-label="Open menu"
       >
         <Menu className="h-5 w-5" />
@@ -172,7 +172,7 @@ export default function Sidebar({ projectId, projectName, userEmail }: SidebarPr
 
       {/* Mobile sidebar drawer */}
       <aside
-        className={`fixed inset-y-0 left-0 z-50 flex w-60 flex-col bg-white/95 backdrop-blur-xl border-r border-slate-200/60 shadow-xl transition-transform duration-200 md:hidden ${
+        className={`fixed inset-y-0 left-0 z-50 flex w-60 flex-col bg-white/95 backdrop-blur-xl border-r border-slate-200/60 shadow-sm transition-transform duration-200 md:hidden ${
           mobileOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
@@ -189,7 +189,7 @@ export default function Sidebar({ projectId, projectName, userEmail }: SidebarPr
       </aside>
 
       {/* Desktop sidebar */}
-      <aside className="hidden md:flex h-screen w-60 flex-col bg-white/80 backdrop-blur-xl border-r border-slate-200/60 shadow-xl shrink-0">
+      <aside className="hidden md:flex h-screen w-60 flex-col bg-white/80 backdrop-blur-xl border-r border-slate-200/60 shadow-sm shrink-0">
         {sidebarContent}
       </aside>
     </>
