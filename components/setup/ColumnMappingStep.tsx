@@ -1,7 +1,7 @@
 'use client'
 
 import { useRef, useState } from 'react'
-import { Upload } from 'lucide-react'
+import { Upload, FileSpreadsheet, Loader2 } from 'lucide-react'
 import { guessField } from '@/lib/import/column-mappings'
 import type { WizardData } from './SetupWizard'
 
@@ -34,6 +34,9 @@ export default function ColumnMappingStep({
 }: ColumnMappingStepProps) {
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [dragOver, setDragOver] = useState(false)
+  const [sheetsUrl, setSheetsUrl] = useState('')
+  const [isConnecting, setIsConnecting] = useState(false)
+  const [sheetsError, setSheetsError] = useState<string | null>(null)
 
   function parseCSV(text: string) {
     const lines = text.trim().split('\n')
@@ -93,6 +96,64 @@ export default function ColumnMappingStep({
     onChange({ columnMappings: next })
   }
 
+  async function handleSheetsConnect() {
+    if (!sheetsUrl.includes('docs.google.com/spreadsheets')) return
+    setIsConnecting(true)
+    setSheetsError(null)
+
+    try {
+      const res = await fetch('/api/spreadsheet/fetch', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url: sheetsUrl.trim() }),
+      })
+
+      const result = await res.json()
+
+      if (!res.ok) {
+        setSheetsError(result.error || 'スプレッドシートの取得に失敗しました')
+        return
+      }
+
+      const rows: string[][] = result.rows
+      if (rows.length === 0) {
+        setSheetsError('スプレッドシートにデータがありません')
+        return
+      }
+
+      // Auto-detect header row (find row with most guessable fields)
+      let bestRow = 0
+      let bestScore = 0
+      const scanRows = Math.min(rows.length, 10)
+      for (let i = 0; i < scanRows; i++) {
+        let score = 0
+        for (const cell of rows[i]) {
+          if (cell && guessField(cell)) score++
+        }
+        if (score > bestScore) {
+          bestScore = score
+          bestRow = i
+        }
+      }
+
+      const headers = rows[bestRow].filter((h) => h.trim())
+      const mappings: Record<string, string> = {}
+      const usedFields = new Set<string>()
+      headers.forEach((header) => {
+        const guessed = guessField(header)
+        if (guessed && VALID_MAPPING_VALUES.has(guessed) && !usedFields.has(guessed)) {
+          mappings[header] = guessed
+          usedFields.add(guessed)
+        }
+      })
+      onChange({ csvHeaders: headers, columnMappings: mappings })
+    } catch {
+      setSheetsError('ネットワークエラーが発生しました。もう一度お試しください。')
+    } finally {
+      setIsConnecting(false)
+    }
+  }
+
   const hasHeaders = data.csvHeaders.length > 0
 
   return (
@@ -106,9 +167,73 @@ export default function ColumnMappingStep({
         </p>
       </div>
 
-      {/* Upload area */}
+      {/* Main: Google Sheets */}
+      {!hasHeaders && (
+        <div className="rounded-2xl border-2 border-slate-200 p-8 transition-all hover:border-green-400 hover:bg-green-50/50">
+          <div className="mb-4 flex items-center gap-4">
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-green-100">
+              <FileSpreadsheet className="h-6 w-6 text-green-600" />
+            </div>
+            <div>
+              <h3 className="text-base font-semibold text-slate-900">
+                Google スプレッドシートから接続
+              </h3>
+              <p className="text-sm text-slate-400">
+                URLを貼り付けるだけで自動取得
+              </p>
+            </div>
+          </div>
+
+          <div className="flex gap-2">
+            <input
+              type="url"
+              value={sheetsUrl}
+              onChange={(e) => setSheetsUrl(e.target.value)}
+              placeholder="https://docs.google.com/spreadsheets/d/..."
+              className="flex-1 rounded-xl border border-gray-300 px-4 py-3 text-sm text-gray-900 placeholder-slate-400 focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-500"
+            />
+            <button
+              type="button"
+              onClick={handleSheetsConnect}
+              disabled={
+                !sheetsUrl.includes('docs.google.com/spreadsheets') ||
+                isConnecting
+              }
+              className="flex shrink-0 cursor-pointer items-center gap-2 rounded-xl bg-green-600 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {isConnecting && (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              )}
+              {isConnecting ? '接続中...' : '接続'}
+            </button>
+          </div>
+          <p className="mt-2 text-xs text-slate-400">
+            ※
+            シートの共有設定を「リンクを知っている全員が閲覧可」にしてください
+          </p>
+          {sheetsError && (
+            <div className="mt-3 flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 px-4 py-2.5 text-xs text-red-700">
+              <svg className="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+              </svg>
+              {sheetsError}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Divider */}
+      {!hasHeaders && (
+        <div className="my-6 flex items-center gap-4">
+          <div className="h-px flex-1 bg-slate-200" />
+          <span className="text-sm text-slate-400">または</span>
+          <div className="h-px flex-1 bg-slate-200" />
+        </div>
+      )}
+
+      {/* Sub: CSV upload */}
       <div
-        className={`flex flex-col items-center justify-center rounded-xl border-2 border-dashed p-12 text-center transition-colors cursor-pointer ${
+        className={`flex flex-col items-center justify-center rounded-xl border-2 border-dashed p-8 text-center transition-colors cursor-pointer ${
           dragOver
             ? 'border-indigo-400 bg-indigo-50'
             : hasHeaders
@@ -127,7 +252,7 @@ export default function ColumnMappingStep({
           <>
             <div className="mb-2 text-green-600">
               <svg
-                className="mx-auto h-10 w-10"
+                className="mx-auto h-8 w-8"
                 fill="none"
                 viewBox="0 0 24 24"
                 strokeWidth={2}
@@ -149,7 +274,7 @@ export default function ColumnMappingStep({
           </>
         ) : (
           <>
-            <Upload className="mx-auto mb-3 h-10 w-10 text-gray-400" />
+            <Upload className="mx-auto mb-3 h-8 w-8 text-gray-400" />
             <p className="text-sm font-medium text-gray-700">
               CSVファイルをドラッグ&ドロップ、またはクリックして選択
             </p>
