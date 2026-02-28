@@ -2,10 +2,12 @@
 
 import { useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
+import { toast } from 'sonner'
 import NorthStarKpiStep from './NorthStarKpiStep'
 import ColumnMappingStep from './ColumnMappingStep'
 import MetricConfigStep from './MetricConfigStep'
 import SetupCompleteStep from './SetupCompleteStep'
+import { updateProjectSetup } from '@/app/(app)/app/[project]/setup/actions'
 
 export interface WizardData {
   northStarKpi: string
@@ -34,6 +36,7 @@ export default function SetupWizard() {
   const projectId = params.project as string
 
   const [currentStep, setCurrentStep] = useState(1)
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const [wizardData, setWizardData] = useState<WizardData>({
     northStarKpi: '',
     northStarKpiCustomName: '',
@@ -65,10 +68,20 @@ export default function SetupWizard() {
     if (currentStep > 1) setCurrentStep((s) => s - 1)
   }
 
-  function handleComplete() {
-    // TODO: Save to Supabase via API
-    console.log('Setup wizard data:', wizardData)
-    router.push(`/app/${projectId}/dashboard`)
+  async function handleComplete() {
+    setIsSubmitting(true)
+    try {
+      const result = await updateProjectSetup(projectId, wizardData)
+      if (result.error) {
+        toast.error(result.error)
+        setIsSubmitting(false)
+        return
+      }
+      router.push(`/app/${projectId}/dashboard`)
+    } catch {
+      toast.error('セットアップの保存に失敗しました')
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -178,9 +191,10 @@ export default function SetupWizard() {
             <button
               type="button"
               onClick={handleComplete}
-              className="rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 px-8 py-3 text-lg font-semibold text-white hover:shadow-lg transition-all duration-200"
+              disabled={isSubmitting}
+              className="rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 px-8 py-3 text-lg font-semibold text-white hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
             >
-              ダッシュボードへ
+              {isSubmitting ? '保存中...' : 'ダッシュボードへ'}
             </button>
           )}
         </div>
