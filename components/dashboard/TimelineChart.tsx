@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import {
   ResponsiveContainer,
   LineChart,
@@ -10,7 +10,6 @@ import {
   CartesianGrid,
   Tooltip,
   ReferenceLine,
-  Customized,
 } from 'recharts'
 import ScoreBadge from '@/components/impact/ScoreBadge'
 import { useTranslation } from '@/lib/i18n/config'
@@ -179,38 +178,28 @@ interface HoveredExperiments {
   clientY: number
 }
 
-/* Renders nothing — only extracts x-axis positions from chart internals into a ref */
-function PositionExtractor(props: any) {
-  const { xAxisMap, positionsRef, dates, onPositionsReady } = props
-
-  if (xAxisMap) {
-    const xAxis = (Object.values(xAxisMap) as any[])[0]
-    if (xAxis?.scale) {
-      const newPositions = new Map<string, number>()
-      for (const date of dates) {
-        const x = xAxis.scale(date)
-        if (x !== undefined && !isNaN(x)) {
-          const offset = xAxis.bandSize ? xAxis.bandSize / 2 : 0
-          newPositions.set(date, x + offset)
-        }
-      }
-      if (newPositions.size > 0 && newPositions.size !== positionsRef.current.size) {
-        positionsRef.current = newPositions
-        setTimeout(() => onPositionsReady(), 0)
-      }
-    }
-  }
-
-  return null
-}
+const CHART_MARGIN = { top: 24, right: 20, bottom: 5, left: 0 }
+const Y_AXIS_WIDTH = 40
 
 export default function TimelineChart({ data, northStarKey, isAllMode, experiments, onExperimentClick, customMetricLine, impactScores }: TimelineChartProps) {
   const { t } = useTranslation()
   const [hoveredExps, setHoveredExps] = useState<HoveredExperiments | null>(null)
-  const markerPositionsRef = useRef<Map<string, number>>(new Map())
-  const [, setMarkersReady] = useState(0)
+  const containerRef = useRef<HTMLDivElement>(null)
+  const [containerWidth, setContainerWidth] = useState(0)
   const primaryField = northStarKey ? (KPI_TO_FIELD[northStarKey] ?? 'conversions') : 'conversions'
   const showCustom = !!customMetricLine
+
+  // Observe container width for marker position calculation
+  useEffect(() => {
+    if (!containerRef.current) return
+    const observer = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        setContainerWidth(entry.contentRect.width)
+      }
+    })
+    observer.observe(containerRef.current)
+    return () => observer.disconnect()
+  }, [])
 
   // Map dates to experiments
   const experimentsByDate = useMemo(() => {
@@ -226,13 +215,33 @@ export default function TimelineChart({ data, northStarKey, isAllMode, experimen
 
   const experimentDates = useMemo(() => new Set(experimentsByDate.keys()), [experimentsByDate])
 
+  // Calculate marker x-positions from container width and data index
+  const markerPositions = useMemo(() => {
+    if (containerWidth === 0 || data.length === 0) return new Map<string, number>()
+
+    const hasRightAxis = !showCustom && isAllMode
+    const plotLeft = CHART_MARGIN.left + Y_AXIS_WIDTH
+    const plotRight = CHART_MARGIN.right + (hasRightAxis ? Y_AXIS_WIDTH : 0)
+    const plotWidth = containerWidth - plotLeft - plotRight
+    const n = data.length
+
+    const positions = new Map<string, number>()
+    data.forEach((d, i) => {
+      if (experimentsByDate.has(d.date)) {
+        const x = plotLeft + (i + 0.5) * (plotWidth / n)
+        positions.set(d.date, x)
+      }
+    })
+    return positions
+  }, [containerWidth, data, experimentsByDate, showCustom, isAllMode])
+
   const CustomTooltipComponent = useMemo(() => {
     if (!customMetricLine) return null
     return CustomMetricTooltip({ format: customMetricLine.format, metricLabel: customMetricLine.label })
   }, [customMetricLine])
 
   return (
-    <div className="h-72 relative">
+    <div className="h-72 relative" ref={containerRef}>
       <ResponsiveContainer width="100%" height="100%">
         <LineChart data={data} margin={{ top: 24, right: 20, bottom: 5, left: 0 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
@@ -339,18 +348,6 @@ export default function TimelineChart({ data, northStarKey, isAllMode, experimen
               )
             })}
 
-          {/* Extract x-axis positions for HTML overlay */}
-          <Customized
-            component={(props: any) => (
-              <PositionExtractor
-                {...props}
-                positionsRef={markerPositionsRef}
-                dates={Array.from(experimentsByDate.keys())}
-                onPositionsReady={() => setMarkersReady((prev: number) => prev + 1)}
-              />
-            )}
-          />
-
           {showCustom ? (
             <Line
               yAxisId="left"
@@ -411,9 +408,9 @@ export default function TimelineChart({ data, northStarKey, isAllMode, experimen
       </ResponsiveContainer>
 
       {/* HTML overlay for reliable click/hover on experiment markers */}
-      <div className="absolute inset-0 pointer-events-none" style={{ top: 0, left: 0 }}>
+      <div className="absolute inset-0 pointer-events-none">
         {Array.from(experimentsByDate.entries()).map(([date, exps]) => {
-          const x = markerPositionsRef.current.get(date)
+          const x = markerPositions.get(date)
           if (x === undefined) return null
 
           return (
@@ -421,10 +418,10 @@ export default function TimelineChart({ data, northStarKey, isAllMode, experimen
               key={date}
               className="absolute pointer-events-auto"
               style={{
-                left: x - 12,
+                left: x - 14,
                 top: 0,
-                width: 24,
-                height: 40,
+                width: 28,
+                height: 48,
                 cursor: 'pointer',
               }}
               onMouseEnter={(e) => {
