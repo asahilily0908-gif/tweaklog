@@ -8,6 +8,7 @@ import RecentExperiments from './RecentExperiments'
 import PlatformFilter from './PlatformFilter'
 import CampaignFilter from './CampaignFilter'
 import ImpactCardPanel from '@/components/impact/ImpactCardPanel'
+import ExperimentDetailPanel from './ExperimentDetailPanel'
 import AiHighlights from './AiHighlights'
 import { evaluateFormulaSafe as evaluateFormula } from '@/lib/metrics/formula-parser'
 import { computeImpactForExperiment } from '@/lib/metrics/score-calculator'
@@ -199,6 +200,7 @@ export default function DashboardContent({ project, outcomes, experiments, metri
   const [platform, setPlatform] = useState('ALL')
   const [dateRange, setDateRange] = useState<DateRange>(30)
   const [selectedExperiment, setSelectedExperiment] = useState<Experiment | null>(null)
+  const [detailPanelExps, setDetailPanelExps] = useState<{ experiments: Experiment[]; date: string } | null>(null)
   const [chartView, setChartView] = useState<string>('default') // 'default' or metric config id
   const [groupFilter, setGroupFilter] = useState<string>('all')
   const [selectedCampaign, setSelectedCampaign] = useState<string>('all')
@@ -608,9 +610,15 @@ export default function DashboardContent({ project, outcomes, experiments, metri
             northStarKey={isAllMode ? (project.north_star_kpi ?? 'conversions') : undefined}
             isAllMode={isAllMode}
             experiments={experiments}
-            onExperimentClick={(experimentId) => {
-              const exp = experiments.find((e) => e.id === experimentId)
-              if (exp) setSelectedExperiment(exp)
+            onExperimentClick={(chartExps, date) => {
+              const fullExps = chartExps
+                .map((ce) => experiments.find((e) => e.id === ce.id))
+                .filter((e): e is Experiment => !!e)
+              if (fullExps.length === 1) {
+                setSelectedExperiment(fullExps[0])
+              } else if (fullExps.length > 1) {
+                setDetailPanelExps({ experiments: fullExps, date })
+              }
             }}
             customMetricLine={selectedMetric ? {
               label: selectedMetric.display_name,
@@ -672,6 +680,20 @@ export default function DashboardContent({ project, outcomes, experiments, metri
         ) : (
           <ImpactUpgradeModal onClose={() => setSelectedExperiment(null)} />
         )
+      )}
+
+      {/* Experiment Detail Panel (multi-experiment date) */}
+      {detailPanelExps && (
+        <ExperimentDetailPanel
+          experiments={detailPanelExps.experiments}
+          date={detailPanelExps.date}
+          impactScores={impactScores}
+          onSelectExperiment={(exp) => {
+            setDetailPanelExps(null)
+            setSelectedExperiment(exp)
+          }}
+          onClose={() => setDetailPanelExps(null)}
+        />
       )}
     </div>
   )
