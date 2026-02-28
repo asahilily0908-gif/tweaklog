@@ -101,7 +101,15 @@
       "creative": "クリエイティブ",
       "targeting": "ターゲティング",
       "budget": "予算",
-      "structure": "構造変更"
+      "structure": "構造変更",
+      "query": "検索クエリ",
+      "creative_version": "クリエイティブVer.",
+      "bid_strategy": "入札戦略",
+      "audience": "オーディエンス",
+      "placement": "配信面",
+      "tracking": "トラッキング",
+      "pmax_asset": "P-MAXアセット",
+      "automation": "自動化ルール"
     },
     "modal": {
       "title": "変更を記録",

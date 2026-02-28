@@ -26,6 +26,14 @@ const CATEGORIES = [
   { value: 'targeting', label: 'Targeting', icon: '🎯' },
   { value: 'budget', label: 'Budget', icon: '📊' },
   { value: 'structure', label: 'Structure', icon: '🏗️' },
+  { value: 'query', label: 'Search Query', icon: '🔍' },
+  { value: 'creative_version', label: 'Creative Ver.', icon: '🖼️' },
+  { value: 'bid_strategy', label: 'Bid Strategy', icon: '📈' },
+  { value: 'audience', label: 'Audience', icon: '👥' },
+  { value: 'placement', label: 'Placement', icon: '📍' },
+  { value: 'tracking', label: 'Tracking', icon: '📡' },
+  { value: 'pmax_asset', label: 'P-MAX Asset', icon: '⚡' },
+  { value: 'automation', label: 'Automation', icon: '🤖' },
 ] as const
 
 const PLATFORM_LABELS: Record<string, string> = {
@@ -89,7 +97,7 @@ export default function NewChangeModal({ projectId, platforms, groups, onClose }
       projectId,
       title,
       createdAt: changeDate,
-      category: category as 'bid' | 'creative' | 'targeting' | 'budget' | 'structure',
+      category: category as typeof CATEGORIES[number]['value'],
       platform,
       campaign: campaign || undefined,
       beforeValue: beforeValue || undefined,
@@ -148,20 +156,20 @@ export default function NewChangeModal({ projectId, platforms, groups, onClose }
           {/* Category */}
           <div>
             <label className="mb-2 block text-xs font-semibold text-gray-600 uppercase tracking-wider">{t('experiments.category')}</label>
-            <div className="grid grid-cols-5 gap-2">
+            <div className="grid grid-cols-4 sm:grid-cols-5 gap-1.5">
               {CATEGORIES.map((cat) => (
                 <button
                   key={cat.value}
                   type="button"
                   onClick={() => setCategory(cat.value)}
-                  className={`flex flex-col items-center gap-1.5 rounded-xl border-2 p-3 text-center transition-all duration-150 ${
+                  className={`flex flex-col items-center gap-1 rounded-xl border-2 p-2 text-center transition-all duration-150 ${
                     category === cat.value
                       ? 'border-blue-500 bg-blue-50 shadow-sm shadow-blue-500/10'
                       : 'border-gray-100 hover:border-gray-200 hover:bg-gray-50'
                   }`}
                 >
-                  <span className="text-xl">{cat.icon}</span>
-                  <span className={`text-[10px] font-medium ${category === cat.value ? 'text-blue-700' : 'text-gray-600'}`}>{t('experiments.categories.' + cat.value)}</span>
+                  <span className="text-lg">{cat.icon}</span>
+                  <span className={`text-[9px] font-medium leading-tight ${category === cat.value ? 'text-blue-700' : 'text-gray-600'}`}>{t('experiments.categories.' + cat.value)}</span>
                 </button>
               ))}
             </div>

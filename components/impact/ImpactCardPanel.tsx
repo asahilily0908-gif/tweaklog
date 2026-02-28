@@ -42,6 +42,14 @@ const CATEGORY_COLORS: Record<string, string> = {
   targeting: 'bg-blue-50 text-blue-700 border-blue-200',
   budget: 'bg-blue-50 text-blue-700 border-blue-200',
   structure: 'bg-gray-50 text-gray-700 border-gray-200',
+  query: 'bg-cyan-50 text-cyan-700 border-cyan-200',
+  creative_version: 'bg-fuchsia-50 text-fuchsia-700 border-fuchsia-200',
+  bid_strategy: 'bg-rose-50 text-rose-700 border-rose-200',
+  audience: 'bg-teal-50 text-teal-700 border-teal-200',
+  placement: 'bg-yellow-50 text-yellow-700 border-yellow-200',
+  tracking: 'bg-indigo-50 text-indigo-700 border-indigo-200',
+  pmax_asset: 'bg-lime-50 text-lime-700 border-lime-200',
+  automation: 'bg-sky-50 text-sky-700 border-sky-200',
 }
 
 function formatMetricValue(value: number | null, metricName: string): string {

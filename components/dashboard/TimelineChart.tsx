@@ -60,11 +60,19 @@ const KPI_TO_FIELD: Record<string, keyof DailyData> = {
 
 // Category colors for marker dots
 const CATEGORY_DOT_COLORS: Record<string, string> = {
-  bid: '#3b82f6',       // blue
-  creative: '#a855f7',  // purple
-  targeting: '#f97316', // orange
-  budget: '#22c55e',    // green
-  structure: '#6b7280', // gray
+  bid: '#3b82f6',             // blue
+  creative: '#a855f7',        // purple
+  targeting: '#f97316',       // orange
+  budget: '#22c55e',          // green
+  structure: '#6b7280',       // gray
+  query: '#06b6d4',           // cyan
+  creative_version: '#d946ef',// fuchsia
+  bid_strategy: '#f43f5e',    // rose
+  audience: '#14b8a6',        // teal
+  placement: '#eab308',       // yellow
+  tracking: '#6366f1',        // indigo
+  pmax_asset: '#84cc16',      // lime
+  automation: '#0ea5e9',      // sky
 }
 
 const CATEGORY_BADGE_STYLES: Record<string, string> = {
@@ -73,6 +81,14 @@ const CATEGORY_BADGE_STYLES: Record<string, string> = {
   targeting: 'bg-orange-100 text-orange-700',
   budget: 'bg-green-100 text-green-700',
   structure: 'bg-gray-100 text-gray-700',
+  query: 'bg-cyan-100 text-cyan-700',
+  creative_version: 'bg-fuchsia-100 text-fuchsia-700',
+  bid_strategy: 'bg-rose-100 text-rose-700',
+  audience: 'bg-teal-100 text-teal-700',
+  placement: 'bg-yellow-100 text-yellow-700',
+  tracking: 'bg-indigo-100 text-indigo-700',
+  pmax_asset: 'bg-lime-100 text-lime-700',
+  automation: 'bg-sky-100 text-sky-700',
 }
 
 function formatDate(dateStr: string) {

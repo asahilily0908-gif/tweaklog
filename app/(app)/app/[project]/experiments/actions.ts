@@ -8,7 +8,8 @@ interface CreateExperimentInput {
   projectId: string
   title: string
   createdAt: string
-  category: 'bid' | 'creative' | 'targeting' | 'budget' | 'structure'
+  category: 'bid' | 'creative' | 'targeting' | 'budget' | 'structure' | 'query' | 'creative_version' | 'bid_strategy' | 'audience' | 'placement' | 'tracking' | 'pmax_asset' | 'automation'
+  metadata?: Record<string, unknown>
   platform: string
   campaign?: string
   beforeValue?: string
@@ -69,6 +70,7 @@ export async function createExperiment(input: CreateExperimentInput) {
       tags: input.tags,
       group_id: input.groupId || null,
       batch_id: batchId,
+      metadata: input.metadata ?? {},
     })
     .select('id')
     .single()

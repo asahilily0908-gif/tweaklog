@@ -101,7 +101,15 @@
       "creative": "Creative",
       "targeting": "Targeting",
       "budget": "Budget",
-      "structure": "Structure"
+      "structure": "Structure",
+      "query": "Search Query",
+      "creative_version": "Creative Ver.",
+      "bid_strategy": "Bid Strategy",
+      "audience": "Audience",
+      "placement": "Placement",
+      "tracking": "Tracking",
+      "pmax_asset": "P-MAX Asset",
+      "automation": "Automation"
     },
     "modal": {
       "title": "Log a Change",
