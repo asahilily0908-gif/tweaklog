@@ -444,25 +444,34 @@ export default function LandingPage() {
           <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 text-center mb-8 sm:mb-12 break-words">
             {t('landing.howItWorks.title')}
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
+          <div className="space-y-4 sm:space-y-0 sm:grid sm:grid-cols-3 sm:gap-8 max-w-md sm:max-w-none mx-auto">
             {[
               { step: 1, icon: Database, titleKey: 'step1Title', descKey: 'step1Desc' },
               { step: 2, icon: PenLine, titleKey: 'step2Title', descKey: 'step2Desc' },
               { step: 3, icon: Sparkles, titleKey: 'step3Title', descKey: 'step3Desc' },
             ].map(({ step, icon: Icon, titleKey, descKey }) => (
-              <div key={step} className="text-center">
-                <div className="mx-auto mb-4 flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-gradient-to-br from-[#2563EB] to-[#9333EA] text-white font-bold text-base sm:text-lg shadow-sm shadow-indigo-500/10">
-                  {step}
+              <div key={step} className="flex items-start gap-4 sm:flex-col sm:items-center sm:text-center rounded-xl border border-gray-100 bg-white p-4 sm:p-6 sm:border-0 sm:bg-transparent">
+                <div className="flex flex-col items-center gap-2 shrink-0">
+                  <div className="flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-gradient-to-br from-[#2563EB] to-[#9333EA] text-white font-bold text-base sm:text-lg shadow-sm shadow-indigo-500/10">
+                    {step}
+                  </div>
+                  <div className="hidden sm:inline-flex rounded-lg bg-blue-50 p-2.5">
+                    <Icon className="h-5 w-5 text-blue-600" />
+                  </div>
                 </div>
-                <div className="mb-3 inline-flex rounded-lg bg-blue-50 p-2.5">
-                  <Icon className="h-5 w-5 text-blue-600" />
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 sm:justify-center mb-1 sm:mb-2">
+                    <div className="sm:hidden inline-flex rounded-lg bg-blue-50 p-1.5">
+                      <Icon className="h-4 w-4 text-blue-600" />
+                    </div>
+                    <h3 className="text-sm sm:text-lg font-semibold text-gray-900">
+                      {t(`landing.howItWorks.${titleKey}`)}
+                    </h3>
+                  </div>
+                  <p className="text-xs sm:text-sm text-gray-600 leading-relaxed">
+                    {t(`landing.howItWorks.${descKey}`)}
+                  </p>
                 </div>
-                <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">
-                  {t(`landing.howItWorks.${titleKey}`)}
-                </h3>
-                <p className="text-xs sm:text-sm text-gray-600 leading-relaxed">
-                  {t(`landing.howItWorks.${descKey}`)}
-                </p>
               </div>
             ))}
           </div>
@@ -537,7 +546,7 @@ export default function LandingPage() {
               {t('landing.pricing.subtitle')}
             </p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 max-w-4xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 max-w-4xl mx-auto pt-2">
             {/* Free */}
             <div className="rounded-xl border border-gray-200 bg-white p-5 sm:p-6 md:p-8 overflow-hidden">
               <h3 className="text-lg font-bold text-gray-900">{t('landing.pricing.free.name')}</h3>
@@ -562,7 +571,7 @@ export default function LandingPage() {
             </div>
 
             {/* Pro — order-first on mobile so it appears at top */}
-            <div className="rounded-xl border-2 border-[#2563EB] bg-white p-5 sm:p-6 md:p-8 relative order-first md:order-none shadow-sm shadow-blue-500/5 overflow-hidden">
+            <div className="rounded-xl border-2 border-[#2563EB] bg-white p-5 sm:p-6 md:p-8 relative order-first md:order-none shadow-sm shadow-blue-500/5">
               <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-gradient-to-r from-[#2563EB] to-[#9333EA] px-3 py-0.5 text-xs font-medium text-white">
                 {t('landing.pricing.popular')}
               </div>
