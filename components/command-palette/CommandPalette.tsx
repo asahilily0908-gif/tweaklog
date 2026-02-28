@@ -276,11 +276,11 @@ export default function CommandPalette({
 
       {/* Palette */}
       <div
-        className="fixed left-1/2 top-[20%] z-50 w-full max-w-xl -translate-x-1/2 overflow-hidden rounded-2xl bg-white shadow-2xl"
+        className="fixed left-1/2 top-[20%] z-50 w-[calc(100%-2rem)] max-w-xl -translate-x-1/2 overflow-hidden rounded-2xl bg-white shadow-2xl box-border"
         style={{ animation: 'scaleIn 150ms ease-out' }}
       >
         {/* Search input */}
-        <div className="flex items-center overflow-hidden border-b border-gray-200 px-4">
+        <div className="flex w-full items-center gap-2 overflow-hidden border-b border-gray-200 px-3">
           <Search className="h-5 w-5 shrink-0 text-slate-400" />
           <input
             ref={inputRef}
@@ -289,9 +289,9 @@ export default function CommandPalette({
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="コマンドを入力、または変更を自然言語で記録..."
-            className="flex-1 border-none shadow-none px-3 py-4 text-lg text-slate-900 placeholder-slate-400 outline-none focus:outline-none focus:ring-0"
+            className="min-w-0 flex-1 border-none shadow-none px-2 py-4 text-lg text-slate-900 placeholder-slate-400 outline-none focus:outline-none focus:ring-0"
           />
-          <kbd className="rounded bg-slate-100 px-2 py-1 text-xs text-slate-500">
+          <kbd className="shrink-0 whitespace-nowrap rounded bg-slate-100 px-2 py-1 text-xs text-slate-500">
             ESC
           </kbd>
         </div>
