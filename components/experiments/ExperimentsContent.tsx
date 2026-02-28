@@ -59,22 +59,6 @@ interface Props {
   experimentGroups: ExperimentGroup[]
 }
 
-const CATEGORY_LABELS: Record<string, string> = {
-  bid: 'Bid',
-  creative: 'Creative',
-  targeting: 'Targeting',
-  budget: 'Budget',
-  structure: 'Structure',
-  query: 'Search Query',
-  creative_version: 'Creative Ver.',
-  bid_strategy: 'Bid Strategy',
-  audience: 'Audience',
-  placement: 'Placement',
-  tracking: 'Tracking',
-  pmax_asset: 'P-MAX Asset',
-  automation: 'Automation',
-}
-
 const CATEGORY_COLORS: Record<string, string> = {
   bid: 'bg-amber-50 text-amber-700 border-amber-200',
   creative: 'bg-purple-50 text-purple-700 border-purple-200',
@@ -185,22 +169,36 @@ export default function ExperimentsContent({ project, experiments, outcomes, exp
 
       {/* Filters */}
       <div className="mb-5 flex items-center gap-3 flex-wrap">
-        <div className="flex gap-2 flex-wrap overflow-x-auto">
-          {['all', 'bid', 'creative', 'targeting', 'budget', 'structure', 'query', 'creative_version', 'bid_strategy', 'audience', 'placement', 'tracking', 'pmax_asset', 'automation'].map((cat) => (
-            <button
-              key={cat}
-              type="button"
-              onClick={() => setFilterCategory(cat)}
-              className={`rounded-lg px-3 py-1.5 text-xs font-medium transition-all duration-200 ${
-                filterCategory === cat
-                  ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-sm'
-                  : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 hover:border-gray-300'
-              }`}
-            >
-              {t('experiments.categories.' + cat)}
-            </button>
-          ))}
-        </div>
+        <select
+          value={filterCategory}
+          onChange={(e) => setFilterCategory(e.target.value)}
+          className="rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:border-gray-300 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all duration-150 min-w-[180px]"
+        >
+          <option value="all">{t('experiments.categories.all')}</option>
+          <optgroup label={t('experiments.groups.bidding')}>
+            <option value="bid">{t('experiments.categories.bid')}</option>
+            <option value="bid_strategy">{t('experiments.categories.bid_strategy')}</option>
+          </optgroup>
+          <optgroup label={t('experiments.groups.creative_group')}>
+            <option value="creative">{t('experiments.categories.creative')}</option>
+            <option value="creative_version">{t('experiments.categories.creative_version')}</option>
+          </optgroup>
+          <optgroup label={t('experiments.groups.targeting_group')}>
+            <option value="targeting">{t('experiments.categories.targeting')}</option>
+            <option value="audience">{t('experiments.categories.audience')}</option>
+            <option value="placement">{t('experiments.categories.placement')}</option>
+          </optgroup>
+          <optgroup label={t('experiments.groups.operations')}>
+            <option value="budget">{t('experiments.categories.budget')}</option>
+            <option value="structure">{t('experiments.categories.structure')}</option>
+            <option value="automation">{t('experiments.categories.automation')}</option>
+          </optgroup>
+          <optgroup label={t('experiments.groups.analysis')}>
+            <option value="query">{t('experiments.categories.query')}</option>
+            <option value="tracking">{t('experiments.categories.tracking')}</option>
+            <option value="pmax_asset">{t('experiments.categories.pmax_asset')}</option>
+          </optgroup>
+        </select>
         {experimentGroups.length > 0 && (
           <select
             value={filterGroup}
