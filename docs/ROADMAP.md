@@ -50,7 +50,7 @@
 
 - [ ] セットアップウィザード → projects テーブルに北極星KPI・サブKPI・メトリクス設定を保存（現在は console.log のみ）
 - [ ] FormulaEditor → metric_configs テーブルとの CRUD 接続
-- [ ] コマンドパレットの NewChangeForm → 既存の NewChangeModal と統合または置き換え
+- [x] formula-evaluator.ts → formula-parser.ts に統合済み（evaluateFormulaSafe追加）。DashboardContent と preview/route.ts のimport変更完了
 - [ ] highlight-detector.ts → 日次バッチ実行（pg_cron）との接続
 - [ ] batch-aggregator.ts → experiments 作成時の自動バッチ割り当て
 
