@@ -10,7 +10,6 @@ import {
   CartesianGrid,
   Tooltip,
   ReferenceLine,
-  Customized,
 } from 'recharts'
 import ScoreBadge from '@/components/impact/ScoreBadge'
 import { useTranslation } from '@/lib/i18n/config'
@@ -179,88 +178,6 @@ interface HoveredExperiments {
   clientY: number
 }
 
-/* Rendered inside <Customized> — receives chart internals (xAxisMap, offset) via cloneElement */
-function ExperimentMarkerLayer(props: any) {
-  const {
-    xAxisMap,
-    offset,
-    experimentsByDate,
-    onExperimentClick,
-    onHover,
-    onLeave,
-  } = props
-
-  if (!xAxisMap || !offset) return null
-
-  const xAxis = (Object.values(xAxisMap) as any[])[0]
-  if (!xAxis?.scale) return null
-
-  const markerY = offset.top - 8
-
-  return (
-    <g>
-      {Array.from((experimentsByDate as Map<string, Experiment[]>).entries()).map(([date, exps]) => {
-        const x = xAxis.scale(date)
-        if (x === undefined || isNaN(x)) return null
-
-        const primaryCategory = exps[0].category
-        const dotColor = CATEGORY_DOT_COLORS[primaryCategory] || '#6b7280'
-
-        return (
-          <g key={date}>
-            {/* Main category dot */}
-            <circle
-              cx={x}
-              cy={markerY}
-              r={5}
-              fill={dotColor}
-              stroke="white"
-              strokeWidth={2}
-            />
-            {/* Count badge for multiple experiments */}
-            {exps.length > 1 && (
-              <>
-                <circle
-                  cx={x + 10}
-                  cy={markerY - 4}
-                  r={7}
-                  fill={dotColor}
-                />
-                <text
-                  x={x + 10}
-                  y={markerY - 3.5}
-                  textAnchor="middle"
-                  dominantBaseline="central"
-                  fill="white"
-                  fontSize={8}
-                  fontWeight="bold"
-                >
-                  {exps.length}
-                </text>
-              </>
-            )}
-            {/* Invisible hit area for reliable hover/click */}
-            {onExperimentClick && (
-              <circle
-                cx={x}
-                cy={markerY}
-                r={14}
-                fill="transparent"
-                style={{ cursor: 'pointer' }}
-                onMouseEnter={(e: React.MouseEvent) =>
-                  onHover(exps, date, e.clientX, e.clientY)
-                }
-                onMouseLeave={() => onLeave()}
-                onClick={() => onExperimentClick(exps, date)}
-              />
-            )}
-          </g>
-        )
-      })}
-    </g>
-  )
-}
-
 export default function TimelineChart({ data, northStarKey, isAllMode, experiments, onExperimentClick, customMetricLine, impactScores }: TimelineChartProps) {
   const { t } = useTranslation()
   const [hoveredExps, setHoveredExps] = useState<HoveredExperiments | null>(null)
@@ -337,37 +254,87 @@ export default function TimelineChart({ data, northStarKey, isAllMode, experimen
             cursor={{ stroke: '#cbd5e1', strokeDasharray: '4 4' }}
           />
 
-          {/* Visible dashed reference lines at experiment dates */}
+          {/* Experiment reference lines with colored dots */}
           {data
             .filter((d) => experimentDates.has(d.date))
-            .map((d) => {
+            .flatMap((d) => {
               const exps = experimentsByDate.get(d.date)!
-              const dotColor = CATEGORY_DOT_COLORS[exps[0].category] || '#6b7280'
-              return (
+              const primaryCategory = exps[0].category
+              const dotColor = CATEGORY_DOT_COLORS[primaryCategory] || '#6b7280'
+
+              const elements = [
                 <ReferenceLine
-                  key={`${d.date}-line`}
+                  key={`${d.date}-visible`}
                   x={d.date}
                   yAxisId="left"
                   stroke={dotColor}
                   strokeDasharray="4 4"
                   strokeOpacity={0.5}
-                />
-              )
-            })}
+                  label={(props: any) => {
+                    const { viewBox } = props
+                    if (!viewBox) return null
+                    return (
+                      <g>
+                        <circle
+                          cx={viewBox.x}
+                          cy={viewBox.y - 8}
+                          r={5}
+                          fill={dotColor}
+                          stroke="white"
+                          strokeWidth={2}
+                        />
+                        {exps.length > 1 && (
+                          <>
+                            <circle
+                              cx={viewBox.x + 10}
+                              cy={viewBox.y - 12}
+                              r={7}
+                              fill={dotColor}
+                            />
+                            <text
+                              x={viewBox.x + 10}
+                              y={viewBox.y - 11.5}
+                              textAnchor="middle"
+                              dominantBaseline="central"
+                              fill="white"
+                              fontSize={8}
+                              fontWeight="bold"
+                            >
+                              {exps.length}
+                            </text>
+                          </>
+                        )}
+                      </g>
+                    )
+                  }}
+                />,
+              ]
 
-          {/* Interactive experiment marker dots via Customized layer */}
-          <Customized
-            component={
-              <ExperimentMarkerLayer
-                experimentsByDate={experimentsByDate}
-                onExperimentClick={onExperimentClick}
-                onHover={(exps: Experiment[], date: string, clientX: number, clientY: number) =>
-                  setHoveredExps({ exps, date, clientX, clientY })
-                }
-                onLeave={() => setHoveredExps(null)}
-              />
-            }
-          />
+              if (onExperimentClick) {
+                elements.push(
+                  <ReferenceLine
+                    key={`${d.date}-hit`}
+                    x={d.date}
+                    yAxisId="left"
+                    stroke="transparent"
+                    strokeWidth={20}
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => onExperimentClick(exps, d.date)}
+                    onMouseEnter={(e: any) => {
+                      setHoveredExps({
+                        exps,
+                        date: d.date,
+                        clientX: e?.clientX ?? 0,
+                        clientY: e?.clientY ?? 0,
+                      })
+                    }}
+                    onMouseLeave={() => setHoveredExps(null)}
+                  />
+                )
+              }
+
+              return elements
+            })}
 
           {showCustom ? (
             <Line
