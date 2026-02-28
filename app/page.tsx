@@ -668,8 +668,21 @@ export default function LandingPage() {
               </Link>
             </nav>
           </div>
-          <div className="mt-6 text-center text-xs text-gray-500">
-            {t('landing.footer.copyright')}
+          <div className="mt-6 flex flex-col items-center gap-3">
+            <nav className="flex flex-wrap items-center justify-center gap-4">
+              <Link href="/terms" className="text-xs text-gray-500 hover:text-gray-300 transition-colors">
+                Terms of Service
+              </Link>
+              <Link href="/privacy" className="text-xs text-gray-500 hover:text-gray-300 transition-colors">
+                Privacy Policy
+              </Link>
+              <Link href="/legal/commercial-transactions" className="text-xs text-gray-500 hover:text-gray-300 transition-colors">
+                特定商取引法に基づく表記
+              </Link>
+            </nav>
+            <div className="text-xs text-gray-500">
+              {t('landing.footer.copyright')}
+            </div>
           </div>
         </div>
       </footer>
