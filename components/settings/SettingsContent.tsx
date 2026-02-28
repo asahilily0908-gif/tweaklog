@@ -6,6 +6,7 @@ import { toast } from 'sonner'
 import BillingSection from '@/components/settings/BillingSection'
 import TeamSection from '@/components/settings/TeamSection'
 import ApiSection from '@/components/settings/ApiSection'
+import FormulaEditor from '@/components/metrics/FormulaEditor'
 import {
   updateProject,
   updateKpiSettings,
@@ -778,7 +779,7 @@ export default function SettingsContent({
             </p>
           ) : null}
 
-          {/* Inline metric editor */}
+          {/* FormulaEditor integration */}
           {showEditor && (
             <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50/50 p-5 space-y-4">
               <div className="flex items-center justify-between">
@@ -796,95 +797,26 @@ export default function SettingsContent({
                 </button>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-medium text-gray-600">{t('settings.internalName')}</label>
-                  <input
-                    type="text"
-                    value={editorName}
-                    onChange={(e) => setEditorName(e.target.value.toLowerCase().replace(/\s+/g, '_'))}
-                    placeholder="gross_profit_roas"
-                    className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm font-mono text-gray-900 placeholder-gray-400 focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-medium text-gray-600">{t('settings.displayName')}</label>
-                  <input
-                    type="text"
-                    value={editorDisplayName}
-                    onChange={(e) => setEditorDisplayName(e.target.value)}
-                    placeholder="Gross Profit ROAS"
-                    className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500"
-                  />
-                </div>
-              </div>
+              <FormulaEditor
+                value={{
+                  name: editorName,
+                  displayName: editorDisplayName,
+                  formula: editorFormula,
+                  improvementDirection: editorDirection,
+                }}
+                onChange={(val) => {
+                  setEditorName(val.name)
+                  setEditorDisplayName(val.displayName)
+                  setEditorFormula(val.formula)
+                  setEditorDirection(val.improvementDirection)
+                  setFormulaError(null)
+                }}
+                availableVariables={allVariables}
+                onSave={handleSaveMetric}
+                onCancel={closeEditor}
+              />
 
-              {/* Formula */}
-              <div>
-                <label className="block text-xs font-medium text-gray-600">{t('settings.formula')}</label>
-                <textarea
-                  ref={formulaRef}
-                  value={editorFormula}
-                  onChange={(e) => {
-                    setEditorFormula(e.target.value)
-                    setFormulaError(null)
-                  }}
-                  rows={2}
-                  placeholder="(Revenue - COGS) / Cost"
-                  className={`mt-1 block w-full rounded-lg border px-3 py-2 font-mono text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 ${
-                    formulaError
-                      ? 'border-red-300 focus:border-red-500 focus:ring-red-500'
-                      : 'border-gray-300 focus:border-slate-500 focus:ring-slate-500'
-                  }`}
-                />
-                {formulaError && (
-                  <p className="mt-1 text-xs text-red-600">{formulaError}</p>
-                )}
-              </div>
-
-              {/* Variable chips */}
-              <div>
-                <p className="text-xs font-medium text-gray-500 mb-1.5">{t('settings.clickToInsert')}</p>
-                <div className="flex flex-wrap gap-1.5">
-                  {allVariables.map((v) => (
-                    <button
-                      key={v}
-                      type="button"
-                      onClick={() => insertVariable(v)}
-                      className="rounded bg-slate-100 px-2 py-0.5 text-xs font-mono text-slate-700 transition-colors hover:bg-slate-200"
-                    >
-                      {v}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Functions reference (collapsible) */}
-              <div>
-                <button
-                  type="button"
-                  onClick={() => setShowReference(!showReference)}
-                  className="text-xs font-medium text-gray-500 hover:text-gray-700 flex items-center gap-1"
-                >
-                  <svg className={`h-3 w-3 transition-transform ${showReference ? 'rotate-90' : ''}`} fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-                  </svg>
-                  {t('settings.availableFunctions')}
-                </button>
-                {showReference && (
-                  <div className="mt-2 rounded-lg bg-white border border-gray-200 p-3">
-                    {FUNCTIONS_REFERENCE.map((f) => (
-                      <div key={f.name} className="text-xs font-mono text-gray-600 py-0.5">
-                        <span className="text-purple-600">{f.name}</span>
-                        {' — '}
-                        <span className="text-gray-400">{f.example}</span>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-
-              {/* Real-time preview */}
+              {/* Server-side real-time preview (from actual outcomes data) */}
               {(preview.length > 0 || previewLoading) && (
                 <div className="rounded-lg border border-gray-200 bg-white p-3">
                   <div className="flex items-center justify-between mb-2">
@@ -939,50 +871,15 @@ export default function SettingsContent({
                 </div>
               )}
 
-              {/* Improvement direction */}
-              <div>
-                <label className="block text-xs font-medium text-gray-600 mb-1.5">
-                  {t('settings.improvementDirection')}
-                </label>
-                <div className="flex gap-4">
-                  <label className="flex items-center gap-2 text-sm cursor-pointer">
-                    <input
-                      type="radio"
-                      checked={editorDirection === 'up'}
-                      onChange={() => setEditorDirection('up')}
-                      className="text-slate-900 focus:ring-slate-500"
-                    />
-                    <span className="text-gray-700">{t('settings.higherBetter')}</span>
-                  </label>
-                  <label className="flex items-center gap-2 text-sm cursor-pointer">
-                    <input
-                      type="radio"
-                      checked={editorDirection === 'down'}
-                      onChange={() => setEditorDirection('down')}
-                      className="text-slate-900 focus:ring-slate-500"
-                    />
-                    <span className="text-gray-700">{t('settings.lowerBetter')}</span>
-                  </label>
+              {metricSaving && (
+                <div className="flex items-center gap-2 text-sm text-gray-500">
+                  <svg className="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                  </svg>
+                  {t('settings.saving')}
                 </div>
-              </div>
-
-              <div className="flex items-center gap-3 pt-1">
-                <button
-                  type="button"
-                  onClick={handleSaveMetric}
-                  disabled={metricSaving}
-                  className="rounded-lg bg-gradient-to-r from-indigo-500 to-purple-600 px-5 py-2 text-sm font-medium text-white transition-all duration-200 hover:shadow-sm hover:shadow-indigo-500/15 disabled:opacity-50"
-                >
-                  {metricSaving ? t('settings.saving') : editingId ? t('settings.updateMetric') : t('settings.addMetric')}
-                </button>
-                <button
-                  type="button"
-                  onClick={closeEditor}
-                  className="rounded-lg border border-gray-200 px-4 py-2 text-sm font-medium text-gray-600 transition-all duration-150 hover:bg-gray-50"
-                >
-                  {t('common.cancel')}
-                </button>
-              </div>
+              )}
             </div>
           )}
         </div>
