@@ -84,6 +84,61 @@ const PLATFORM_LABELS: Record<string, string> = {
   x_ads: 'X (Twitter) Ads',
 }
 
+const inputClass = "w-full rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all duration-150"
+
+function TagListInput({ tags, onChange, placeholder }: { tags: string[]; onChange: (tags: string[]) => void; placeholder: string }) {
+  const [input, setInput] = useState('')
+
+  function add() {
+    const v = input.trim()
+    if (v && !tags.includes(v)) {
+      onChange([...tags, v])
+      setInput('')
+    }
+  }
+
+  return (
+    <div>
+      <div className="flex gap-2">
+        <input
+          type="text"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); add() } }}
+          placeholder={placeholder}
+          className={'flex-1 ' + inputClass}
+        />
+        <button
+          type="button"
+          onClick={add}
+          className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs font-medium text-gray-700 hover:bg-gray-50 transition-all duration-150"
+        >
+          +
+        </button>
+      </div>
+      {tags.length > 0 && (
+        <div className="mt-1.5 flex flex-wrap gap-1.5">
+          {tags.map((tag) => (
+            <span
+              key={tag}
+              className="inline-flex items-center gap-1 rounded-full border border-gray-200 bg-white px-2.5 py-0.5 text-xs text-gray-700"
+            >
+              {tag}
+              <button
+                type="button"
+                onClick={() => onChange(tags.filter((t) => t !== tag))}
+                className="text-gray-400 hover:text-red-500 transition-colors"
+              >
+                ×
+              </button>
+            </span>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
 export default function NewChangeModal({ projectId, platforms, groups, onClose }: Props) {
   const router = useRouter()
   const { t } = useTranslation()
@@ -105,10 +160,16 @@ export default function NewChangeModal({ projectId, platforms, groups, onClose }
   const [clientNote, setClientNote] = useState('')
   const [tagInput, setTagInput] = useState('')
   const [tags, setTags] = useState<string[]>([])
+  const [metadata, setMetadata] = useState<Record<string, unknown>>({})
 
   useEffect(() => {
     requestAnimationFrame(() => setIsVisible(true))
   }, [])
+
+  // Reset metadata when category changes
+  useEffect(() => {
+    setMetadata({})
+  }, [category])
 
   function addTag() {
     const t = tagInput.trim()
@@ -146,6 +207,7 @@ export default function NewChangeModal({ projectId, platforms, groups, onClose }
       clientNote: clientNote || undefined,
       tags,
       groupId: groupId || undefined,
+      metadata: Object.keys(metadata).length > 0 ? metadata : undefined,
     })
 
     if (result.error) {
@@ -157,8 +219,6 @@ export default function NewChangeModal({ projectId, platforms, groups, onClose }
       onClose()
     }
   }
-
-  const inputClass = "w-full rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all duration-150"
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
@@ -338,6 +398,212 @@ export default function NewChangeModal({ projectId, platforms, groups, onClose }
               className={inputClass}
             />
           </div>
+
+          {/* Category-specific metadata fields */}
+          {category === 'query' && (
+            <div className="space-y-3 rounded-lg border border-cyan-100 bg-cyan-50/30 p-4 animate-fade-in-up">
+              <p className="text-xs font-semibold text-cyan-700">{t('experiments.metadata.sectionTitle')}</p>
+              <div>
+                <label className="mb-1.5 block text-xs font-medium text-gray-700">{t('experiments.metadata.query.keywords')}</label>
+                <TagListInput
+                  tags={(metadata.keywords as string[]) ?? []}
+                  onChange={(kw) => setMetadata({ ...metadata, keywords: kw })}
+                  placeholder={t('experiments.metadata.query.keywordsPlaceholder')}
+                />
+              </div>
+              <div>
+                <label className="mb-1.5 block text-xs font-medium text-gray-700">{t('experiments.metadata.query.matchType')}</label>
+                <select
+                  value={(metadata.matchType as string) ?? ''}
+                  onChange={(e) => setMetadata({ ...metadata, matchType: e.target.value })}
+                  className={inputClass}
+                >
+                  <option value="">{t('common.select')}</option>
+                  <option value="exact">{t('experiments.metadata.query.exact')}</option>
+                  <option value="phrase">{t('experiments.metadata.query.phrase')}</option>
+                  <option value="broad">{t('experiments.metadata.query.broad')}</option>
+                </select>
+              </div>
+            </div>
+          )}
+
+          {category === 'creative_version' && (
+            <div className="space-y-3 rounded-lg border border-fuchsia-100 bg-fuchsia-50/30 p-4 animate-fade-in-up">
+              <p className="text-xs font-semibold text-fuchsia-700">{t('experiments.metadata.sectionTitle')}</p>
+              <div>
+                <label className="mb-1.5 block text-xs font-medium text-gray-700">{t('experiments.metadata.creativeVersion.elements')}</label>
+                <div className="flex flex-wrap gap-2 mt-1">
+                  {(['headline', 'description', 'image', 'video', 'cta', 'sitelinks'] as const).map((el) => {
+                    const checked = ((metadata.elements as string[]) ?? []).includes(el)
+                    return (
+                      <label key={el} className={`flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-medium cursor-pointer transition-all duration-150 ${
+                        checked ? 'border-fuchsia-400 bg-fuchsia-50 text-fuchsia-700' : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300'
+                      }`}>
+                        <input
+                          type="checkbox"
+                          className="sr-only"
+                          checked={checked}
+                          onChange={() => {
+                            const current = (metadata.elements as string[]) ?? []
+                            setMetadata({
+                              ...metadata,
+                              elements: checked ? current.filter((e) => e !== el) : [...current, el],
+                            })
+                          }}
+                        />
+                        {t('experiments.metadata.creativeVersion.' + el)}
+                      </label>
+                    )
+                  })}
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="mb-1.5 block text-xs font-medium text-gray-700">{t('experiments.metadata.creativeVersion.headlineBefore')}</label>
+                  <input
+                    type="text"
+                    value={(metadata.headlineBefore as string) ?? ''}
+                    onChange={(e) => setMetadata({ ...metadata, headlineBefore: e.target.value })}
+                    placeholder={t('experiments.metadata.creativeVersion.headlineBeforePlaceholder')}
+                    className={inputClass}
+                  />
+                </div>
+                <div>
+                  <label className="mb-1.5 block text-xs font-medium text-gray-700">{t('experiments.metadata.creativeVersion.headlineAfter')}</label>
+                  <input
+                    type="text"
+                    value={(metadata.headlineAfter as string) ?? ''}
+                    onChange={(e) => setMetadata({ ...metadata, headlineAfter: e.target.value })}
+                    placeholder={t('experiments.metadata.creativeVersion.headlineAfterPlaceholder')}
+                    className={inputClass}
+                  />
+                </div>
+              </div>
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={(metadata.isAbTest as boolean) ?? false}
+                  onChange={(e) => setMetadata({ ...metadata, isAbTest: e.target.checked })}
+                  className="rounded border-gray-300 text-fuchsia-600 focus:ring-fuchsia-500"
+                />
+                <span className="text-xs font-medium text-gray-700">{t('experiments.metadata.creativeVersion.isAbTest')}</span>
+              </label>
+            </div>
+          )}
+
+          {category === 'bid_strategy' && (
+            <div className="space-y-3 rounded-lg border border-rose-100 bg-rose-50/30 p-4 animate-fade-in-up">
+              <p className="text-xs font-semibold text-rose-700">{t('experiments.metadata.sectionTitle')}</p>
+              <div>
+                <label className="mb-1.5 block text-xs font-medium text-gray-700">{t('experiments.metadata.bidStrategy.strategyType')}</label>
+                <select
+                  value={(metadata.strategyType as string) ?? ''}
+                  onChange={(e) => setMetadata({ ...metadata, strategyType: e.target.value })}
+                  className={inputClass}
+                >
+                  <option value="">{t('common.select')}</option>
+                  <option value="manual_cpc">{t('experiments.metadata.bidStrategy.manualCpc')}</option>
+                  <option value="enhanced_cpc">{t('experiments.metadata.bidStrategy.enhancedCpc')}</option>
+                  <option value="maximize_conversions">{t('experiments.metadata.bidStrategy.maximizeConversions')}</option>
+                  <option value="maximize_clicks">{t('experiments.metadata.bidStrategy.maximizeClicks')}</option>
+                  <option value="target_cpa">{t('experiments.metadata.bidStrategy.targetCpa')}</option>
+                  <option value="target_roas">{t('experiments.metadata.bidStrategy.targetRoas')}</option>
+                </select>
+              </div>
+              <div>
+                <label className="mb-1.5 block text-xs font-medium text-gray-700">{t('experiments.metadata.bidStrategy.targetValue')}</label>
+                <input
+                  type="text"
+                  value={(metadata.targetValue as string) ?? ''}
+                  onChange={(e) => setMetadata({ ...metadata, targetValue: e.target.value })}
+                  placeholder={t('experiments.metadata.bidStrategy.targetValuePlaceholder')}
+                  className={inputClass}
+                />
+              </div>
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={(metadata.learningPhase as boolean) ?? false}
+                  onChange={(e) => setMetadata({ ...metadata, learningPhase: e.target.checked })}
+                  className="rounded border-gray-300 text-rose-600 focus:ring-rose-500"
+                />
+                <span className="text-xs font-medium text-gray-700">{t('experiments.metadata.bidStrategy.learningPhase')}</span>
+              </label>
+            </div>
+          )}
+
+          {category === 'audience' && (
+            <div className="space-y-3 rounded-lg border border-teal-100 bg-teal-50/30 p-4 animate-fade-in-up">
+              <p className="text-xs font-semibold text-teal-700">{t('experiments.metadata.sectionTitle')}</p>
+              <div>
+                <label className="mb-1.5 block text-xs font-medium text-gray-700">{t('experiments.metadata.audience.changeType')}</label>
+                <div className="flex gap-2 mt-1">
+                  {(['add', 'remove', 'modify'] as const).map((ct) => (
+                    <button
+                      key={ct}
+                      type="button"
+                      onClick={() => setMetadata({ ...metadata, changeType: ct })}
+                      className={`rounded-lg border px-3 py-1.5 text-xs font-medium transition-all duration-150 ${
+                        metadata.changeType === ct
+                          ? 'border-teal-500 bg-teal-50 text-teal-700'
+                          : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300'
+                      }`}
+                    >
+                      {t('experiments.metadata.audience.' + ct)}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div>
+                <label className="mb-1.5 block text-xs font-medium text-gray-700">{t('experiments.metadata.audience.audienceName')}</label>
+                <input
+                  type="text"
+                  value={(metadata.audienceName as string) ?? ''}
+                  onChange={(e) => setMetadata({ ...metadata, audienceName: e.target.value })}
+                  placeholder={t('experiments.metadata.audience.audienceNamePlaceholder')}
+                  className={inputClass}
+                />
+              </div>
+              <div>
+                <label className="mb-1.5 block text-xs font-medium text-gray-700">{t('experiments.metadata.audience.audienceType')}</label>
+                <select
+                  value={(metadata.audienceType as string) ?? ''}
+                  onChange={(e) => setMetadata({ ...metadata, audienceType: e.target.value })}
+                  className={inputClass}
+                >
+                  <option value="">{t('common.select')}</option>
+                  <option value="remarketing">{t('experiments.metadata.audience.remarketing')}</option>
+                  <option value="similar">{t('experiments.metadata.audience.similar')}</option>
+                  <option value="custom_intent">{t('experiments.metadata.audience.customIntent')}</option>
+                  <option value="in_market">{t('experiments.metadata.audience.inMarket')}</option>
+                  <option value="affinity">{t('experiments.metadata.audience.affinity')}</option>
+                  <option value="demographics">{t('experiments.metadata.audience.demographics')}</option>
+                </select>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="mb-1.5 block text-xs font-medium text-gray-700">{t('experiments.metadata.audience.sizeBefore')}</label>
+                  <input
+                    type="text"
+                    value={(metadata.sizeBefore as string) ?? ''}
+                    onChange={(e) => setMetadata({ ...metadata, sizeBefore: e.target.value })}
+                    placeholder={t('experiments.metadata.audience.sizeBeforePlaceholder')}
+                    className={inputClass}
+                  />
+                </div>
+                <div>
+                  <label className="mb-1.5 block text-xs font-medium text-gray-700">{t('experiments.metadata.audience.sizeAfter')}</label>
+                  <input
+                    type="text"
+                    value={(metadata.sizeAfter as string) ?? ''}
+                    onChange={(e) => setMetadata({ ...metadata, sizeAfter: e.target.value })}
+                    placeholder={t('experiments.metadata.audience.sizeAfterPlaceholder')}
+                    className={inputClass}
+                  />
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Before / After */}
           <div className="grid grid-cols-2 gap-3">

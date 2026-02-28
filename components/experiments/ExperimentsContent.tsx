@@ -203,7 +203,7 @@ export default function ExperimentsContent({ project, experiments, outcomes, exp
           <select
             value={filterGroup}
             onChange={(e) => setFilterGroup(e.target.value)}
-            className="rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500"
+            className="rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:border-gray-300 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all duration-150 min-w-[180px]"
           >
             <option value="all">{t('dashboard.allGroups')}</option>
             {experimentGroups.map((g) => (

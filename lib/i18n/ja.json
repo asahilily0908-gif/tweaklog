@@ -16,7 +16,8 @@
     "error": "エラー",
     "success": "成功",
     "viewAll": "すべて表示",
-    "add": "追加"
+    "add": "追加",
+    "select": "選択してください"
   },
   "nav": {
     "dashboard": "ダッシュボード",
@@ -119,6 +120,62 @@
       "analysis": "分析・計測"
     },
     "selectedCategory": "選択中",
+    "metadata": {
+      "sectionTitle": "詳細情報",
+      "query": {
+        "keywords": "キーワード",
+        "keywordsPlaceholder": "キーワードを入力してEnter",
+        "matchType": "マッチタイプ",
+        "exact": "完全一致",
+        "phrase": "フレーズ一致",
+        "broad": "部分一致"
+      },
+      "creativeVersion": {
+        "elements": "変更要素",
+        "headline": "見出し",
+        "description": "説明文",
+        "image": "画像",
+        "video": "動画",
+        "cta": "CTA",
+        "sitelinks": "サイトリンク",
+        "headlineBefore": "見出し（変更前）",
+        "headlineAfter": "見出し（変更後）",
+        "headlineBeforePlaceholder": "例: 今すぐ購入",
+        "headlineAfterPlaceholder": "例: 期間限定セール",
+        "isAbTest": "A/Bテストとして実施"
+      },
+      "bidStrategy": {
+        "strategyType": "入札戦略タイプ",
+        "manualCpc": "個別クリック単価",
+        "enhancedCpc": "拡張クリック単価",
+        "maximizeConversions": "コンバージョン数の最大化",
+        "maximizeClicks": "クリック数の最大化",
+        "targetCpa": "目標コンバージョン単価",
+        "targetRoas": "目標広告費用対効果",
+        "targetValue": "目標値",
+        "targetValuePlaceholder": "例: ¥3,000",
+        "learningPhase": "学習期間中"
+      },
+      "audience": {
+        "changeType": "変更タイプ",
+        "add": "追加",
+        "remove": "除外",
+        "modify": "変更",
+        "audienceName": "オーディエンス名",
+        "audienceNamePlaceholder": "例: サイト訪問者30日",
+        "audienceType": "オーディエンスタイプ",
+        "remarketing": "リマーケティング",
+        "similar": "類似オーディエンス",
+        "customIntent": "カスタムインテント",
+        "inMarket": "購買意向の強いユーザー",
+        "affinity": "アフィニティ",
+        "demographics": "ユーザー属性",
+        "sizeBefore": "サイズ（変更前）",
+        "sizeAfter": "サイズ（変更後）",
+        "sizeBeforePlaceholder": "例: 50,000",
+        "sizeAfterPlaceholder": "例: 120,000"
+      }
+    },
     "modal": {
       "title": "変更を記録",
       "description": "実験や変更を記録します",

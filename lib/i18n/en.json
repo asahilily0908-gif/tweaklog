@@ -16,7 +16,8 @@
     "error": "Error",
     "success": "Success",
     "viewAll": "View all",
-    "add": "Add"
+    "add": "Add",
+    "select": "Select"
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -119,6 +120,62 @@
       "analysis": "Analysis"
     },
     "selectedCategory": "Selected",
+    "metadata": {
+      "sectionTitle": "Details",
+      "query": {
+        "keywords": "Keywords",
+        "keywordsPlaceholder": "Type a keyword and press Enter",
+        "matchType": "Match Type",
+        "exact": "Exact Match",
+        "phrase": "Phrase Match",
+        "broad": "Broad Match"
+      },
+      "creativeVersion": {
+        "elements": "Changed Elements",
+        "headline": "Headline",
+        "description": "Description",
+        "image": "Image",
+        "video": "Video",
+        "cta": "CTA",
+        "sitelinks": "Sitelinks",
+        "headlineBefore": "Headline (Before)",
+        "headlineAfter": "Headline (After)",
+        "headlineBeforePlaceholder": "e.g. Buy Now",
+        "headlineAfterPlaceholder": "e.g. Limited Time Sale",
+        "isAbTest": "Running as A/B test"
+      },
+      "bidStrategy": {
+        "strategyType": "Strategy Type",
+        "manualCpc": "Manual CPC",
+        "enhancedCpc": "Enhanced CPC",
+        "maximizeConversions": "Maximize Conversions",
+        "maximizeClicks": "Maximize Clicks",
+        "targetCpa": "Target CPA",
+        "targetRoas": "Target ROAS",
+        "targetValue": "Target Value",
+        "targetValuePlaceholder": "e.g. $30",
+        "learningPhase": "In learning phase"
+      },
+      "audience": {
+        "changeType": "Change Type",
+        "add": "Add",
+        "remove": "Remove",
+        "modify": "Modify",
+        "audienceName": "Audience Name",
+        "audienceNamePlaceholder": "e.g. Site visitors 30 days",
+        "audienceType": "Audience Type",
+        "remarketing": "Remarketing",
+        "similar": "Similar Audience",
+        "customIntent": "Custom Intent",
+        "inMarket": "In-Market",
+        "affinity": "Affinity",
+        "demographics": "Demographics",
+        "sizeBefore": "Size (Before)",
+        "sizeAfter": "Size (After)",
+        "sizeBeforePlaceholder": "e.g. 50,000",
+        "sizeAfterPlaceholder": "e.g. 120,000"
+      }
+    },
     "modal": {
       "title": "Log a Change",
       "description": "Record an experiment or modification",
