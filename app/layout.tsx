@@ -47,21 +47,12 @@ export const metadata: Metadata = {
     title: "Tweaklog — Ad Change Logs × Impact Analysis × AI Insights",
     description:
       "Track every ad change, automatically measure its impact on KPIs, and get AI-powered insights. The all-in-one platform for Google Ads, Meta Ads, and more.",
-    images: [
-      {
-        url: "/og-image.png",
-        width: 1200,
-        height: 630,
-        alt: "Tweaklog — Log the tweak. See the lift.",
-      },
-    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Tweaklog — Ad Change Logs × Impact Analysis × AI Insights",
     description:
       "Track every ad change, automatically measure its impact on KPIs, and get AI-powered insights. The all-in-one platform for Google Ads, Meta Ads, and more.",
-    images: ["/og-image.png"],
   },
   robots: {
     index: true,
