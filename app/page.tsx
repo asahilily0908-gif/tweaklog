@@ -206,7 +206,7 @@ export default function LandingPage() {
   const platforms = ['Google Ads', 'Meta Ads', 'Yahoo! Ads', 'TikTok Ads', 'LINE Ads', 'Microsoft Ads', 'X Ads']
 
   return (
-    <div className="min-h-screen bg-white [word-break:keep-all]">
+    <div className="min-h-screen bg-white overflow-x-hidden">
       {/* Header */}
       <header
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
@@ -293,13 +293,13 @@ export default function LandingPage() {
 
         <div className="mx-auto max-w-6xl px-4 md:px-6">
           <div className="text-center max-w-4xl mx-auto mb-10 sm:mb-12 md:mb-16">
-            <h1 className="text-2xl sm:text-3xl md:text-[2.75rem] lg:text-5xl font-bold leading-tight tracking-tight mb-4 sm:mb-6 bg-gradient-to-r from-[#2563EB] to-[#9333EA] bg-clip-text text-transparent">
+            <h1 className="text-2xl sm:text-3xl md:text-[2.75rem] lg:text-5xl font-bold leading-tight tracking-tight mb-4 sm:mb-6 bg-gradient-to-r from-[#2563EB] to-[#9333EA] bg-clip-text text-transparent break-words">
               {t('landing.hero.headline')}
             </h1>
             <p className="text-base sm:text-lg md:text-xl text-blue-600 font-medium mb-4 sm:mb-6">
               {t('landing.hero.tagline')}
             </p>
-            <p className="text-sm sm:text-base md:text-lg text-gray-600 leading-relaxed mb-8 sm:mb-10 max-w-3xl mx-auto">
+            <p className="text-sm sm:text-base md:text-lg text-gray-600 leading-relaxed mb-8 sm:mb-10 max-w-3xl mx-auto break-words">
               {t('landing.hero.subheadline')}
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
@@ -326,7 +326,7 @@ export default function LandingPage() {
       {/* Pain Points */}
       <Section className="py-12 sm:py-16 md:py-24 bg-gray-50/50">
         <div className="mx-auto max-w-6xl px-4 md:px-6">
-          <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 text-center mb-8 sm:mb-12">
+          <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 text-center mb-8 sm:mb-12 break-words">
             {t('landing.painPoints.title')}
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
@@ -359,7 +359,7 @@ export default function LandingPage() {
       <Section className="py-16 sm:py-20 md:py-28" id="features">
         <div className="mx-auto max-w-6xl px-4 md:px-6">
           <div className="text-center mb-8 sm:mb-12">
-            <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 mb-3">
+            <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 mb-3 break-words">
               {t('landing.features.title')}
             </h2>
             <p className="text-sm sm:text-base text-gray-600">
@@ -381,7 +381,7 @@ export default function LandingPage() {
               }
               const c = colorMap[color]
               return (
-                <div key={key} className={`rounded-xl border-2 ${c.border} bg-white p-5 sm:p-6 md:p-8 hover:border-[#2563EB] transition-colors duration-200`}>
+                <div key={key} className={`rounded-xl border-2 ${c.border} bg-white p-5 sm:p-6 md:p-8 hover:border-[#2563EB] transition-colors duration-200 overflow-hidden`}>
                   <div className="mb-3 sm:mb-4 inline-flex rounded-lg bg-gradient-to-br from-blue-100 to-purple-100 p-2.5">
                     <Icon className={`h-5 w-5 ${c.icon}`} />
                   </div>
@@ -404,7 +404,7 @@ export default function LandingPage() {
       {/* Integrations */}
       <Section className="py-16 sm:py-20 md:py-28 bg-gray-50/50">
         <div className="mx-auto max-w-6xl px-4 md:px-6 text-center">
-          <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 mb-3">
+          <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 mb-3 break-words">
             {t('landing.integrations.title')}
           </h2>
           <p className="text-sm sm:text-base text-gray-600 mb-8 sm:mb-10 max-w-3xl mx-auto">
@@ -441,7 +441,7 @@ export default function LandingPage() {
       {/* How it works */}
       <Section className="py-16 sm:py-20 md:py-28">
         <div className="mx-auto max-w-6xl px-4 md:px-6">
-          <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 text-center mb-8 sm:mb-12">
+          <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 text-center mb-8 sm:mb-12 break-words">
             {t('landing.howItWorks.title')}
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
@@ -473,10 +473,10 @@ export default function LandingPage() {
       <Section className="py-16 sm:py-20 md:py-28 bg-gradient-to-b from-white to-slate-50">
         <div className="mx-auto max-w-6xl px-4 md:px-6">
           <div className="text-center mb-10 sm:mb-14">
-            <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 mb-3">
+            <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 mb-3 break-words">
               エージェントAIが、直接つながる。
             </h2>
-            <p className="text-sm sm:text-base md:text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed">
+            <p className="text-sm sm:text-base md:text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed break-words">
               MCP (Model Context Protocol) 対応。Claude Desktop や OpenClaw などのAIエージェントが、Tweaklog に直接アクセスして変更ログの記録・分析ができます。
             </p>
           </div>
@@ -510,7 +510,7 @@ export default function LandingPage() {
           </div>
 
           <div className="flex flex-col md:flex-row items-center gap-6 md:gap-10 max-w-3xl mx-auto">
-            <div className="w-full md:flex-1 rounded-xl bg-slate-900 p-6 font-mono text-sm text-green-400 overflow-x-auto">
+            <div className="w-full md:flex-1 rounded-xl bg-slate-900 p-4 sm:p-6 font-mono text-xs sm:text-sm text-green-400 overflow-x-auto max-w-full">
               <pre className="whitespace-pre">{`{
   "mcpServers": {
     "tweaklog": {
@@ -530,7 +530,7 @@ export default function LandingPage() {
       <Section className="py-16 sm:py-20 md:py-28 bg-gray-50/50" id="pricing">
         <div className="mx-auto max-w-6xl px-4 md:px-6">
           <div className="text-center mb-8 sm:mb-12">
-            <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 mb-3">
+            <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 mb-3 break-words">
               {t('landing.pricing.title')}
             </h2>
             <p className="text-sm sm:text-base text-gray-600">
@@ -539,7 +539,7 @@ export default function LandingPage() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 max-w-4xl mx-auto">
             {/* Free */}
-            <div className="rounded-xl border border-gray-200 bg-white p-5 sm:p-6 md:p-8">
+            <div className="rounded-xl border border-gray-200 bg-white p-5 sm:p-6 md:p-8 overflow-hidden">
               <h3 className="text-lg font-bold text-gray-900">{t('landing.pricing.free.name')}</h3>
               <div className="mt-2 mb-1">
                 <span className="text-2xl sm:text-3xl font-bold text-gray-900">{t('landing.pricing.free.price')}</span>
@@ -562,7 +562,7 @@ export default function LandingPage() {
             </div>
 
             {/* Pro — order-first on mobile so it appears at top */}
-            <div className="rounded-xl border-2 border-[#2563EB] bg-white p-5 sm:p-6 md:p-8 relative order-first md:order-none shadow-sm shadow-blue-500/5">
+            <div className="rounded-xl border-2 border-[#2563EB] bg-white p-5 sm:p-6 md:p-8 relative order-first md:order-none shadow-sm shadow-blue-500/5 overflow-hidden">
               <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-gradient-to-r from-[#2563EB] to-[#9333EA] px-3 py-0.5 text-xs font-medium text-white">
                 {t('landing.pricing.popular')}
               </div>
@@ -590,7 +590,7 @@ export default function LandingPage() {
             </div>
 
             {/* Team */}
-            <div className="rounded-xl border border-gray-200 bg-white p-5 sm:p-6 md:p-8">
+            <div className="rounded-xl border border-gray-200 bg-white p-5 sm:p-6 md:p-8 overflow-hidden">
               <h3 className="text-lg font-bold text-gray-900">{t('landing.pricing.team.name')}</h3>
               <div className="mt-2 mb-1">
                 <span className="text-2xl sm:text-3xl font-bold text-gray-900">{t('landing.pricing.team.price')}</span>
@@ -620,7 +620,7 @@ export default function LandingPage() {
       {/* FAQ */}
       <Section className="py-16 sm:py-20 md:py-28">
         <div className="mx-auto max-w-3xl px-4 md:px-6">
-          <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 text-center mb-8 sm:mb-10">
+          <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 text-center mb-8 sm:mb-10 break-words">
             {t('landing.faq.title')}
           </h2>
           <div>
@@ -635,7 +635,7 @@ export default function LandingPage() {
       {/* Footer CTA */}
       <Section className="py-16 sm:py-20 md:py-28 bg-gradient-to-r from-[#2563EB] to-[#9333EA]">
         <div className="mx-auto max-w-6xl px-4 md:px-6 text-center">
-          <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-white mb-4 sm:mb-6">
+          <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-white mb-4 sm:mb-6 break-words">
             {t('landing.footerCta.headline')}
           </h2>
           <Link
