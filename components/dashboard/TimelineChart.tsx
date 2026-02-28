@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import {
   ResponsiveContainer,
   LineChart,
@@ -10,6 +10,7 @@ import {
   CartesianGrid,
   Tooltip,
   ReferenceLine,
+  Customized,
 } from 'recharts'
 import ScoreBadge from '@/components/impact/ScoreBadge'
 import { useTranslation } from '@/lib/i18n/config'
@@ -178,9 +179,36 @@ interface HoveredExperiments {
   clientY: number
 }
 
+/* Renders nothing — only extracts x-axis positions from chart internals into a ref */
+function PositionExtractor(props: any) {
+  const { xAxisMap, positionsRef, dates, onPositionsReady } = props
+
+  if (xAxisMap) {
+    const xAxis = (Object.values(xAxisMap) as any[])[0]
+    if (xAxis?.scale) {
+      const newPositions = new Map<string, number>()
+      for (const date of dates) {
+        const x = xAxis.scale(date)
+        if (x !== undefined && !isNaN(x)) {
+          const offset = xAxis.bandSize ? xAxis.bandSize / 2 : 0
+          newPositions.set(date, x + offset)
+        }
+      }
+      if (newPositions.size > 0 && newPositions.size !== positionsRef.current.size) {
+        positionsRef.current = newPositions
+        setTimeout(() => onPositionsReady(), 0)
+      }
+    }
+  }
+
+  return null
+}
+
 export default function TimelineChart({ data, northStarKey, isAllMode, experiments, onExperimentClick, customMetricLine, impactScores }: TimelineChartProps) {
   const { t } = useTranslation()
   const [hoveredExps, setHoveredExps] = useState<HoveredExperiments | null>(null)
+  const markerPositionsRef = useRef<Map<string, number>>(new Map())
+  const [, setMarkersReady] = useState(0)
   const primaryField = northStarKey ? (KPI_TO_FIELD[northStarKey] ?? 'conversions') : 'conversions'
   const showCustom = !!customMetricLine
 
@@ -254,15 +282,15 @@ export default function TimelineChart({ data, northStarKey, isAllMode, experimen
             cursor={{ stroke: '#cbd5e1', strokeDasharray: '4 4' }}
           />
 
-          {/* Experiment reference lines with colored dots */}
+          {/* Experiment reference lines with colored dots (visual only) */}
           {data
             .filter((d) => experimentDates.has(d.date))
-            .flatMap((d) => {
+            .map((d) => {
               const exps = experimentsByDate.get(d.date)!
               const primaryCategory = exps[0].category
               const dotColor = CATEGORY_DOT_COLORS[primaryCategory] || '#6b7280'
 
-              const elements = [
+              return (
                 <ReferenceLine
                   key={`${d.date}-visible`}
                   x={d.date}
@@ -307,34 +335,21 @@ export default function TimelineChart({ data, northStarKey, isAllMode, experimen
                       </g>
                     )
                   }}
-                />,
-              ]
-
-              if (onExperimentClick) {
-                elements.push(
-                  <ReferenceLine
-                    key={`${d.date}-hit`}
-                    x={d.date}
-                    yAxisId="left"
-                    stroke="transparent"
-                    strokeWidth={20}
-                    style={{ cursor: 'pointer' }}
-                    onClick={() => onExperimentClick(exps, d.date)}
-                    onMouseEnter={(e: any) => {
-                      setHoveredExps({
-                        exps,
-                        date: d.date,
-                        clientX: e?.clientX ?? 0,
-                        clientY: e?.clientY ?? 0,
-                      })
-                    }}
-                    onMouseLeave={() => setHoveredExps(null)}
-                  />
-                )
-              }
-
-              return elements
+                />
+              )
             })}
+
+          {/* Extract x-axis positions for HTML overlay */}
+          <Customized
+            component={(props: any) => (
+              <PositionExtractor
+                {...props}
+                positionsRef={markerPositionsRef}
+                dates={Array.from(experimentsByDate.keys())}
+                onPositionsReady={() => setMarkersReady((prev: number) => prev + 1)}
+              />
+            )}
+          />
 
           {showCustom ? (
             <Line
@@ -394,6 +409,42 @@ export default function TimelineChart({ data, northStarKey, isAllMode, experimen
           )}
         </LineChart>
       </ResponsiveContainer>
+
+      {/* HTML overlay for reliable click/hover on experiment markers */}
+      <div className="absolute inset-0 pointer-events-none" style={{ top: 0, left: 0 }}>
+        {Array.from(experimentsByDate.entries()).map(([date, exps]) => {
+          const x = markerPositionsRef.current.get(date)
+          if (x === undefined) return null
+
+          return (
+            <div
+              key={date}
+              className="absolute pointer-events-auto"
+              style={{
+                left: x - 12,
+                top: 0,
+                width: 24,
+                height: 40,
+                cursor: 'pointer',
+              }}
+              onMouseEnter={(e) => {
+                setHoveredExps({
+                  exps,
+                  date,
+                  clientX: e.clientX,
+                  clientY: e.clientY,
+                })
+              }}
+              onMouseLeave={() => setHoveredExps(null)}
+              onClick={() => {
+                if (onExperimentClick) {
+                  onExperimentClick(exps, date)
+                }
+              }}
+            />
+          )
+        })}
+      </div>
 
       {/* Experiment hover tooltip */}
       {hoveredExps && (
