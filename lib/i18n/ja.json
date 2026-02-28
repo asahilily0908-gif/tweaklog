@@ -111,6 +111,14 @@
       "pmax_asset": "P-MAXアセット",
       "automation": "自動化ルール"
     },
+    "groups": {
+      "bidding": "入札",
+      "creative_group": "クリエイティブ",
+      "targeting_group": "ターゲティング",
+      "operations": "運用管理",
+      "analysis": "分析・計測"
+    },
+    "selectedCategory": "選択中",
     "modal": {
       "title": "変更を記録",
       "description": "実験や変更を記録します",

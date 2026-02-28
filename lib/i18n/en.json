@@ -111,6 +111,14 @@
       "pmax_asset": "P-MAX Asset",
       "automation": "Automation"
     },
+    "groups": {
+      "bidding": "Bidding",
+      "creative_group": "Creative",
+      "targeting_group": "Targeting",
+      "operations": "Operations",
+      "analysis": "Analysis"
+    },
+    "selectedCategory": "Selected",
     "modal": {
       "title": "Log a Change",
       "description": "Record an experiment or modification",

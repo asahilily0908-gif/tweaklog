@@ -20,21 +20,59 @@ interface Props {
   onClose: () => void
 }
 
-const CATEGORIES = [
-  { value: 'bid', label: 'Bid Adjustment', icon: '💰' },
-  { value: 'creative', label: 'Creative', icon: '🎨' },
-  { value: 'targeting', label: 'Targeting', icon: '🎯' },
-  { value: 'budget', label: 'Budget', icon: '📊' },
-  { value: 'structure', label: 'Structure', icon: '🏗️' },
-  { value: 'query', label: 'Search Query', icon: '🔍' },
-  { value: 'creative_version', label: 'Creative Ver.', icon: '🖼️' },
-  { value: 'bid_strategy', label: 'Bid Strategy', icon: '📈' },
-  { value: 'audience', label: 'Audience', icon: '👥' },
-  { value: 'placement', label: 'Placement', icon: '📍' },
-  { value: 'tracking', label: 'Tracking', icon: '📡' },
-  { value: 'pmax_asset', label: 'P-MAX Asset', icon: '⚡' },
-  { value: 'automation', label: 'Automation', icon: '🤖' },
+const CATEGORY_GROUPS = [
+  {
+    id: 'bidding',
+    icon: '💰',
+    label: 'bidding',
+    categories: [
+      { value: 'bid', icon: '💰', label: 'bid' },
+      { value: 'bid_strategy', icon: '⚡', label: 'bid_strategy' },
+    ],
+  },
+  {
+    id: 'creative',
+    icon: '🎨',
+    label: 'creative_group',
+    categories: [
+      { value: 'creative', icon: '🎨', label: 'creative' },
+      { value: 'creative_version', icon: '🖼️', label: 'creative_version' },
+    ],
+  },
+  {
+    id: 'targeting',
+    icon: '🎯',
+    label: 'targeting_group',
+    categories: [
+      { value: 'targeting', icon: '🎯', label: 'targeting' },
+      { value: 'audience', icon: '👥', label: 'audience' },
+      { value: 'placement', icon: '📍', label: 'placement' },
+    ],
+  },
+  {
+    id: 'operations',
+    icon: '📊',
+    label: 'operations',
+    categories: [
+      { value: 'budget', icon: '📊', label: 'budget' },
+      { value: 'structure', icon: '🏗️', label: 'structure' },
+      { value: 'automation', icon: '🤖', label: 'automation' },
+    ],
+  },
+  {
+    id: 'analysis',
+    icon: '🔍',
+    label: 'analysis',
+    categories: [
+      { value: 'query', icon: '🔍', label: 'query' },
+      { value: 'tracking', icon: '📡', label: 'tracking' },
+      { value: 'pmax_asset', icon: '📦', label: 'pmax_asset' },
+    ],
+  },
 ] as const
+
+const findGroupForCategory = (cat: string) =>
+  CATEGORY_GROUPS.find(g => g.categories.some(c => c.value === cat))?.id ?? null
 
 const PLATFORM_LABELS: Record<string, string> = {
   google_ads: 'Google Ads',
@@ -57,6 +95,7 @@ export default function NewChangeModal({ projectId, platforms, groups, onClose }
   const [groupId, setGroupId] = useState('')
   const [changeDate, setChangeDate] = useState(() => new Date().toISOString().split('T')[0])
   const [category, setCategory] = useState<string>('bid')
+  const [selectedCatGroup, setSelectedCatGroup] = useState<string | null>(() => findGroupForCategory('bid'))
   const [platform, setPlatform] = useState(platforms[0] ?? 'google_ads')
   const [campaign, setCampaign] = useState('')
   const [beforeValue, setBeforeValue] = useState('')
@@ -97,7 +136,7 @@ export default function NewChangeModal({ projectId, platforms, groups, onClose }
       projectId,
       title,
       createdAt: changeDate,
-      category: category as typeof CATEGORIES[number]['value'],
+      category: category as typeof CATEGORY_GROUPS[number]['categories'][number]['value'],
       platform,
       campaign: campaign || undefined,
       beforeValue: beforeValue || undefined,
@@ -156,23 +195,74 @@ export default function NewChangeModal({ projectId, platforms, groups, onClose }
           {/* Category */}
           <div>
             <label className="mb-2 block text-xs font-semibold text-gray-600 uppercase tracking-wider">{t('experiments.category')}</label>
-            <div className="grid grid-cols-4 sm:grid-cols-5 gap-1.5">
-              {CATEGORIES.map((cat) => (
-                <button
-                  key={cat.value}
-                  type="button"
-                  onClick={() => setCategory(cat.value)}
-                  className={`flex flex-col items-center gap-1 rounded-xl border-2 p-2 text-center transition-all duration-150 ${
-                    category === cat.value
-                      ? 'border-blue-500 bg-blue-50 shadow-sm shadow-blue-500/10'
-                      : 'border-gray-100 hover:border-gray-200 hover:bg-gray-50'
-                  }`}
-                >
-                  <span className="text-lg">{cat.icon}</span>
-                  <span className={`text-[9px] font-medium leading-tight ${category === cat.value ? 'text-blue-700' : 'text-gray-600'}`}>{t('experiments.categories.' + cat.value)}</span>
-                </button>
-              ))}
+
+            {/* Group buttons — always visible, 5 in a row */}
+            <div className="grid grid-cols-5 gap-2">
+              {CATEGORY_GROUPS.map((group) => {
+                const isGroupSelected = selectedCatGroup === group.id
+                const isCategoryInGroup = group.categories.some(c => c.value === category)
+
+                return (
+                  <button
+                    key={group.id}
+                    type="button"
+                    onClick={() => {
+                      if ((group.categories as readonly { value: string }[]).length === 1) {
+                        setCategory(group.categories[0].value)
+                        setSelectedCatGroup(group.id)
+                      } else {
+                        setSelectedCatGroup(isGroupSelected ? null : group.id)
+                      }
+                    }}
+                    className={`flex flex-col items-center gap-1 rounded-xl border-2 p-3 text-center transition-all duration-150 ${
+                      isGroupSelected || isCategoryInGroup
+                        ? 'border-blue-500 bg-blue-50 shadow-sm shadow-blue-500/10'
+                        : 'border-gray-100 hover:border-gray-200 hover:bg-gray-50'
+                    }`}
+                  >
+                    <span className="text-xl">{group.icon}</span>
+                    <span className={`text-[10px] font-medium leading-tight ${
+                      isGroupSelected || isCategoryInGroup ? 'text-blue-700' : 'text-gray-600'
+                    }`}>
+                      {t('experiments.groups.' + group.label)}
+                    </span>
+                  </button>
+                )
+              })}
             </div>
+
+            {/* Sub-category buttons — shown when a multi-category group is selected */}
+            {selectedCatGroup && (() => {
+              const group = CATEGORY_GROUPS.find(g => g.id === selectedCatGroup)
+              if (!group || (group.categories as readonly { value: string }[]).length <= 1) return null
+
+              return (
+                <div className="mt-2 flex gap-2 flex-wrap animate-fade-in-up">
+                  {group.categories.map((cat) => (
+                    <button
+                      key={cat.value}
+                      type="button"
+                      onClick={() => setCategory(cat.value)}
+                      className={`flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-medium transition-all duration-150 ${
+                        category === cat.value
+                          ? 'border-blue-500 bg-blue-50 text-blue-700'
+                          : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300 hover:bg-gray-50'
+                      }`}
+                    >
+                      <span>{cat.icon}</span>
+                      <span>{t('experiments.categories.' + cat.label)}</span>
+                    </button>
+                  ))}
+                </div>
+              )
+            })()}
+
+            {/* Show selected category name */}
+            {category && (
+              <p className="mt-2 text-xs text-gray-500">
+                {t('experiments.selectedCategory')}: <span className="font-medium text-gray-700">{t('experiments.categories.' + category)}</span>
+              </p>
+            )}
           </div>
 
           {/* Platform */}
