@@ -2,6 +2,7 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
+import { assignBatch } from '@/lib/experiments/batch-aggregator'
 
 interface CreateExperimentInput {
   projectId: string
@@ -29,13 +30,34 @@ export async function createExperiment(input: CreateExperimentInput) {
     return { error: 'Not authenticated' }
   }
 
+  // ── バッチ自動割り当て ──
+  const thirtyMinAgo = new Date(Date.now() - 30 * 60 * 1000).toISOString()
+  const { data: recentExps } = await supabase
+    .from('experiments')
+    .select('id, user_id, created_at, batch_id')
+    .eq('project_id', input.projectId)
+    .eq('user_id', user.id)
+    .gte('created_at', thirtyMinAgo)
+    .order('created_at', { ascending: false })
+
+  const now = new Date().toISOString()
+  const batchId = assignBatch(
+    { id: 'new', userId: user.id, createdAt: now },
+    (recentExps ?? []).map((e) => ({
+      id: e.id,
+      userId: e.user_id,
+      createdAt: e.created_at,
+      batchId: e.batch_id ?? undefined,
+    }))
+  )
+
   const { data, error } = await supabase
     .from('experiments')
     .insert({
       project_id: input.projectId,
       user_id: user.id,
       title: input.title || null,
-      created_at: input.createdAt ? new Date(input.createdAt + 'T00:00:00').toISOString() : new Date().toISOString(),
+      created_at: input.createdAt ? new Date(input.createdAt + 'T00:00:00').toISOString() : now,
       category: input.category,
       platform: input.platform,
       campaign: input.campaign || null,
@@ -46,6 +68,7 @@ export async function createExperiment(input: CreateExperimentInput) {
       client_note: input.clientNote || null,
       tags: input.tags,
       group_id: input.groupId || null,
+      batch_id: batchId,
     })
     .select('id')
     .single()

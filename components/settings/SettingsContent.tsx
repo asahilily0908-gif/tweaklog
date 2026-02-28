@@ -1,11 +1,12 @@
 'use client'
 
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import BillingSection from '@/components/settings/BillingSection'
 import TeamSection from '@/components/settings/TeamSection'
 import ApiSection from '@/components/settings/ApiSection'
+import FormulaEditor from '@/components/metrics/FormulaEditor'
 import {
   updateProject,
   updateKpiSettings,
@@ -102,26 +103,6 @@ const METRIC_TEMPLATES = [
   { name: 'roas', displayName: 'ROAS', formula: 'Revenue / Cost', improvementDirection: 'up' as const },
 ]
 
-const FUNCTIONS_REFERENCE = [
-  { name: 'IF(cond, true_val, false_val)', example: 'IF(Revenue > 0, Revenue / Cost, 0)' },
-  { name: 'SUM(a, b, ...)', example: 'SUM(CV_A, CV_B)' },
-  { name: 'AVG(a, b, ...)', example: 'AVG(CPA_Mon, CPA_Tue)' },
-  { name: 'MIN(a, b)', example: 'MIN(CPA, 1000)' },
-  { name: 'MAX(a, b)', example: 'MAX(ROAS, 0)' },
-]
-
-function validateFormula(formula: string): string | null {
-  if (!formula.trim()) return 'Formula cannot be empty'
-  let parens = 0
-  for (const ch of formula) {
-    if (ch === '(') parens++
-    if (ch === ')') parens--
-    if (parens < 0) return 'Unmatched closing parenthesis'
-  }
-  if (parens !== 0) return 'Unmatched opening parenthesis'
-  return null
-}
-
 // ─── Main Component ───────────────────────────────────────
 
 export default function SettingsContent({
@@ -157,14 +138,13 @@ export default function SettingsContent({
   const [metricConfigs, setMetricConfigs] = useState<MetricConfig[]>(initialMetricConfigs)
   const [showEditor, setShowEditor] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
-  const [editorName, setEditorName] = useState('')
-  const [editorDisplayName, setEditorDisplayName] = useState('')
-  const [editorFormula, setEditorFormula] = useState('')
-  const [editorDirection, setEditorDirection] = useState<'up' | 'down'>('up')
-  const [formulaError, setFormulaError] = useState<string | null>(null)
+  const [editorValue, setEditorValue] = useState({
+    name: '',
+    displayName: '',
+    formula: '',
+    improvementDirection: 'up' as 'up' | 'down',
+  })
   const [metricSaving, setMetricSaving] = useState(false)
-  const [showReference, setShowReference] = useState(false)
-  const formulaRef = useRef<HTMLTextAreaElement>(null)
 
   // Section 4 — Experiment Groups
   const [groups, setGroups] = useState<ExperimentGroup[]>(initialGroups)
@@ -198,7 +178,7 @@ export default function SettingsContent({
 
   const fetchPreview = useCallback(
     async (formula: string) => {
-      if (!formula.trim() || validateFormula(formula) !== null) {
+      if (!formula.trim()) {
         setPreview([])
         return
       }
@@ -224,13 +204,13 @@ export default function SettingsContent({
 
   // Debounce formula preview requests (500ms)
   useEffect(() => {
-    if (!showEditor || !editorFormula.trim()) {
+    if (!showEditor || !editorValue.formula.trim()) {
       setPreview([])
       return
     }
-    const timer = setTimeout(() => fetchPreview(editorFormula), 500)
+    const timer = setTimeout(() => fetchPreview(editorValue.formula), 500)
     return () => clearTimeout(timer)
-  }, [editorFormula, showEditor, fetchPreview])
+  }, [editorValue.formula, showEditor, fetchPreview])
 
   // Delete modal animation
   useEffect(() => {
@@ -300,75 +280,51 @@ export default function SettingsContent({
   function openEditor(config?: MetricConfig) {
     if (config) {
       setEditingId(config.id)
-      setEditorName(config.name)
-      setEditorDisplayName(config.displayName)
-      setEditorFormula(config.formula)
-      setEditorDirection(config.improvementDirection)
+      setEditorValue({
+        name: config.name,
+        displayName: config.displayName,
+        formula: config.formula,
+        improvementDirection: config.improvementDirection,
+      })
     } else {
       setEditingId(null)
-      setEditorName('')
-      setEditorDisplayName('')
-      setEditorFormula('')
-      setEditorDirection('up')
+      setEditorValue({ name: '', displayName: '', formula: '', improvementDirection: 'up' })
     }
-    setFormulaError(null)
     setShowEditor(true)
   }
 
   function closeEditor() {
     setShowEditor(false)
     setEditingId(null)
-    setFormulaError(null)
   }
 
   function applyTemplate(tpl: typeof METRIC_TEMPLATES[number]) {
-    setEditorName(tpl.name)
-    setEditorDisplayName(tpl.displayName)
-    setEditorFormula(tpl.formula)
-    setEditorDirection(tpl.improvementDirection)
-    setFormulaError(null)
+    setEditorValue({
+      name: tpl.name,
+      displayName: tpl.displayName,
+      formula: tpl.formula,
+      improvementDirection: tpl.improvementDirection,
+    })
     setShowEditor(true)
     setEditingId(null)
   }
 
-  function insertVariable(v: string) {
-    if (!formulaRef.current) {
-      setEditorFormula((prev) => prev + v)
-      return
-    }
-    const ta = formulaRef.current
-    const start = ta.selectionStart
-    const end = ta.selectionEnd
-    const before = editorFormula.slice(0, start)
-    const after = editorFormula.slice(end)
-    setEditorFormula(before + v + after)
-    requestAnimationFrame(() => {
-      ta.focus()
-      ta.selectionStart = ta.selectionEnd = start + v.length
-    })
-  }
-
   async function handleSaveMetric() {
-    const error = validateFormula(editorFormula)
-    if (error) {
-      setFormulaError(error)
-      return
-    }
-    if (!editorName.trim() || !editorDisplayName.trim()) {
-      setFormulaError(t('settings.nameRequired'))
+    if (!editorValue.name.trim() || !editorValue.displayName.trim() || !editorValue.formula.trim()) {
+      toast.error(t('settings.nameRequired'))
       return
     }
     setMetricSaving(true)
     const result = await saveMetricConfig(project.id, {
       id: editingId ?? undefined,
-      name: editorName,
-      displayName: editorDisplayName,
-      formula: editorFormula,
-      improvementDirection: editorDirection,
+      name: editorValue.name,
+      displayName: editorValue.displayName,
+      formula: editorValue.formula,
+      improvementDirection: editorValue.improvementDirection,
     })
     setMetricSaving(false)
     if (result.error) {
-      setFormulaError(result.error)
+      toast.error(result.error)
     } else {
       toast.success(editingId ? t('settings.metricUpdated') : t('settings.metricAdded'))
       closeEditor()
@@ -778,7 +734,7 @@ export default function SettingsContent({
             </p>
           ) : null}
 
-          {/* Inline metric editor */}
+          {/* Metric editor (FormulaEditor component) */}
           {showEditor && (
             <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50/50 p-5 space-y-4">
               <div className="flex items-center justify-between">
@@ -796,95 +752,13 @@ export default function SettingsContent({
                 </button>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-medium text-gray-600">{t('settings.internalName')}</label>
-                  <input
-                    type="text"
-                    value={editorName}
-                    onChange={(e) => setEditorName(e.target.value.toLowerCase().replace(/\s+/g, '_'))}
-                    placeholder="gross_profit_roas"
-                    className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm font-mono text-gray-900 placeholder-gray-400 focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-medium text-gray-600">{t('settings.displayName')}</label>
-                  <input
-                    type="text"
-                    value={editorDisplayName}
-                    onChange={(e) => setEditorDisplayName(e.target.value)}
-                    placeholder="Gross Profit ROAS"
-                    className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500"
-                  />
-                </div>
-              </div>
+              <FormulaEditor
+                value={editorValue}
+                onChange={setEditorValue}
+                availableVariables={allVariables}
+              />
 
-              {/* Formula */}
-              <div>
-                <label className="block text-xs font-medium text-gray-600">{t('settings.formula')}</label>
-                <textarea
-                  ref={formulaRef}
-                  value={editorFormula}
-                  onChange={(e) => {
-                    setEditorFormula(e.target.value)
-                    setFormulaError(null)
-                  }}
-                  rows={2}
-                  placeholder="(Revenue - COGS) / Cost"
-                  className={`mt-1 block w-full rounded-lg border px-3 py-2 font-mono text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 ${
-                    formulaError
-                      ? 'border-red-300 focus:border-red-500 focus:ring-red-500'
-                      : 'border-gray-300 focus:border-slate-500 focus:ring-slate-500'
-                  }`}
-                />
-                {formulaError && (
-                  <p className="mt-1 text-xs text-red-600">{formulaError}</p>
-                )}
-              </div>
-
-              {/* Variable chips */}
-              <div>
-                <p className="text-xs font-medium text-gray-500 mb-1.5">{t('settings.clickToInsert')}</p>
-                <div className="flex flex-wrap gap-1.5">
-                  {allVariables.map((v) => (
-                    <button
-                      key={v}
-                      type="button"
-                      onClick={() => insertVariable(v)}
-                      className="rounded bg-slate-100 px-2 py-0.5 text-xs font-mono text-slate-700 transition-colors hover:bg-slate-200"
-                    >
-                      {v}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Functions reference (collapsible) */}
-              <div>
-                <button
-                  type="button"
-                  onClick={() => setShowReference(!showReference)}
-                  className="text-xs font-medium text-gray-500 hover:text-gray-700 flex items-center gap-1"
-                >
-                  <svg className={`h-3 w-3 transition-transform ${showReference ? 'rotate-90' : ''}`} fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-                  </svg>
-                  {t('settings.availableFunctions')}
-                </button>
-                {showReference && (
-                  <div className="mt-2 rounded-lg bg-white border border-gray-200 p-3">
-                    {FUNCTIONS_REFERENCE.map((f) => (
-                      <div key={f.name} className="text-xs font-mono text-gray-600 py-0.5">
-                        <span className="text-purple-600">{f.name}</span>
-                        {' — '}
-                        <span className="text-gray-400">{f.example}</span>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-
-              {/* Real-time preview */}
+              {/* Real-time preview (server-side data) */}
               {(preview.length > 0 || previewLoading) && (
                 <div className="rounded-lg border border-gray-200 bg-white p-3">
                   <div className="flex items-center justify-between mb-2">
@@ -938,33 +812,6 @@ export default function SettingsContent({
                   )}
                 </div>
               )}
-
-              {/* Improvement direction */}
-              <div>
-                <label className="block text-xs font-medium text-gray-600 mb-1.5">
-                  {t('settings.improvementDirection')}
-                </label>
-                <div className="flex gap-4">
-                  <label className="flex items-center gap-2 text-sm cursor-pointer">
-                    <input
-                      type="radio"
-                      checked={editorDirection === 'up'}
-                      onChange={() => setEditorDirection('up')}
-                      className="text-slate-900 focus:ring-slate-500"
-                    />
-                    <span className="text-gray-700">{t('settings.higherBetter')}</span>
-                  </label>
-                  <label className="flex items-center gap-2 text-sm cursor-pointer">
-                    <input
-                      type="radio"
-                      checked={editorDirection === 'down'}
-                      onChange={() => setEditorDirection('down')}
-                      className="text-slate-900 focus:ring-slate-500"
-                    />
-                    <span className="text-gray-700">{t('settings.lowerBetter')}</span>
-                  </label>
-                </div>
-              </div>
 
               <div className="flex items-center gap-3 pt-1">
                 <button
