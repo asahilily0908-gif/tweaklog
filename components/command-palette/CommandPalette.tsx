@@ -165,12 +165,10 @@ export default function CommandPalette({
 
   const handleCommand = useCallback(
     (commandId: string) => {
-      onClose()
       switch (commandId) {
         case 'new-change':
-          // Reopen as form
-          setTimeout(() => setShowNewChangeForm(true), 100)
-          return // Don't close yet
+          setShowNewChangeForm(true)
+          return
         case 'search-changes':
           router.push(`/app/${projectId}/experiments`)
           break
@@ -193,6 +191,7 @@ export default function CommandPalette({
           router.push(`/app/${projectId}/import`)
           break
       }
+      setTimeout(() => onClose(), 100)
     },
     [onClose, router, projectId]
   )
