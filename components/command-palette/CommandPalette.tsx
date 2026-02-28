@@ -13,7 +13,7 @@ import {
   FileUp,
   Zap,
 } from 'lucide-react'
-import NewChangeForm from '@/components/experiments/NewChangeForm'
+import NewChangeModal from '@/components/experiments/NewChangeModal'
 
 interface CommandPaletteProps {
   isOpen: boolean
@@ -235,30 +235,14 @@ export default function CommandPalette({
 
   if (!isOpen && !showNewChangeForm) return null
 
-  // Show NewChangeForm modal
+  // Show NewChangeModal
   if (showNewChangeForm) {
     return (
-      <>
-        {/* Overlay */}
-        <div
-          className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm"
-          onClick={() => {
-            setShowNewChangeForm(false)
-            onClose()
-          }}
-        />
-        {/* Form */}
-        <div className="fixed left-1/2 top-[10%] z-50 w-full max-w-lg -translate-x-1/2 rounded-2xl bg-white p-6 shadow-2xl">
-          <NewChangeForm
-            onClose={() => {
-              setShowNewChangeForm(false)
-              onClose()
-            }}
-            prefillText={naturalLanguageText || undefined}
-            projectId={projectId}
-          />
-        </div>
-      </>
+      <NewChangeModal
+        projectId={projectId}
+        platforms={['google_ads', 'meta', 'tiktok', 'yahoo_ads']}
+        onClose={() => { setShowNewChangeForm(false); onClose() }}
+      />
     )
   }
 

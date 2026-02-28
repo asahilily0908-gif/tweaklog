@@ -302,3 +302,19 @@ export function evaluateFormula(formula: string, variables: Record<string, numbe
   const ast = parseFormula(formula)
   return evaluateAST(ast, variables)
 }
+
+/**
+ * evaluateFormula のエラーセーフ版。
+ * DashboardContent 等で使用。エラー時は throw せず { value: null, error } を返す。
+ */
+export function evaluateFormulaSafe(
+  formula: string,
+  variables: Record<string, number | null>
+): { value: number | null; error: string | null } {
+  try {
+    const value = evaluateFormula(formula, variables)
+    return { value, error: null }
+  } catch (err) {
+    return { value: null, error: (err as Error).message }
+  }
+}

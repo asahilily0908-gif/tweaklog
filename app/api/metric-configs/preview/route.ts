@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
-import { evaluateFormula } from '@/lib/metrics/formula-evaluator'
+import { evaluateFormulaSafe as evaluateFormula } from '@/lib/metrics/formula-parser'
 
 export async function POST(request: NextRequest) {
   const { projectId, formula } = (await request.json()) as {

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { parseFormula, evaluateAST, evaluateFormula } from './formula-parser'
+import { parseFormula, evaluateAST, evaluateFormula, evaluateFormulaSafe } from './formula-parser'
 
 describe('formula-parser', () => {
   describe('basic arithmetic', () => {
@@ -177,6 +177,20 @@ describe('formula-parser', () => {
       expect(evaluateAST(ast, { Cost: 1000, Conversions: 50 })).toBe(20)
       expect(evaluateAST(ast, { Cost: 500, Conversions: 25 })).toBe(20)
       expect(evaluateAST(ast, { Cost: 2000, Conversions: 100 })).toBe(20)
+    })
+  })
+
+  describe('evaluateFormulaSafe', () => {
+    it('正常な数式で { value, error: null } を返す', () => {
+      const result = evaluateFormulaSafe('Clicks / Impressions', { Clicks: 100, Impressions: 1000 })
+      expect(result.value).toBeCloseTo(0.1)
+      expect(result.error).toBeNull()
+    })
+
+    it('不正な数式で { value: null, error } を返す', () => {
+      const result = evaluateFormulaSafe('+++', {})
+      expect(result.value).toBeNull()
+      expect(result.error).not.toBeNull()
     })
   })
 })
