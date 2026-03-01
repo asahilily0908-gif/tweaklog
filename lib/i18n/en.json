@@ -540,35 +540,47 @@
         "price": "$0",
         "desc": "For individuals getting started",
         "feature1": "1 project",
-        "feature2": "CSV data import",
-        "feature3": "Spreadsheet integration",
-        "feature4": "Basic dashboard",
-        "feature5": "Change logging"
+        "feature2": "1,000 data rows",
+        "feature3": "30 change logs/mo",
+        "feature4": "5 custom metrics",
+        "feature5": "AI Chat 5/mo"
       },
       "pro": {
         "name": "Pro",
         "price": "$39",
         "priceUnit": "/mo",
         "desc": "For serious ad operations",
-        "feature1": "Unlimited projects",
-        "feature2": "Unlimited change logs",
-        "feature3": "AI Chat",
-        "feature4": "Impact Cards",
-        "feature5": "Custom metrics"
+        "feature1": "5 projects",
+        "feature2": "50,000 data rows",
+        "feature3": "Unlimited change logs",
+        "feature4": "Unlimited custom metrics",
+        "feature5": "AI Chat 50/mo"
       },
       "team": {
         "name": "Team",
         "price": "$98",
         "priceUnit": "/mo",
         "desc": "For teams & agencies",
-        "feature1": "Everything in Pro",
-        "feature2": "Team member management",
-        "feature3": "API Export",
-        "feature4": "Priority support",
-        "feature5": "Client sharing"
+        "feature1": "Unlimited projects",
+        "feature2": "200,000 data rows",
+        "feature3": "10 team members",
+        "feature4": "AI Chat 300/mo",
+        "feature5": "Priority support"
+      },
+      "enterprise": {
+        "name": "Enterprise",
+        "price": "$498",
+        "priceUnit": "/mo",
+        "desc": "For large-scale operations",
+        "feature1": "Everything unlimited",
+        "feature2": "Unlimited data rows",
+        "feature3": "20 team members",
+        "feature4": "AI Chat 1,000/mo",
+        "feature5": "Dedicated support"
       },
       "cta": "Start Free",
-      "comingSoonButton": "Coming Soon"
+      "comingSoonButton": "Coming Soon",
+      "contactUs": "Contact Us"
     },
     "faq": {
       "title": "FAQ",
@@ -608,7 +620,8 @@
     "plan": {
       "free": "Free",
       "pro": "Pro",
-      "team": "Team"
+      "team": "Team",
+      "enterprise": "Enterprise"
     },
     "status": {
       "active": "Active",

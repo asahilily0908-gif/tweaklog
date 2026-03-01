@@ -546,7 +546,7 @@ export default function LandingPage() {
               {t('landing.pricing.subtitle')}
             </p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 max-w-4xl mx-auto pt-2">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 max-w-6xl mx-auto pt-2">
             {/* Free */}
             <div className="rounded-xl border border-gray-200 bg-white p-5 sm:p-6 md:p-8 overflow-hidden">
               <h3 className="text-lg font-bold text-gray-900">{t('landing.pricing.free.name')}</h3>
@@ -621,6 +621,30 @@ export default function LandingPage() {
               >
                 {checkoutLoading === 'team' ? t('common.loading') : t('landing.pricing.cta')}
               </button>
+            </div>
+
+            {/* Enterprise */}
+            <div className="rounded-xl border border-gray-200 bg-white p-5 sm:p-6 md:p-8 overflow-hidden">
+              <h3 className="text-lg font-bold text-gray-900">{t('landing.pricing.enterprise.name')}</h3>
+              <div className="mt-2 mb-1">
+                <span className="text-2xl sm:text-3xl font-bold text-gray-900">{t('landing.pricing.enterprise.price')}</span>
+                <span className="text-xs sm:text-sm text-gray-500">{t('landing.pricing.enterprise.priceUnit')}</span>
+              </div>
+              <p className="text-xs sm:text-sm text-gray-500 mb-4 sm:mb-6">{t('landing.pricing.enterprise.desc')}</p>
+              <ul className="space-y-2 sm:space-y-3 mb-6 sm:mb-8">
+                {(['feature1', 'feature2', 'feature3', 'feature4', 'feature5'] as const).map((f) => (
+                  <li key={f} className="flex items-start gap-2 text-xs sm:text-sm text-gray-600">
+                    <Check className="h-4 w-4 text-purple-500 shrink-0 mt-0.5" />
+                    <span>{t(`landing.pricing.enterprise.${f}`)}</span>
+                  </li>
+                ))}
+              </ul>
+              <a
+                href="mailto:tweaklog41@gmail.com"
+                className="block w-full rounded-lg border border-gray-200 px-4 py-2.5 text-center text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+              >
+                {t('landing.pricing.contactUs')}
+              </a>
             </div>
           </div>
         </div>

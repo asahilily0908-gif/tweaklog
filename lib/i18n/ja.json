@@ -541,35 +541,47 @@
         "price": "¥0",
         "desc": "個人で始める",
         "feature1": "1プロジェクト",
-        "feature2": "CSVデータ取込",
-        "feature3": "スプレッドシート連携",
-        "feature4": "基本ダッシュボード",
-        "feature5": "変更ログ記録"
+        "feature2": "データ1,000行",
+        "feature3": "変更ログ30件/月",
+        "feature4": "カスタム指標5個",
+        "feature5": "AI Chat 5回/月"
       },
       "pro": {
         "name": "Pro",
         "price": "¥3,980",
         "priceUnit": "/月",
         "desc": "本格的な運用分析",
-        "feature1": "無制限プロジェクト",
-        "feature2": "変更ログ無制限",
-        "feature3": "AI Chat",
-        "feature4": "Impact Card",
-        "feature5": "カスタム指標"
+        "feature1": "5プロジェクト",
+        "feature2": "データ50,000行",
+        "feature3": "変更ログ無制限",
+        "feature4": "カスタム指標無制限",
+        "feature5": "AI Chat 50回/月"
       },
       "team": {
         "name": "Team",
         "price": "¥9,800",
         "priceUnit": "/月",
         "desc": "チーム・代理店向け",
-        "feature1": "Proの全機能",
-        "feature2": "チームメンバー管理",
-        "feature3": "API Export",
-        "feature4": "優先サポート",
-        "feature5": "クライアント共有"
+        "feature1": "プロジェクト無制限",
+        "feature2": "データ200,000行",
+        "feature3": "チームメンバー10名",
+        "feature4": "AI Chat 300回/月",
+        "feature5": "優先サポート"
+      },
+      "enterprise": {
+        "name": "Enterprise",
+        "price": "¥49,800",
+        "priceUnit": "/月",
+        "desc": "大規模運用・代理店",
+        "feature1": "すべて無制限",
+        "feature2": "データ無制限",
+        "feature3": "チームメンバー20名",
+        "feature4": "AI Chat 1,000回/月",
+        "feature5": "専用サポート"
       },
       "cta": "無料で始める",
-      "comingSoonButton": "準備中"
+      "comingSoonButton": "準備中",
+      "contactUs": "お問い合わせ"
     },
     "faq": {
       "title": "よくある質問",
@@ -609,7 +621,8 @@
     "plan": {
       "free": "Free",
       "pro": "Pro",
-      "team": "Team"
+      "team": "Team",
+      "enterprise": "Enterprise"
     },
     "status": {
       "active": "有効",

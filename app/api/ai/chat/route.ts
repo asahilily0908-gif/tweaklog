@@ -2,6 +2,7 @@ import { NextRequest } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { getAnthropicClient, CLAUDE_MODEL, MAX_TOKENS } from '@/lib/ai/claude-client'
 import { buildSystemPrompt } from '@/lib/ai/context-builder'
+import { PLAN_LIMITS, type PlanType } from '@/lib/plan-config'
 
 interface ChatRequest {
   projectId: string
@@ -25,6 +26,35 @@ export async function POST(request: NextRequest) {
 
   if (!user) {
     return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 })
+  }
+
+  // Check AI message limit for the current plan
+  const { data: orgMember } = await supabase
+    .from('org_members')
+    .select('organizations(plan)')
+    .eq('user_id', user.id)
+    .limit(1)
+    .single()
+
+  const plan = ((orgMember?.organizations as { plan?: string } | null)?.plan || 'free') as PlanType
+  const limit = PLAN_LIMITS[plan]?.maxAiMessagesPerMonth ?? PLAN_LIMITS.free.maxAiMessagesPerMonth
+
+  if (limit !== Infinity) {
+    const now = new Date()
+    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString()
+
+    const { count } = await supabase
+      .from('ai_chats')
+      .select('id', { count: 'exact', head: true })
+      .eq('user_id', user.id)
+      .gte('created_at', monthStart)
+
+    if ((count ?? 0) >= limit) {
+      return new Response(
+        JSON.stringify({ error: `AI Chatの月間上限（${limit}回）に達しました。プランをアップグレードしてください。` }),
+        { status: 429 }
+      )
+    }
   }
 
   // Fetch project context in parallel

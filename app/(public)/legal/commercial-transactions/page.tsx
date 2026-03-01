@@ -78,6 +78,7 @@ export default function CommercialTransactionsPage() {
                     <li>Free プラン: &#165;0</li>
                     <li>Pro プラン: &#165;3,980/月（税込）</li>
                     <li>Team プラン: &#165;9,800/月（税込）</li>
+                    <li>Enterprise プラン: &#165;49,800/月（税込）</li>
                   </ul>
                 </td>
               </tr>
