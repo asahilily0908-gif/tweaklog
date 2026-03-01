@@ -10,6 +10,8 @@ interface SetupInput {
   northStarKpi: string
   subKpis: string[]
   columnMappings: Record<string, string>
+  csvHeaders?: string[]
+  csvRows?: string[][]
   metricConfigs: {
     name: string
     displayName: string
@@ -88,6 +90,64 @@ export async function completeSetup(input: SetupInput) {
 
     if (metricsError) {
       return { error: `Failed to save metrics: ${metricsError.message}` }
+    }
+  }
+
+  // 4. Import CSV/Spreadsheet data to outcomes if provided
+  if (input.csvHeaders && input.csvRows && input.csvRows.length > 0) {
+    const headerIndexMap = new Map<string, number>()
+    input.csvHeaders.forEach((h, i) => headerIndexMap.set(h, i))
+
+    const outcomeRows = input.csvRows
+      .map((row) => {
+        const record: Record<string, unknown> = {
+          project_id: project.id,
+        }
+        for (const [csvHeader, field] of Object.entries(input.columnMappings)) {
+          const idx = headerIndexMap.get(csvHeader)
+          if (idx === undefined || idx >= row.length) continue
+          const val = row[idx]
+          if (!val || val.trim() === '') continue
+
+          switch (field) {
+            case 'date':
+              record.date = val
+              break
+            case 'campaign':
+              record.campaign = val
+              break
+            case 'impressions':
+              record.impressions = parseFloat(val.replace(/,/g, '')) || 0
+              break
+            case 'clicks':
+              record.clicks = parseFloat(val.replace(/,/g, '')) || 0
+              break
+            case 'cost':
+              record.cost = parseFloat(val.replace(/[¥$,]/g, '')) || 0
+              break
+            case 'conversions':
+              record.conversions = parseFloat(val.replace(/,/g, '')) || 0
+              break
+            case 'revenue':
+              record.revenue = parseFloat(val.replace(/[¥$,]/g, '')) || 0
+              break
+            case 'platform':
+              record.platform = val
+              break
+          }
+        }
+        // Must have at least a date
+        if (!record.date) return null
+        return record
+      })
+      .filter(Boolean)
+
+    if (outcomeRows.length > 0) {
+      // Insert in batches of 500
+      for (let i = 0; i < outcomeRows.length; i += 500) {
+        const batch = outcomeRows.slice(i, i + 500)
+        await supabase.from('outcomes').insert(batch)
+      }
     }
   }
 

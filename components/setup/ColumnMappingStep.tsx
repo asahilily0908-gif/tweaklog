@@ -46,6 +46,11 @@ export default function ColumnMappingStep({
       .split(',')
       .map((h) => h.trim().replace(/^"|"$/g, ''))
 
+    // Save data rows (everything after header)
+    const rows = lines.slice(1).map(line =>
+      line.split(',').map(cell => cell.trim().replace(/^"|"$/g, ''))
+    ).filter(row => row.some(cell => cell !== ''))
+
     const mappings: Record<string, string> = {}
     const usedFields = new Set<string>()
     headers.forEach((header) => {
@@ -56,7 +61,7 @@ export default function ColumnMappingStep({
       }
     })
 
-    onChange({ csvHeaders: headers, columnMappings: mappings })
+    onChange({ csvHeaders: headers, columnMappings: mappings, csvRows: rows })
   }
 
   function handleFile(file: File) {
@@ -146,7 +151,9 @@ export default function ColumnMappingStep({
           usedFields.add(guessed)
         }
       })
-      onChange({ csvHeaders: headers, columnMappings: mappings })
+      // Save data rows (everything after the detected header row)
+      const dataRows = rows.slice(bestRow + 1).filter((row: string[]) => row.some((cell: string) => cell.trim() !== ''))
+      onChange({ csvHeaders: headers, columnMappings: mappings, csvRows: dataRows })
     } catch {
       setSheetsError('ネットワークエラーが発生しました。もう一度お試しください。')
     } finally {

@@ -18,6 +18,7 @@ export interface WizardData {
   subKpis: string[]
   columnMappings: Record<string, string>
   csvHeaders: string[]
+  csvRows: string[][]
   metricConfigs: Array<{
     name: string
     displayName: string
@@ -49,6 +50,7 @@ export default function SetupWizard() {
     subKpis: [],
     columnMappings: {},
     csvHeaders: [],
+    csvRows: [],
     metricConfigs: [],
   })
 
@@ -80,23 +82,34 @@ export default function SetupWizard() {
     try {
       if (isNewSetup) {
         // New user: create org + project
-        const result = await completeSetup({
-          orgName: wizardData.orgName || 'My Organization',
-          projectName: wizardData.projectName || 'My Project',
-          platform: [],
-          northStarKpi: wizardData.northStarKpi === 'custom'
-            ? wizardData.northStarKpiCustomName.trim()
-            : wizardData.northStarKpi,
-          subKpis: wizardData.subKpis,
-          columnMappings: wizardData.columnMappings,
-          metricConfigs: wizardData.metricConfigs,
-        })
-        if (result?.error) {
-          toast.error(result.error)
+        try {
+          const result = await completeSetup({
+            orgName: wizardData.orgName || 'My Organization',
+            projectName: wizardData.projectName || 'My Project',
+            platform: [],
+            northStarKpi: wizardData.northStarKpi === 'custom'
+              ? wizardData.northStarKpiCustomName.trim()
+              : wizardData.northStarKpi,
+            subKpis: wizardData.subKpis,
+            columnMappings: wizardData.columnMappings,
+            csvHeaders: wizardData.csvHeaders,
+            csvRows: wizardData.csvRows,
+            metricConfigs: wizardData.metricConfigs,
+          })
+          if (result?.error) {
+            toast.error(result.error)
+            setIsSubmitting(false)
+            return
+          }
+        } catch (e: unknown) {
+          // Next.js redirect() throws NEXT_REDIRECT — this is expected, not an error
+          const err = e as { digest?: string }
+          if (err?.digest?.startsWith('NEXT_REDIRECT')) {
+            return // redirect is happening, do nothing
+          }
+          toast.error('セットアップの保存に失敗しました')
           setIsSubmitting(false)
-          return
         }
-        // completeSetup does redirect internally
         return
       } else {
         // Existing project: update settings
