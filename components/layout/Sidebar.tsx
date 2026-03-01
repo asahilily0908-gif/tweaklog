@@ -6,10 +6,8 @@ import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useTranslation } from '@/lib/i18n/config'
 import PlanBadge from './PlanBadge'
-import { usePlan } from '@/lib/plan-context'
 import { Logo } from '@/components/ui/Logo'
 import { LayoutDashboard, FlaskConical, Upload, MessageSquare, Settings, Globe, LogOut, Menu, X } from 'lucide-react'
-import { PLAN_LIMITS, type PlanType } from '@/lib/plan-config'
 
 const NAV_ITEMS = [
   { labelKey: 'nav.dashboard', href: 'dashboard', icon: LayoutDashboard },
@@ -29,7 +27,6 @@ export default function Sidebar({ projectId, projectName, userEmail }: SidebarPr
   const pathname = usePathname()
   const router = useRouter()
   const { t, locale, setLocale } = useTranslation()
-  const { plan } = usePlan()
   const basePath = `/app/${projectId}`
   const [mobileOpen, setMobileOpen] = useState(false)
   const [loggingOut, setLoggingOut] = useState(false)
@@ -84,12 +81,6 @@ export default function Sidebar({ projectId, projectName, userEmail }: SidebarPr
             const href = `${basePath}/${item.href}`
             const isActive = pathname.startsWith(href)
             const Icon = item.icon
-            const aiTokenLimit = item.href === 'chat'
-              ? PLAN_LIMITS[plan as PlanType]?.maxAiTokensPerMonth ?? PLAN_LIMITS.free.maxAiTokensPerMonth
-              : null
-            const aiApproxMessages = aiTokenLimit !== null && aiTokenLimit !== Infinity
-              ? `~${Math.floor(aiTokenLimit / 2000)}`
-              : null
 
             return (
               <li key={item.href}>
@@ -103,13 +94,6 @@ export default function Sidebar({ projectId, projectName, userEmail }: SidebarPr
                 >
                   <Icon className={`h-5 w-5 ${isActive ? 'text-white' : 'text-slate-400'}`} />
                   {t(item.labelKey)}
-                  {aiApproxMessages && (
-                    <span className={`ml-auto rounded-full px-1.5 py-0.5 text-[10px] font-medium ${
-                      isActive ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-500'
-                    }`}>
-                      {aiApproxMessages}回/月
-                    </span>
-                  )}
                 </Link>
               </li>
             )

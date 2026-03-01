@@ -1,8 +1,9 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
+import Link from 'next/link'
 import { useTranslation } from '@/lib/i18n/config'
-import { Sparkles, User } from 'lucide-react'
+import { Sparkles, User, ArrowUpRight } from 'lucide-react'
 
 interface Message {
   role: 'user' | 'assistant'
@@ -69,6 +70,7 @@ export default function ChatInterface({
   const [input, setInput] = useState('')
   const [isStreaming, setIsStreaming] = useState(false)
   const [chatId] = useState<string | null>(initialChatId)
+  const [rateLimited, setRateLimited] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
   const { t } = useTranslation()
@@ -103,6 +105,14 @@ export default function ChatInterface({
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ projectId, chatId, messages: newMessages }),
       })
+
+      if (response.status === 429) {
+        setRateLimited(true)
+        // Remove empty assistant placeholder
+        setMessages((prev) => prev.slice(0, -1))
+        setIsStreaming(false)
+        return
+      }
 
       if (!response.ok) {
         throw new Error('Chat request failed')
@@ -140,6 +150,21 @@ export default function ChatInterface({
       inputRef.current?.focus()
     }
   }
+
+  const rateLimitBanner = rateLimited ? (
+    <div className="mx-3 sm:mx-6 mb-3">
+      <div className="mx-auto max-w-2xl rounded-lg bg-gradient-to-r from-indigo-500 to-purple-600 px-4 py-3 text-white">
+        <p className="text-sm font-medium">{t('chat.rateLimitMessage') || '月間の利用上限に達しました'}</p>
+        <Link
+          href={`/app/${projectId}/settings`}
+          className="mt-2 inline-flex items-center gap-1.5 rounded-md bg-white/20 px-3 py-1.5 text-xs font-medium text-white hover:bg-white/30 transition-colors"
+        >
+          {t('billing.upgrade') || 'アップグレード'}
+          <ArrowUpRight className="h-3.5 w-3.5" />
+        </Link>
+      </div>
+    </div>
+  ) : null
 
   const inputBar = (
     <div className="border-t border-gray-200 bg-white px-3 sm:px-6 py-3 sm:py-4">
@@ -214,6 +239,7 @@ export default function ChatInterface({
           </div>
         </div>
 
+        {rateLimitBanner}
         {inputBar}
       </div>
     )
@@ -252,6 +278,7 @@ export default function ChatInterface({
         </div>
       </div>
 
+      {rateLimitBanner}
       {inputBar}
     </div>
   )
