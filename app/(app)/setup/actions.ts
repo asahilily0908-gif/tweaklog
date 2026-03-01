@@ -1,7 +1,6 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
-import { redirect } from 'next/navigation'
 
 interface SetupInput {
   orgName: string
@@ -105,5 +104,5 @@ export async function completeSetup(input: SetupInput) {
     }, { onConflict: 'project_id' })
   }
 
-  redirect(`/app/${project.id}/import`)
+  return { projectId: project.id }
 }

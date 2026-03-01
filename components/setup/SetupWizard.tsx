@@ -100,12 +100,11 @@ export default function SetupWizard() {
             setIsSubmitting(false)
             return
           }
-        } catch (e: unknown) {
-          // Next.js redirect() throws NEXT_REDIRECT — this is expected, not an error
-          const err = e as { digest?: string }
-          if (err?.digest?.startsWith('NEXT_REDIRECT')) {
-            return // redirect is happening, do nothing
+          if (result?.projectId) {
+            router.push(`/app/${result.projectId}/import`)
+            return
           }
+        } catch {
           toast.error('セットアップの保存に失敗しました')
           setIsSubmitting(false)
         }
