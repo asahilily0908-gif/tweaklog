@@ -55,7 +55,7 @@ export default function CsvImportContent({ project }: Props) {
   // Keyed by column INDEX so each dropdown has independent state
   const [mappings, setMappings] = useState<Record<number, string>>({})
   const [error, setError] = useState<string | null>(null)
-  const [importResult, setImportResult] = useState<{ imported: number } | null>(null)
+  const [importResult, setImportResult] = useState<{ imported: number; warning?: string; total?: number; plan?: string; maxRows?: number } | null>(null)
   const [progress, setProgress] = useState(0)
   const [isDragOver, setIsDragOver] = useState(false)
 
@@ -202,6 +202,14 @@ export default function CsvImportContent({ project }: Props) {
       setError(result.error)
       toast.error(result.error)
       setStep('mapping')
+    } else if (result.warning === 'limit_reached') {
+      setImportResult({ imported: 0, warning: 'limit_reached', total: result.total, plan: result.plan, maxRows: result.maxRows })
+      toast.error('データ上限に達しています')
+      setStep('done')
+    } else if (result.warning === 'partial_import') {
+      setImportResult({ imported: result.imported ?? 0, warning: 'partial_import', total: result.total, plan: result.plan, maxRows: result.maxRows })
+      toast.success(t('import.successImported').replace('{count}', (result.imported ?? 0).toLocaleString()))
+      setStep('done')
     } else {
       setImportResult({ imported: result.imported ?? 0 })
       toast.success(t('import.successImported').replace('{count}', (result.imported ?? 0).toLocaleString()))
@@ -483,15 +491,55 @@ export default function CsvImportContent({ project }: Props) {
       {/* Step: Done */}
       {step === 'done' && importResult && (
         <div className="flex flex-col items-center justify-center rounded-2xl border border-gray-200 bg-white p-8 sm:p-16 shadow-sm">
-          <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-green-50">
-            <svg className="h-8 w-8 text-green-500" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-          </div>
-          <p className="mt-5 text-xl font-bold tracking-tight text-gray-900">{t('import.importComplete')}</p>
-          <p className="mt-1.5 text-sm text-gray-500">
-            {t('import.successImported').replace('{count}', importResult.imported.toLocaleString())}
-          </p>
+          {importResult.warning ? (
+            <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-amber-50">
+              <svg className="h-8 w-8 text-amber-500" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+              </svg>
+            </div>
+          ) : (
+            <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-green-50">
+              <svg className="h-8 w-8 text-green-500" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+          )}
+
+          {importResult.warning === 'limit_reached' ? (
+            <>
+              <p className="mt-5 text-xl font-bold tracking-tight text-gray-900">データ上限に達しています</p>
+              <p className="mt-1.5 text-sm text-gray-500">
+                データ行数の上限（{importResult.maxRows?.toLocaleString()}行）に達しています。
+              </p>
+              <a
+                href={`/app/${project.id}/settings`}
+                className="mt-6 inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-indigo-500 to-purple-600 px-6 py-3 text-sm font-semibold text-white shadow-sm hover:shadow-md transition-all duration-150"
+              >
+                Proプランにアップグレード
+              </a>
+            </>
+          ) : importResult.warning === 'partial_import' ? (
+            <>
+              <p className="mt-5 text-xl font-bold tracking-tight text-gray-900">一部インポート完了</p>
+              <p className="mt-1.5 text-sm text-gray-500">
+                {importResult.imported.toLocaleString()}/{importResult.total?.toLocaleString()}行をインポートしました。残り{((importResult.total ?? 0) - importResult.imported).toLocaleString()}行はProプランで取り込めます。
+              </p>
+              <a
+                href={`/app/${project.id}/settings`}
+                className="mt-6 inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-indigo-500 to-purple-600 px-6 py-3 text-sm font-semibold text-white shadow-sm hover:shadow-md transition-all duration-150"
+              >
+                アップグレードして全件インポート
+              </a>
+            </>
+          ) : (
+            <>
+              <p className="mt-5 text-xl font-bold tracking-tight text-gray-900">{t('import.importComplete')}</p>
+              <p className="mt-1.5 text-sm text-gray-500">
+                {t('import.successImported').replace('{count}', importResult.imported.toLocaleString())}
+              </p>
+            </>
+          )}
+
           <div className="mt-8 flex gap-3">
             <button
               type="button"

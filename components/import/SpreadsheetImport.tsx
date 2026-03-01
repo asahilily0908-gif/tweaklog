@@ -96,7 +96,7 @@ export default function SpreadsheetImport({ project, existingConfig }: Props) {
 
   // Mapping
   const [mappings, setMappings] = useState<Record<number, string>>({})
-  const [importResult, setImportResult] = useState<{ imported: number } | null>(null)
+  const [importResult, setImportResult] = useState<{ imported: number; warning?: string; total?: number; plan?: string; maxRows?: number } | null>(null)
   const [progress, setProgress] = useState(0)
 
   // Existing config state
@@ -268,6 +268,16 @@ export default function SpreadsheetImport({ project, existingConfig }: Props) {
       if (result.error) {
         setError(result.error)
         toast.error(result.error)
+        setStep('done')
+      } else if (result.warning === 'limit_reached') {
+        setImportResult({ imported: 0, warning: 'limit_reached', total: result.total, plan: result.plan, maxRows: result.maxRows })
+        toast.error('データ上限に達しています')
+        setStep('done')
+      } else if (result.warning === 'partial_import') {
+        await updateLastSynced(config.id)
+        setConfig({ ...config, last_synced_at: new Date().toISOString() })
+        setImportResult({ imported: result.imported ?? 0, warning: 'partial_import', total: result.total, plan: result.plan, maxRows: result.maxRows })
+        toast.success(t('import.successImported').replace('{count}', (result.imported ?? 0).toLocaleString()))
         setStep('done')
       } else {
         await updateLastSynced(config.id)
@@ -463,8 +473,16 @@ export default function SpreadsheetImport({ project, existingConfig }: Props) {
         })
       }
 
-      setImportResult({ imported: result.imported ?? 0 })
-      toast.success(t('import.successImported').replace('{count}', (result.imported ?? 0).toLocaleString()))
+      if (result.warning === 'limit_reached') {
+        setImportResult({ imported: 0, warning: 'limit_reached', total: result.total, plan: result.plan, maxRows: result.maxRows })
+        toast.error('データ上限に達しています')
+      } else if (result.warning === 'partial_import') {
+        setImportResult({ imported: result.imported ?? 0, warning: 'partial_import', total: result.total, plan: result.plan, maxRows: result.maxRows })
+        toast.success(t('import.successImported').replace('{count}', (result.imported ?? 0).toLocaleString()))
+      } else {
+        setImportResult({ imported: result.imported ?? 0 })
+        toast.success(t('import.successImported').replace('{count}', (result.imported ?? 0).toLocaleString()))
+      }
       setStep('done')
     }
   }
@@ -529,7 +547,39 @@ export default function SpreadsheetImport({ project, existingConfig }: Props) {
               </div>
             </div>
 
-            {importResult && (
+            {importResult && importResult.warning === 'limit_reached' && (
+              <div className="space-y-3">
+                <div className="flex items-center gap-2 rounded-lg border border-amber-200 bg-amber-50 px-4 py-2.5 text-xs text-amber-700">
+                  <svg className="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+                  </svg>
+                  データ上限（{importResult.maxRows?.toLocaleString()}行）に達しています。
+                </div>
+                <a
+                  href={`/app/${project.id}/settings`}
+                  className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-indigo-500 to-purple-600 px-5 py-2.5 text-sm font-medium text-white shadow-sm hover:shadow-md transition-all duration-150"
+                >
+                  Proプランにアップグレード
+                </a>
+              </div>
+            )}
+            {importResult && importResult.warning === 'partial_import' && (
+              <div className="space-y-3">
+                <div className="flex items-center gap-2 rounded-lg border border-amber-200 bg-amber-50 px-4 py-2.5 text-xs text-amber-700">
+                  <svg className="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+                  </svg>
+                  {importResult.imported.toLocaleString()}/{importResult.total?.toLocaleString()}行をインポートしました。残り{((importResult.total ?? 0) - importResult.imported).toLocaleString()}行はProプランで取り込めます。
+                </div>
+                <a
+                  href={`/app/${project.id}/settings`}
+                  className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-indigo-500 to-purple-600 px-5 py-2.5 text-sm font-medium text-white shadow-sm hover:shadow-md transition-all duration-150"
+                >
+                  アップグレードして全件インポート
+                </a>
+              </div>
+            )}
+            {importResult && !importResult.warning && (
               <div className="flex items-center gap-2 rounded-lg border border-green-200 bg-green-50 px-4 py-2.5 text-xs text-green-700">
                 <svg className="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />

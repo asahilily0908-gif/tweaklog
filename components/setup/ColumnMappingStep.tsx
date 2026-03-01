@@ -54,20 +54,6 @@ export default function ColumnMappingStep({
 
     const headers = headerEntries.map(e => e.name)
 
-    // Convert each data row to an object keyed by header name
-    const csvData: Record<string, string>[] = lines.slice(1)
-      .map(line => {
-        const cells = line.split(',').map(cell => cell.trim().replace(/^"|"$/g, ''))
-        const row: Record<string, string> = {}
-        headerEntries.forEach(({ name, index }) => {
-          if (index < cells.length && cells[index].trim()) {
-            row[name] = cells[index]
-          }
-        })
-        return row
-      })
-      .filter(row => Object.keys(row).length > 0)
-
     // Auto-guess mappings
     const mappings: Record<string, string> = {}
     const usedFields = new Set<string>()
@@ -79,7 +65,7 @@ export default function ColumnMappingStep({
       }
     })
 
-    onChange({ csvHeaders: headers, columnMappings: mappings, csvData })
+    onChange({ csvHeaders: headers, columnMappings: mappings })
   }
 
   function handleFile(file: File) {
@@ -169,19 +155,6 @@ export default function ColumnMappingStep({
 
       const headers = headerEntries.map(e => e.name)
 
-      // Convert each data row to an object keyed by header name
-      const csvData: Record<string, string>[] = rows.slice(bestRow + 1)
-        .map((row: string[]) => {
-          const record: Record<string, string> = {}
-          headerEntries.forEach(({ name, index }) => {
-            if (index < row.length && row[index] && row[index].trim()) {
-              record[name] = row[index].trim()
-            }
-          })
-          return record
-        })
-        .filter((row: Record<string, string>) => Object.keys(row).length > 0)
-
       // Auto-guess mappings
       const mappings: Record<string, string> = {}
       const usedFields = new Set<string>()
@@ -193,7 +166,7 @@ export default function ColumnMappingStep({
         }
       })
 
-      onChange({ csvHeaders: headers, columnMappings: mappings, csvData })
+      onChange({ csvHeaders: headers, columnMappings: mappings, sheetsUrl: sheetsUrl.trim() })
     } catch {
       setSheetsError('ネットワークエラーが発生しました。もう一度お試しください。')
     } finally {

@@ -53,6 +53,49 @@ export async function importOutcomes(projectId: string, rows: OutcomeRow[]) {
     return { error: 'No rows to import' }
   }
 
+  // Check plan limits
+  const originalTotal = rows.length
+  let planInfo: { plan: string; maxRows: number; remaining: number } | null = null
+
+  const { data: orgMember } = await supabase
+    .from('org_members')
+    .select('org_id')
+    .eq('user_id', user.id)
+    .single()
+
+  if (orgMember) {
+    const { data: org } = await supabase
+      .from('organizations')
+      .select('plan')
+      .eq('id', orgMember.org_id)
+      .single()
+
+    const { count: currentRows } = await supabase
+      .from('outcomes')
+      .select('*', { count: 'exact', head: true })
+      .eq('project_id', projectId)
+
+    const maxRows = org?.plan === 'pro' ? 50000 : 1000
+    const remaining = maxRows - (currentRows || 0)
+    planInfo = { plan: org?.plan || 'free', maxRows, remaining }
+
+    if (remaining <= 0) {
+      return {
+        error: null,
+        warning: 'limit_reached' as const,
+        imported: 0,
+        total: originalTotal,
+        plan: planInfo.plan,
+        maxRows,
+      }
+    }
+
+    // Truncate rows to remaining capacity
+    if (rows.length > remaining) {
+      rows = rows.slice(0, remaining)
+    }
+  }
+
   // Normalize dates and filter out invalid rows
   const validRows = rows.filter((row) => row.date && normalizeDateStr(row.date) !== null)
 
@@ -125,6 +168,18 @@ export async function importOutcomes(projectId: string, rows: OutcomeRow[]) {
 
   revalidatePath(`/app/${projectId}/dashboard`)
   revalidatePath(`/app/${projectId}/import`)
+
+  // Return partial import warning if rows were truncated
+  if (planInfo && originalTotal > totalInserted) {
+    return {
+      error: null,
+      warning: 'partial_import' as const,
+      imported: totalInserted,
+      total: originalTotal,
+      plan: planInfo.plan,
+      maxRows: planInfo.maxRows,
+    }
+  }
 
   return { imported: totalInserted }
 }
