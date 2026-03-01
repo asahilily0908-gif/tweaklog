@@ -543,7 +543,7 @@
         "feature2": "1,000 data rows",
         "feature3": "30 change logs/mo",
         "feature4": "5 custom metrics",
-        "feature5": "AI Chat 5/mo"
+        "feature5": "AI Chat ~50-75/mo"
       },
       "pro": {
         "name": "Pro",
@@ -554,7 +554,7 @@
         "feature2": "50,000 data rows",
         "feature3": "Unlimited change logs",
         "feature4": "Unlimited custom metrics",
-        "feature5": "AI Chat 50/mo"
+        "feature5": "AI Chat ~1,000-1,500/mo"
       },
       "team": {
         "name": "Team",
@@ -564,7 +564,7 @@
         "feature1": "Unlimited projects",
         "feature2": "200,000 data rows",
         "feature3": "10 team members",
-        "feature4": "AI Chat 300/mo",
+        "feature4": "AI Chat ~2,500-4,000/mo",
         "feature5": "Priority support"
       },
       "enterprise": {
@@ -575,7 +575,7 @@
         "feature1": "Everything unlimited",
         "feature2": "Unlimited data rows",
         "feature3": "20 team members",
-        "feature4": "AI Chat 1,000/mo",
+        "feature4": "AI Chat ~10,000-15,000/mo",
         "feature5": "Dedicated support"
       },
       "cta": "Start Free",

@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
     return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 })
   }
 
-  // Check AI message limit for the current plan
+  // Check AI token usage for the current plan
   const { data: orgMember } = await supabase
     .from('org_members')
     .select('organizations(plan)')
@@ -37,21 +37,25 @@ export async function POST(request: NextRequest) {
     .single()
 
   const plan = ((orgMember?.organizations as { plan?: string } | null)?.plan || 'free') as PlanType
-  const limit = PLAN_LIMITS[plan]?.maxAiMessagesPerMonth ?? PLAN_LIMITS.free.maxAiMessagesPerMonth
+  const tokenLimit = PLAN_LIMITS[plan]?.maxAiTokensPerMonth ?? PLAN_LIMITS.free.maxAiTokensPerMonth
 
-  if (limit !== Infinity) {
-    const now = new Date()
-    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString()
+  const now = new Date()
+  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString()
 
-    const { count } = await supabase
-      .from('ai_chats')
-      .select('id', { count: 'exact', head: true })
+  if (tokenLimit !== Infinity) {
+    const { data: usageData } = await supabase
+      .from('ai_chat_usage')
+      .select('tokens_used')
       .eq('user_id', user.id)
       .gte('created_at', monthStart)
 
-    if ((count ?? 0) >= limit) {
+    const totalTokensUsed = (usageData || []).reduce((sum, row) => sum + (row.tokens_used || 0), 0)
+
+    if (totalTokensUsed >= tokenLimit) {
       return new Response(
-        JSON.stringify({ error: `AI Chatの月間上限（${limit}回）に達しました。プランをアップグレードしてください。` }),
+        JSON.stringify({
+          error: `AI Chatの月間トークン上限に達しました。プランをアップグレードしてください。`,
+        }),
         { status: 429 }
       )
     }
@@ -125,6 +129,10 @@ export async function POST(request: NextRequest) {
         }
         controller.close()
 
+        // Get token usage from the final message
+        const finalMessage = await stream.finalMessage()
+        const tokensUsed = (finalMessage.usage?.input_tokens || 0) + (finalMessage.usage?.output_tokens || 0)
+
         // Save conversation after stream completes
         const allMessages = [...messages, { role: 'assistant' as const, content: fullResponse }]
 
@@ -141,6 +149,15 @@ export async function POST(request: NextRequest) {
             project_id: projectId,
             user_id: user.id,
             messages: allMessages,
+          })
+        }
+
+        // Record token usage
+        if (tokensUsed > 0) {
+          await supabase.from('ai_chat_usage').insert({
+            user_id: user.id,
+            project_id: projectId,
+            tokens_used: tokensUsed,
           })
         }
       } catch (err) {

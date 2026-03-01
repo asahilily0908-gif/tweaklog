@@ -4,7 +4,7 @@ export const PLAN_LIMITS = {
     maxProjects: 1,
     maxExperimentsPerMonth: 30,
     maxCustomMetrics: 5,
-    maxAiMessagesPerMonth: 5,
+    maxAiTokensPerMonth: 150_000,
     maxTeamMembers: 1,
   },
   pro: {
@@ -12,7 +12,7 @@ export const PLAN_LIMITS = {
     maxProjects: 5,
     maxExperimentsPerMonth: Infinity,
     maxCustomMetrics: Infinity,
-    maxAiMessagesPerMonth: 50,
+    maxAiTokensPerMonth: 3_000_000,
     maxTeamMembers: 3,
   },
   team: {
@@ -20,7 +20,7 @@ export const PLAN_LIMITS = {
     maxProjects: Infinity,
     maxExperimentsPerMonth: Infinity,
     maxCustomMetrics: Infinity,
-    maxAiMessagesPerMonth: 300,
+    maxAiTokensPerMonth: 8_000_000,
     maxTeamMembers: 10,
   },
   enterprise: {
@@ -28,7 +28,7 @@ export const PLAN_LIMITS = {
     maxProjects: Infinity,
     maxExperimentsPerMonth: Infinity,
     maxCustomMetrics: Infinity,
-    maxAiMessagesPerMonth: 1_000,
+    maxAiTokensPerMonth: 30_000_000,
     maxTeamMembers: 20,
   },
 } as const

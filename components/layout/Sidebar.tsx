@@ -84,8 +84,11 @@ export default function Sidebar({ projectId, projectName, userEmail }: SidebarPr
             const href = `${basePath}/${item.href}`
             const isActive = pathname.startsWith(href)
             const Icon = item.icon
-            const aiLimit = item.href === 'chat'
-              ? PLAN_LIMITS[plan as PlanType]?.maxAiMessagesPerMonth ?? PLAN_LIMITS.free.maxAiMessagesPerMonth
+            const aiTokenLimit = item.href === 'chat'
+              ? PLAN_LIMITS[plan as PlanType]?.maxAiTokensPerMonth ?? PLAN_LIMITS.free.maxAiTokensPerMonth
+              : null
+            const aiApproxMessages = aiTokenLimit !== null && aiTokenLimit !== Infinity
+              ? `~${Math.floor(aiTokenLimit / 2000)}`
               : null
 
             return (
@@ -100,11 +103,11 @@ export default function Sidebar({ projectId, projectName, userEmail }: SidebarPr
                 >
                   <Icon className={`h-5 w-5 ${isActive ? 'text-white' : 'text-slate-400'}`} />
                   {t(item.labelKey)}
-                  {aiLimit !== null && aiLimit !== Infinity && (
+                  {aiApproxMessages && (
                     <span className={`ml-auto rounded-full px-1.5 py-0.5 text-[10px] font-medium ${
                       isActive ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-500'
                     }`}>
-                      {aiLimit}/月
+                      {aiApproxMessages}回/月
                     </span>
                   )}
                 </Link>
