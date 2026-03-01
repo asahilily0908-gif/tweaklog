@@ -13,7 +13,6 @@ import AiHighlights from './AiHighlights'
 import { evaluateFormulaSafe as evaluateFormula } from '@/lib/metrics/formula-parser'
 import { computeImpactForExperiment } from '@/lib/metrics/score-calculator'
 import UpgradeGate from '@/components/layout/UpgradeGate'
-import { usePlan } from '@/lib/plan-context'
 import { Sparkles } from 'lucide-react'
 
 interface Project {
@@ -159,44 +158,8 @@ function daysBeforeDate(dateStr: string, days: number): string {
   return d.toISOString().split('T')[0]
 }
 
-function ImpactUpgradeModal({ onClose }: { onClose: () => void }) {
-  const { t } = useTranslation()
-  const pathname = typeof window !== 'undefined' ? window.location.pathname : ''
-  const segments = pathname.split('/')
-  const projectIdx = segments.indexOf('app') + 1
-  const projectId = segments[projectIdx] || ''
-
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm" onClick={onClose}>
-      <div className="relative mx-4 flex flex-col items-center gap-4 rounded-2xl border border-gray-200 bg-white px-8 py-8 shadow-sm max-w-sm text-center" onClick={(e) => e.stopPropagation()}>
-        <button type="button" onClick={onClose} className="absolute top-3 right-3 rounded-lg p-1 text-gray-400 hover:text-gray-600">
-          <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
-        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-50">
-          <svg className="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
-          </svg>
-        </div>
-        <div>
-          <h3 className="text-base font-semibold text-gray-900">{t('upgrade.title')}</h3>
-          <p className="mt-1 text-sm text-gray-500">{t('upgrade.description')}</p>
-        </div>
-        <a
-          href={`/app/${projectId}/settings`}
-          className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-medium text-white shadow-sm hover:bg-blue-700 transition-colors"
-        >
-          {t('upgrade.cta')}
-        </a>
-      </div>
-    </div>
-  )
-}
-
 export default function DashboardContent({ project, outcomes, experiments, metricConfigs, latestDate, aiHighlights, experimentGroups }: Props) {
   const { t } = useTranslation()
-  const { canUseFeature } = usePlan()
   const [platform, setPlatform] = useState('ALL')
   const [dateRange, setDateRange] = useState<DateRange>(30)
   const [selectedExperiment, setSelectedExperiment] = useState<Experiment | null>(null)
@@ -511,7 +474,7 @@ export default function DashboardContent({ project, outcomes, experiments, metri
       {/* KPI Cards */}
       {isAllMode ? (
         <>
-          <div className="mb-4 grid grid-cols-1 gap-2 sm:gap-4 sm:grid-cols-2">
+          <div className="mb-4 grid grid-cols-2 gap-2 sm:gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <KpiCard
               label={northStar.label}
               value={formatValue(northStar.value, northStar.format)}
@@ -522,6 +485,14 @@ export default function DashboardContent({ project, outcomes, experiments, metri
               label="Cost"
               value={formatValue(totals.cost, 'currency')}
               accentColor="gray"
+            />
+            <KpiCard
+              label="CTR"
+              value={formatValue(totals.impressions > 0 ? (totals.clicks / totals.impressions) * 100 : 0, 'percent')}
+            />
+            <KpiCard
+              label="CVR"
+              value={formatValue(totals.clicks > 0 ? (totals.conversions / totals.clicks) * 100 : 0, 'percent')}
             />
           </div>
           {customMetricValues.length > 0 && (
@@ -669,17 +640,13 @@ export default function DashboardContent({ project, outcomes, experiments, metri
 
       {/* Impact Card Panel */}
       {selectedExperiment && project.north_star_kpi && (
-        canUseFeature('impact-card') ? (
-          <ImpactCardPanel
-            experiment={selectedExperiment}
-            outcomes={outcomes}
-            northStarKpi={project.north_star_kpi}
-            subKpis={project.sub_kpis}
-            onClose={() => setSelectedExperiment(null)}
-          />
-        ) : (
-          <ImpactUpgradeModal onClose={() => setSelectedExperiment(null)} />
-        )
+        <ImpactCardPanel
+          experiment={selectedExperiment}
+          outcomes={outcomes}
+          northStarKpi={project.north_star_kpi}
+          subKpis={project.sub_kpis}
+          onClose={() => setSelectedExperiment(null)}
+        />
       )}
 
       {/* Experiment Detail Panel (multi-experiment date) */}
