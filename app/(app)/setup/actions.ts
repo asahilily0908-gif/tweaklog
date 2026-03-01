@@ -10,8 +10,7 @@ interface SetupInput {
   northStarKpi: string
   subKpis: string[]
   columnMappings: Record<string, string>
-  csvHeaders?: string[]
-  csvRows?: string[][]
+  csvData?: Record<string, string>[]
   metricConfigs: {
     name: string
     displayName: string
@@ -93,60 +92,66 @@ export async function completeSetup(input: SetupInput) {
     }
   }
 
-  // 4. Import CSV/Spreadsheet data to outcomes if provided
-  if (input.csvHeaders && input.csvRows && input.csvRows.length > 0) {
-    const headerIndexMap = new Map<string, number>()
-    input.csvHeaders.forEach((h, i) => headerIndexMap.set(h, i))
+  // 4. Import data to outcomes table
+  if (input.csvData && input.csvData.length > 0 && Object.keys(input.columnMappings).length > 0) {
+    // columnMappings: { 'CSV Header Name': 'standard_field' }
+    // csvData: [ { 'CSV Header Name': 'value', ... }, ... ]
 
-    const outcomeRows = input.csvRows
+    // Invert mapping: standard_field → CSV header name
+    const fieldToHeader: Record<string, string> = {}
+    for (const [csvHeader, field] of Object.entries(input.columnMappings)) {
+      fieldToHeader[field] = csvHeader
+    }
+
+    const outcomeRows = input.csvData
       .map((row) => {
         const record: Record<string, unknown> = {
           project_id: project.id,
         }
-        for (const [csvHeader, field] of Object.entries(input.columnMappings)) {
-          const idx = headerIndexMap.get(csvHeader)
-          if (idx === undefined || idx >= row.length) continue
-          const val = row[idx]
-          if (!val || val.trim() === '') continue
 
-          switch (field) {
-            case 'date':
-              record.date = val
-              break
-            case 'campaign':
-              record.campaign = val
-              break
-            case 'impressions':
-              record.impressions = parseFloat(val.replace(/,/g, '')) || 0
-              break
-            case 'clicks':
-              record.clicks = parseFloat(val.replace(/,/g, '')) || 0
-              break
-            case 'cost':
-              record.cost = parseFloat(val.replace(/[¥$,]/g, '')) || 0
-              break
-            case 'conversions':
-              record.conversions = parseFloat(val.replace(/,/g, '')) || 0
-              break
-            case 'revenue':
-              record.revenue = parseFloat(val.replace(/[¥$,]/g, '')) || 0
-              break
-            case 'platform':
-              record.platform = val
-              break
-          }
+        if (fieldToHeader.date) {
+          record.date = row[fieldToHeader.date] || null
         }
-        // Must have at least a date
+        if (fieldToHeader.campaign) {
+          record.campaign = row[fieldToHeader.campaign] || null
+        }
+        if (fieldToHeader.impressions) {
+          const val = row[fieldToHeader.impressions]
+          record.impressions = val ? parseFloat(val.replace(/,/g, '')) || 0 : 0
+        }
+        if (fieldToHeader.clicks) {
+          const val = row[fieldToHeader.clicks]
+          record.clicks = val ? parseFloat(val.replace(/,/g, '')) || 0 : 0
+        }
+        if (fieldToHeader.cost) {
+          const val = row[fieldToHeader.cost]
+          record.cost = val ? parseFloat(val.replace(/[¥$,]/g, '')) || 0 : 0
+        }
+        if (fieldToHeader.conversions) {
+          const val = row[fieldToHeader.conversions]
+          record.conversions = val ? parseFloat(val.replace(/,/g, '')) || 0 : 0
+        }
+        if (fieldToHeader.revenue) {
+          const val = row[fieldToHeader.revenue]
+          record.revenue = val ? parseFloat(val.replace(/[¥$,]/g, '')) || 0 : 0
+        }
+        if (fieldToHeader.platform) {
+          record.platform = row[fieldToHeader.platform] || null
+        }
+
+        // Must have at least a date to be valid
         if (!record.date) return null
         return record
       })
       .filter(Boolean)
 
     if (outcomeRows.length > 0) {
-      // Insert in batches of 500
       for (let i = 0; i < outcomeRows.length; i += 500) {
         const batch = outcomeRows.slice(i, i + 500)
-        await supabase.from('outcomes').insert(batch)
+        const { error: importError } = await supabase.from('outcomes').insert(batch)
+        if (importError) {
+          console.error('Outcomes import error:', importError)
+        }
       }
     }
   }

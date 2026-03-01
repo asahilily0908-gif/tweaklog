@@ -42,15 +42,33 @@ export default function ColumnMappingStep({
     const lines = text.trim().split('\n')
     if (lines.length === 0) return
 
-    const headers = lines[0]
+    const rawHeaders = lines[0]
       .split(',')
       .map((h) => h.trim().replace(/^"|"$/g, ''))
 
-    // Save data rows (everything after header)
-    const rows = lines.slice(1).map(line =>
-      line.split(',').map(cell => cell.trim().replace(/^"|"$/g, ''))
-    ).filter(row => row.some(cell => cell !== ''))
+    // Filter to non-empty headers and track their original indices
+    const headerEntries: { name: string; index: number }[] = []
+    rawHeaders.forEach((h, i) => {
+      if (h.trim()) headerEntries.push({ name: h.trim(), index: i })
+    })
 
+    const headers = headerEntries.map(e => e.name)
+
+    // Convert each data row to an object keyed by header name
+    const csvData: Record<string, string>[] = lines.slice(1)
+      .map(line => {
+        const cells = line.split(',').map(cell => cell.trim().replace(/^"|"$/g, ''))
+        const row: Record<string, string> = {}
+        headerEntries.forEach(({ name, index }) => {
+          if (index < cells.length && cells[index].trim()) {
+            row[name] = cells[index]
+          }
+        })
+        return row
+      })
+      .filter(row => Object.keys(row).length > 0)
+
+    // Auto-guess mappings
     const mappings: Record<string, string> = {}
     const usedFields = new Set<string>()
     headers.forEach((header) => {
@@ -61,7 +79,7 @@ export default function ColumnMappingStep({
       }
     })
 
-    onChange({ csvHeaders: headers, columnMappings: mappings, csvRows: rows })
+    onChange({ csvHeaders: headers, columnMappings: mappings, csvData })
   }
 
   function handleFile(file: File) {
@@ -141,7 +159,30 @@ export default function ColumnMappingStep({
         }
       }
 
-      const headers = rows[bestRow].filter((h) => h.trim())
+      const rawHeaders = rows[bestRow] as string[]
+
+      // Filter to non-empty headers and track their original indices
+      const headerEntries: { name: string; index: number }[] = []
+      rawHeaders.forEach((h: string, i: number) => {
+        if (h.trim()) headerEntries.push({ name: h.trim(), index: i })
+      })
+
+      const headers = headerEntries.map(e => e.name)
+
+      // Convert each data row to an object keyed by header name
+      const csvData: Record<string, string>[] = rows.slice(bestRow + 1)
+        .map((row: string[]) => {
+          const record: Record<string, string> = {}
+          headerEntries.forEach(({ name, index }) => {
+            if (index < row.length && row[index] && row[index].trim()) {
+              record[name] = row[index].trim()
+            }
+          })
+          return record
+        })
+        .filter((row: Record<string, string>) => Object.keys(row).length > 0)
+
+      // Auto-guess mappings
       const mappings: Record<string, string> = {}
       const usedFields = new Set<string>()
       headers.forEach((header) => {
@@ -151,9 +192,8 @@ export default function ColumnMappingStep({
           usedFields.add(guessed)
         }
       })
-      // Save data rows (everything after the detected header row)
-      const dataRows = rows.slice(bestRow + 1).filter((row: string[]) => row.some((cell: string) => cell.trim() !== ''))
-      onChange({ csvHeaders: headers, columnMappings: mappings, csvRows: dataRows })
+
+      onChange({ csvHeaders: headers, columnMappings: mappings, csvData })
     } catch {
       setSheetsError('ネットワークエラーが発生しました。もう一度お試しください。')
     } finally {

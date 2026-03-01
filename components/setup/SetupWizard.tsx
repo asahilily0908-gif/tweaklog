@@ -18,7 +18,7 @@ export interface WizardData {
   subKpis: string[]
   columnMappings: Record<string, string>
   csvHeaders: string[]
-  csvRows: string[][]
+  csvData: Record<string, string>[]
   metricConfigs: Array<{
     name: string
     displayName: string
@@ -50,7 +50,7 @@ export default function SetupWizard() {
     subKpis: [],
     columnMappings: {},
     csvHeaders: [],
-    csvRows: [],
+    csvData: [],
     metricConfigs: [],
   })
 
@@ -92,8 +92,7 @@ export default function SetupWizard() {
               : wizardData.northStarKpi,
             subKpis: wizardData.subKpis,
             columnMappings: wizardData.columnMappings,
-            csvHeaders: wizardData.csvHeaders,
-            csvRows: wizardData.csvRows,
+            csvData: wizardData.csvData,
             metricConfigs: wizardData.metricConfigs,
           })
           if (result?.error) {
