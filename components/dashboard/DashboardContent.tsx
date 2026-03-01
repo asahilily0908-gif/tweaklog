@@ -13,6 +13,7 @@ import AiHighlights from './AiHighlights'
 import { evaluateFormulaSafe as evaluateFormula } from '@/lib/metrics/formula-parser'
 import { computeImpactForExperiment } from '@/lib/metrics/score-calculator'
 import { usePlan } from '@/lib/plan-context'
+import { PLAN_LIMITS, type PlanType } from '@/lib/plan-config'
 import { Sparkles } from 'lucide-react'
 
 interface Project {
@@ -160,8 +161,8 @@ function daysBeforeDate(dateStr: string, days: number): string {
 
 export default function DashboardContent({ project, outcomes, experiments, metricConfigs, latestDate, aiHighlights, experimentGroups }: Props) {
   const { t } = useTranslation()
-  const { canUseFeature } = usePlan()
-  const canUseCustomMetrics = canUseFeature('custom-metrics')
+  const { plan } = usePlan()
+  const maxCustomMetrics = PLAN_LIMITS[plan as PlanType]?.maxCustomMetrics ?? PLAN_LIMITS.free.maxCustomMetrics
   const [platform, setPlatform] = useState('ALL')
   const [dateRange, setDateRange] = useState<DateRange>(30)
   const [selectedExperiment, setSelectedExperiment] = useState<Experiment | null>(null)
@@ -497,10 +498,13 @@ export default function DashboardContent({ project, outcomes, experiments, metri
               value={formatValue(totals.clicks > 0 ? (totals.conversions / totals.clicks) * 100 : 0, 'percent')}
             />
           </div>
-          {customMetricValues.length > 0 && (
-            canUseCustomMetrics ? (
+          {customMetricValues.length > 0 && (() => {
+            const unlockCount = maxCustomMetrics === Infinity ? customMetricValues.length : maxCustomMetrics
+            const unlocked = customMetricValues.slice(0, unlockCount)
+            const locked = customMetricValues.slice(unlockCount)
+            return (
               <div className="mb-6 grid grid-cols-2 gap-2 sm:gap-4 sm:grid-cols-3 lg:grid-cols-4">
-                {customMetricValues.map((cm) => (
+                {unlocked.map((cm) => (
                   <KpiCard
                     key={cm.id}
                     label={cm.name}
@@ -515,10 +519,7 @@ export default function DashboardContent({ project, outcomes, experiments, metri
                     improvementDirection={cm.improvementDirection}
                   />
                 ))}
-              </div>
-            ) : (
-              <div className="mb-6 grid grid-cols-2 gap-2 sm:gap-4 sm:grid-cols-3 lg:grid-cols-4">
-                {customMetricValues.map((cm) => (
+                {locked.map((cm) => (
                   <a
                     key={cm.id}
                     href={`/app/${project.id}/settings`}
@@ -539,7 +540,7 @@ export default function DashboardContent({ project, outcomes, experiments, metri
                 ))}
               </div>
             )
-          )}
+          })()}
         </>
       ) : (
         <div className="mb-6 grid grid-cols-2 gap-2 sm:gap-4 sm:grid-cols-3 lg:grid-cols-5">

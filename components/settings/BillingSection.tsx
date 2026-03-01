@@ -5,7 +5,7 @@ import { createClient } from '@/lib/supabase/client'
 import { useTranslation } from '@/lib/i18n/config'
 import { usePlan } from '@/lib/plan-context'
 
-type PlanType = 'free' | 'pro' | 'team'
+type PlanType = 'free' | 'pro' | 'team' | 'enterprise'
 
 interface SubscriptionData {
   plan: PlanType
@@ -19,12 +19,14 @@ const PLAN_PRICES: Record<PlanType, string> = {
   free: '¥0',
   pro: '¥3,980',
   team: '¥9,800',
+  enterprise: '¥49,800',
 }
 
 const PLAN_COLORS: Record<PlanType, { badge: string; border: string }> = {
   free: { badge: 'bg-slate-100 text-slate-700', border: 'border-gray-200' },
   pro: { badge: 'bg-blue-100 text-blue-700', border: 'border-blue-200' },
   team: { badge: 'bg-purple-100 text-purple-700', border: 'border-purple-200' },
+  enterprise: { badge: 'bg-amber-100 text-amber-700', border: 'border-amber-200' },
 }
 
 export default function BillingSection({ userId }: { userId: string }) {

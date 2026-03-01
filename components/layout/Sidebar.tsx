@@ -8,11 +8,8 @@ import { useTranslation } from '@/lib/i18n/config'
 import PlanBadge from './PlanBadge'
 import { usePlan } from '@/lib/plan-context'
 import { Logo } from '@/components/ui/Logo'
-import { LayoutDashboard, FlaskConical, Upload, MessageSquare, Settings, Lock, Globe, LogOut, Menu, X } from 'lucide-react'
-
-const LOCKED_FEATURES: Record<string, string> = {
-  chat: 'ai-chat',
-}
+import { LayoutDashboard, FlaskConical, Upload, MessageSquare, Settings, Globe, LogOut, Menu, X } from 'lucide-react'
+import { PLAN_LIMITS, type PlanType } from '@/lib/plan-config'
 
 const NAV_ITEMS = [
   { labelKey: 'nav.dashboard', href: 'dashboard', icon: LayoutDashboard },
@@ -32,7 +29,7 @@ export default function Sidebar({ projectId, projectName, userEmail }: SidebarPr
   const pathname = usePathname()
   const router = useRouter()
   const { t, locale, setLocale } = useTranslation()
-  const { canUseFeature } = usePlan()
+  const { plan } = usePlan()
   const basePath = `/app/${projectId}`
   const [mobileOpen, setMobileOpen] = useState(false)
   const [loggingOut, setLoggingOut] = useState(false)
@@ -86,9 +83,10 @@ export default function Sidebar({ projectId, projectName, userEmail }: SidebarPr
           {NAV_ITEMS.map((item) => {
             const href = `${basePath}/${item.href}`
             const isActive = pathname.startsWith(href)
-            const lockedFeature = LOCKED_FEATURES[item.href]
-            const isLocked = lockedFeature ? !canUseFeature(lockedFeature) : false
             const Icon = item.icon
+            const aiLimit = item.href === 'chat'
+              ? PLAN_LIMITS[plan as PlanType]?.maxAiMessagesPerMonth ?? PLAN_LIMITS.free.maxAiMessagesPerMonth
+              : null
 
             return (
               <li key={item.href}>
@@ -102,8 +100,12 @@ export default function Sidebar({ projectId, projectName, userEmail }: SidebarPr
                 >
                   <Icon className={`h-5 w-5 ${isActive ? 'text-white' : 'text-slate-400'}`} />
                   {t(item.labelKey)}
-                  {isLocked && (
-                    <Lock className="ml-auto h-3.5 w-3.5 text-slate-400" />
+                  {aiLimit !== null && aiLimit !== Infinity && (
+                    <span className={`ml-auto rounded-full px-1.5 py-0.5 text-[10px] font-medium ${
+                      isActive ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-500'
+                    }`}>
+                      {aiLimit}/月
+                    </span>
                   )}
                 </Link>
               </li>

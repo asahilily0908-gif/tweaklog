@@ -2,17 +2,17 @@
 
 import { createContext, useContext } from 'react'
 
-export type PlanType = 'free' | 'pro' | 'team'
+export type PlanType = 'free' | 'pro' | 'team' | 'enterprise'
 
 // Duplicated from stripe/config.ts to avoid importing server-only env vars
 const PLAN_FEATURES: Record<string, PlanType[]> = {
-  'ai-chat': ['pro', 'team'],
-  'impact-card': ['pro', 'team'],
-  'custom-metrics': ['pro', 'team'],
-  'spreadsheet-sync': ['pro', 'team'],
-  'unlimited-projects': ['pro', 'team'],
-  'team-members': ['team'],
-  'api-export': ['team'],
+  'ai-chat': ['free', 'pro', 'team', 'enterprise'],
+  'impact-card': ['free', 'pro', 'team', 'enterprise'],
+  'custom-metrics': ['free', 'pro', 'team', 'enterprise'],
+  'spreadsheet-sync': ['pro', 'team', 'enterprise'],
+  'unlimited-projects': ['pro', 'team', 'enterprise'],
+  'team-members': ['team', 'enterprise'],
+  'api-export': ['team', 'enterprise'],
 }
 
 interface PlanContextValue {

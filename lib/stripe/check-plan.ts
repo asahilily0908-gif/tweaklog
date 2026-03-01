@@ -2,6 +2,7 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { PLAN_FEATURES, type PlanType } from './config'
 
 function mapOrgPlan(orgPlan: string | null): PlanType {
+  if (orgPlan === 'enterprise') return 'enterprise'
   if (orgPlan === 'team') return 'team'
   if (orgPlan === 'personal') return 'pro'
   return 'free'
@@ -46,7 +47,7 @@ export async function getUserPlan(userId: string): Promise<PlanType> {
     console.log('[getUserPlan] orgs:', JSON.stringify(orgs), 'error:', orgErr)
 
     if (orgs && orgs.length > 0) {
-      const planRank: Record<PlanType, number> = { free: 0, pro: 1, team: 2 }
+      const planRank: Record<PlanType, number> = { free: 0, pro: 1, team: 2, enterprise: 3 }
       let bestPlan: PlanType = 'free'
 
       for (const org of orgs) {
