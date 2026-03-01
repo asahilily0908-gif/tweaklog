@@ -12,7 +12,7 @@ import ExperimentDetailPanel from './ExperimentDetailPanel'
 import AiHighlights from './AiHighlights'
 import { evaluateFormulaSafe as evaluateFormula } from '@/lib/metrics/formula-parser'
 import { computeImpactForExperiment } from '@/lib/metrics/score-calculator'
-import UpgradeGate from '@/components/layout/UpgradeGate'
+import { usePlan } from '@/lib/plan-context'
 import { Sparkles } from 'lucide-react'
 
 interface Project {
@@ -160,6 +160,8 @@ function daysBeforeDate(dateStr: string, days: number): string {
 
 export default function DashboardContent({ project, outcomes, experiments, metricConfigs, latestDate, aiHighlights, experimentGroups }: Props) {
   const { t } = useTranslation()
+  const { canUseFeature } = usePlan()
+  const canUseCustomMetrics = canUseFeature('custom-metrics')
   const [platform, setPlatform] = useState('ALL')
   const [dateRange, setDateRange] = useState<DateRange>(30)
   const [selectedExperiment, setSelectedExperiment] = useState<Experiment | null>(null)
@@ -496,7 +498,7 @@ export default function DashboardContent({ project, outcomes, experiments, metri
             />
           </div>
           {customMetricValues.length > 0 && (
-            <UpgradeGate feature="custom-metrics">
+            canUseCustomMetrics ? (
               <div className="mb-6 grid grid-cols-2 gap-2 sm:gap-4 sm:grid-cols-3 lg:grid-cols-4">
                 {customMetricValues.map((cm) => (
                   <KpiCard
@@ -514,7 +516,29 @@ export default function DashboardContent({ project, outcomes, experiments, metri
                   />
                 ))}
               </div>
-            </UpgradeGate>
+            ) : (
+              <div className="mb-6 grid grid-cols-2 gap-2 sm:gap-4 sm:grid-cols-3 lg:grid-cols-4">
+                {customMetricValues.map((cm) => (
+                  <a
+                    key={cm.id}
+                    href={`/app/${project.id}/settings`}
+                    className="group relative rounded-xl border border-gray-200 bg-white/60 p-3 sm:p-4 backdrop-blur-sm hover:border-blue-300 transition-all"
+                  >
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-xs text-gray-400">{cm.name}</span>
+                      <span className="inline-flex items-center gap-1 rounded-full bg-blue-50 px-2 py-0.5 text-[10px] font-medium text-blue-600">
+                        <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+                        </svg>
+                        Pro
+                      </span>
+                    </div>
+                    <div className="text-lg font-bold text-gray-300">***</div>
+                    <p className="mt-1 text-[10px] text-gray-400 group-hover:text-blue-500 transition-colors">Proで解放</p>
+                  </a>
+                ))}
+              </div>
+            )
           )}
         </>
       ) : (
