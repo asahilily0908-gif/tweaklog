@@ -4,7 +4,6 @@ import { useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import NorthStarKpiStep from './NorthStarKpiStep'
-import ColumnMappingStep from './ColumnMappingStep'
 import MetricConfigStep from './MetricConfigStep'
 import SetupCompleteStep from './SetupCompleteStep'
 import { completeSetup } from '@/app/(app)/setup/actions'
@@ -16,9 +15,6 @@ export interface WizardData {
   northStarKpi: string
   northStarKpiCustomName: string
   subKpis: string[]
-  columnMappings: Record<string, string>
-  csvHeaders: string[]
-  sheetsUrl: string
   metricConfigs: Array<{
     name: string
     displayName: string
@@ -29,9 +25,8 @@ export interface WizardData {
 
 const STEPS = [
   { num: 1, label: 'KPI設定' },
-  { num: 2, label: 'データ連携' },
-  { num: 3, label: '指標設定' },
-  { num: 4, label: '完了' },
+  { num: 2, label: '指標設定' },
+  { num: 3, label: '完了' },
 ]
 
 export default function SetupWizard() {
@@ -48,9 +43,6 @@ export default function SetupWizard() {
     northStarKpi: '',
     northStarKpiCustomName: '',
     subKpis: [],
-    columnMappings: {},
-    csvHeaders: [],
-    sheetsUrl: '',
     metricConfigs: [],
   })
 
@@ -70,7 +62,7 @@ export default function SetupWizard() {
   }
 
   function handleNext() {
-    if (currentStep < 4) setCurrentStep((s) => s + 1)
+    if (currentStep < 3) setCurrentStep((s) => s + 1)
   }
 
   function handleBack() {
@@ -91,8 +83,7 @@ export default function SetupWizard() {
               ? wizardData.northStarKpiCustomName.trim()
               : wizardData.northStarKpi,
             subKpis: wizardData.subKpis,
-            columnMappings: wizardData.columnMappings,
-            sheetsUrl: wizardData.sheetsUrl,
+            columnMappings: {},
             metricConfigs: wizardData.metricConfigs,
           })
           if (result?.error) {
@@ -190,16 +181,9 @@ export default function SetupWizard() {
           <NorthStarKpiStep data={wizardData} onChange={updateData} isNewSetup={isNewSetup} />
         )}
         {currentStep === 2 && (
-          <ColumnMappingStep
-            data={wizardData}
-            onChange={updateData}
-            onSkip={handleNext}
-          />
-        )}
-        {currentStep === 3 && (
           <MetricConfigStep data={wizardData} onChange={updateData} />
         )}
-        {currentStep === 4 && (
+        {currentStep === 3 && (
           <SetupCompleteStep data={wizardData} />
         )}
       </div>
@@ -219,7 +203,7 @@ export default function SetupWizard() {
             <div />
           )}
 
-          {currentStep < 4 ? (
+          {currentStep < 3 ? (
             <button
               type="button"
               onClick={handleNext}

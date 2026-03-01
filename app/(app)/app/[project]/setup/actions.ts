@@ -30,7 +30,7 @@ export async function updateProjectSetup(
       north_star_kpi: northStarKpi,
       sub_kpis: data.subKpis,
       settings: {
-        column_mappings: data.columnMappings,
+        column_mappings: {},
       },
       updated_at: new Date().toISOString(),
     })

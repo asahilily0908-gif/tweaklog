@@ -20,9 +20,6 @@ export default function SetupCompleteStep({ data }: SetupCompleteStepProps) {
       ? data.northStarKpiCustomName
       : KPI_LABELS[data.northStarKpi] ?? data.northStarKpi
 
-  const mappedCount = Object.keys(data.columnMappings).length
-  const hasMapping = data.csvHeaders.length > 0
-
   return (
     <div className="space-y-8">
       <div className="text-center">
@@ -71,26 +68,6 @@ export default function SetupCompleteStep({ data }: SetupCompleteStepProps) {
                 </span>
               ))}
             </div>
-          )}
-        </div>
-      </div>
-
-      {/* Data connection */}
-      <div className="rounded-xl border border-gray-200 bg-white overflow-hidden">
-        <div className="bg-gray-50 px-5 py-3 border-b border-gray-200">
-          <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-500">
-            データ連携
-          </h3>
-        </div>
-        <div className="px-5 py-4">
-          {hasMapping ? (
-            <p className="text-sm text-gray-700">
-              CSVアップロード済み（{mappedCount}列マッピング済み）
-            </p>
-          ) : (
-            <p className="text-sm text-gray-500">
-              未設定（後から設定可能）
-            </p>
           )}
         </div>
       </div>

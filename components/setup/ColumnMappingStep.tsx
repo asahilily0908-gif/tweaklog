@@ -3,11 +3,16 @@
 import { useRef, useState } from 'react'
 import { Upload, FileSpreadsheet, Loader2 } from 'lucide-react'
 import { guessField } from '@/lib/import/column-mappings'
-import type { WizardData } from './SetupWizard'
+
+interface ColumnMappingData {
+  csvHeaders: string[]
+  columnMappings: Record<string, string>
+  sheetsUrl?: string
+}
 
 interface ColumnMappingStepProps {
-  data: WizardData
-  onChange: (data: Partial<WizardData>) => void
+  data: ColumnMappingData
+  onChange: (data: Partial<ColumnMappingData>) => void
   onSkip: () => void
 }
 

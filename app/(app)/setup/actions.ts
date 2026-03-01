@@ -9,7 +9,6 @@ interface SetupInput {
   northStarKpi: string
   subKpis: string[]
   columnMappings: Record<string, string>
-  sheetsUrl?: string
   metricConfigs: {
     name: string
     displayName: string
@@ -89,19 +88,6 @@ export async function completeSetup(input: SetupInput) {
     if (metricsError) {
       return { error: `Failed to save metrics: ${metricsError.message}` }
     }
-  }
-
-  // 4. Save spreadsheet config if URL was provided
-  if (input.sheetsUrl) {
-    const sheetIdMatch = input.sheetsUrl.match(/\/spreadsheets\/d\/([a-zA-Z0-9-_]+)/)
-    const gidMatch = input.sheetsUrl.match(/[?&]gid=(\d+)/)
-    await supabase.from('spreadsheet_configs').upsert({
-      project_id: project.id,
-      spreadsheet_url: input.sheetsUrl,
-      sheet_id: sheetIdMatch?.[1] || '',
-      gid: gidMatch?.[1] || '0',
-      column_mappings: input.columnMappings,
-    }, { onConflict: 'project_id' })
   }
 
   return { projectId: project.id }
