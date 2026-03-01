@@ -2,6 +2,25 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
+import { normalizePlatform } from '@/lib/import/column-mappings'
+
+function normalizeDateStr(raw: string): string | null {
+  const trimmed = raw.trim()
+  if (!trimmed) return null
+  if (/^\d{4}-\d{2}-\d{2}$/.test(trimmed)) return trimmed
+  const slashYmd = trimmed.match(/^(\d{4})[\/.](\d{1,2})[\/.](\d{1,2})$/)
+  if (slashYmd) return `${slashYmd[1]}-${slashYmd[2].padStart(2, '0')}-${slashYmd[3].padStart(2, '0')}`
+  const slashMdy = trimmed.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/)
+  if (slashMdy) return `${slashMdy[3]}-${slashMdy[1].padStart(2, '0')}-${slashMdy[2].padStart(2, '0')}`
+  const jpDate = trimmed.match(/^(\d{4})年(\d{1,2})月(\d{1,2})日$/)
+  if (jpDate) return `${jpDate[1]}-${jpDate[2].padStart(2, '0')}-${jpDate[3].padStart(2, '0')}`
+  const parsed = Date.parse(trimmed)
+  if (!isNaN(parsed)) {
+    const d = new Date(parsed)
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+  }
+  return null
+}
 
 interface SetupInput {
   orgName: string
@@ -92,11 +111,9 @@ export async function completeSetup(input: SetupInput) {
     }
   }
 
-  // 4. Import data to outcomes table
+  // 4. Import data to outcomes table using proper normalization
+  console.log(`[Setup] csvData: ${input.csvData?.length ?? 0} rows, mappings: ${JSON.stringify(Object.keys(input.columnMappings))}`)
   if (input.csvData && input.csvData.length > 0 && Object.keys(input.columnMappings).length > 0) {
-    // columnMappings: { 'CSV Header Name': 'standard_field' }
-    // csvData: [ { 'CSV Header Name': 'value', ... }, ... ]
-
     // Invert mapping: standard_field → CSV header name
     const fieldToHeader: Record<string, string> = {}
     for (const [csvHeader, field] of Object.entries(input.columnMappings)) {
@@ -105,52 +122,44 @@ export async function completeSetup(input: SetupInput) {
 
     const outcomeRows = input.csvData
       .map((row) => {
-        const record: Record<string, unknown> = {
+        const dateHeader = fieldToHeader.date
+        const dateVal = dateHeader ? row[dateHeader] : null
+        if (!dateVal) return null
+
+        const normalizedDate = normalizeDateStr(dateVal)
+        if (!normalizedDate) return null
+
+        const campaignHeader = fieldToHeader.campaign
+        const platformHeader = fieldToHeader.platform
+
+        return {
           project_id: project.id,
+          date: normalizedDate,
+          platform: platformHeader && row[platformHeader]
+            ? normalizePlatform(row[platformHeader])
+            : 'google_ads',
+          campaign: campaignHeader && row[campaignHeader] ? row[campaignHeader] : null,
+          impressions: Math.round(parseFloat((row[fieldToHeader.impressions] || '0').replace(/,/g, '')) || 0),
+          clicks: Math.round(parseFloat((row[fieldToHeader.clicks] || '0').replace(/,/g, '')) || 0),
+          cost: parseFloat((row[fieldToHeader.cost] || '0').replace(/[¥$,]/g, '')) || 0,
+          conversions: parseFloat((row[fieldToHeader.conversions] || '0').replace(/,/g, '')) || 0,
+          revenue: parseFloat((row[fieldToHeader.revenue] || '0').replace(/[¥$,]/g, '')) || 0,
+          custom_columns: {},
         }
-
-        if (fieldToHeader.date) {
-          record.date = row[fieldToHeader.date] || null
-        }
-        if (fieldToHeader.campaign) {
-          record.campaign = row[fieldToHeader.campaign] || null
-        }
-        if (fieldToHeader.impressions) {
-          const val = row[fieldToHeader.impressions]
-          record.impressions = val ? parseFloat(val.replace(/,/g, '')) || 0 : 0
-        }
-        if (fieldToHeader.clicks) {
-          const val = row[fieldToHeader.clicks]
-          record.clicks = val ? parseFloat(val.replace(/,/g, '')) || 0 : 0
-        }
-        if (fieldToHeader.cost) {
-          const val = row[fieldToHeader.cost]
-          record.cost = val ? parseFloat(val.replace(/[¥$,]/g, '')) || 0 : 0
-        }
-        if (fieldToHeader.conversions) {
-          const val = row[fieldToHeader.conversions]
-          record.conversions = val ? parseFloat(val.replace(/,/g, '')) || 0 : 0
-        }
-        if (fieldToHeader.revenue) {
-          const val = row[fieldToHeader.revenue]
-          record.revenue = val ? parseFloat(val.replace(/[¥$,]/g, '')) || 0 : 0
-        }
-        if (fieldToHeader.platform) {
-          record.platform = row[fieldToHeader.platform] || null
-        }
-
-        // Must have at least a date to be valid
-        if (!record.date) return null
-        return record
       })
-      .filter(Boolean)
+      .filter(Boolean) as Array<Record<string, unknown>>
 
     if (outcomeRows.length > 0) {
       for (let i = 0; i < outcomeRows.length; i += 500) {
         const batch = outcomeRows.slice(i, i + 500)
-        const { error: importError } = await supabase.from('outcomes').insert(batch)
+        const { error: importError } = await supabase
+          .from('outcomes')
+          .upsert(batch, {
+            onConflict: 'project_id,date,platform,campaign',
+            ignoreDuplicates: false,
+          })
         if (importError) {
-          console.error('Outcomes import error:', importError)
+          console.error('Setup outcomes import error:', importError)
         }
       }
     }
