@@ -7,9 +7,12 @@ import NorthStarKpiStep from './NorthStarKpiStep'
 import ColumnMappingStep from './ColumnMappingStep'
 import MetricConfigStep from './MetricConfigStep'
 import SetupCompleteStep from './SetupCompleteStep'
+import { completeSetup } from '@/app/(app)/setup/actions'
 import { updateProjectSetup } from '@/app/(app)/app/[project]/setup/actions'
 
 export interface WizardData {
+  orgName: string
+  projectName: string
   northStarKpi: string
   northStarKpiCustomName: string
   subKpis: string[]
@@ -33,11 +36,14 @@ const STEPS = [
 export default function SetupWizard() {
   const params = useParams()
   const router = useRouter()
-  const projectId = params.project as string
+  const projectId = params.project as string | undefined
+  const isNewSetup = !projectId
 
   const [currentStep, setCurrentStep] = useState(1)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [wizardData, setWizardData] = useState<WizardData>({
+    orgName: '',
+    projectName: '',
     northStarKpi: '',
     northStarKpiCustomName: '',
     subKpis: [],
@@ -52,6 +58,7 @@ export default function SetupWizard() {
 
   function canProceed(): boolean {
     if (currentStep === 1) {
+      if (isNewSetup && (!wizardData.orgName.trim() || !wizardData.projectName.trim())) return false
       if (!wizardData.northStarKpi) return false
       if (wizardData.northStarKpi === 'custom' && !wizardData.northStarKpiCustomName.trim())
         return false
@@ -71,13 +78,36 @@ export default function SetupWizard() {
   async function handleComplete() {
     setIsSubmitting(true)
     try {
-      const result = await updateProjectSetup(projectId, wizardData)
-      if (result.error) {
-        toast.error(result.error)
-        setIsSubmitting(false)
+      if (isNewSetup) {
+        // New user: create org + project
+        const result = await completeSetup({
+          orgName: wizardData.orgName || 'My Organization',
+          projectName: wizardData.projectName || 'My Project',
+          platform: [],
+          northStarKpi: wizardData.northStarKpi === 'custom'
+            ? wizardData.northStarKpiCustomName.trim()
+            : wizardData.northStarKpi,
+          subKpis: wizardData.subKpis,
+          columnMappings: wizardData.columnMappings,
+          metricConfigs: wizardData.metricConfigs,
+        })
+        if (result?.error) {
+          toast.error(result.error)
+          setIsSubmitting(false)
+          return
+        }
+        // completeSetup does redirect internally
         return
+      } else {
+        // Existing project: update settings
+        const result = await updateProjectSetup(projectId!, wizardData)
+        if (result.error) {
+          toast.error(result.error)
+          setIsSubmitting(false)
+          return
+        }
+        router.push(`/app/${projectId}/dashboard`)
       }
-      router.push(`/app/${projectId}/dashboard`)
     } catch {
       toast.error('セットアップの保存に失敗しました')
       setIsSubmitting(false)
@@ -146,7 +176,7 @@ export default function SetupWizard() {
       {/* Content area */}
       <div className="mx-auto max-w-3xl px-6 py-8 pb-28">
         {currentStep === 1 && (
-          <NorthStarKpiStep data={wizardData} onChange={updateData} />
+          <NorthStarKpiStep data={wizardData} onChange={updateData} isNewSetup={isNewSetup} />
         )}
         {currentStep === 2 && (
           <ColumnMappingStep

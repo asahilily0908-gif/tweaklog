@@ -13,6 +13,7 @@ import type { WizardData } from './SetupWizard'
 interface NorthStarKpiStepProps {
   data: WizardData
   onChange: (data: Partial<WizardData>) => void
+  isNewSetup?: boolean
 }
 
 const KPI_OPTIONS = [
@@ -39,6 +40,7 @@ const SUB_KPI_OPTIONS = [
 export default function NorthStarKpiStep({
   data,
   onChange,
+  isNewSetup,
 }: NorthStarKpiStepProps) {
   function toggleSubKpi(kpi: string) {
     if (data.subKpis.includes(kpi)) {
@@ -50,6 +52,37 @@ export default function NorthStarKpiStep({
 
   return (
     <div className="space-y-10">
+      {/* Org & Project name (new setup only) */}
+      {isNewSetup && (
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1.5">
+              組織名 / Organization Name
+            </label>
+            <input
+              type="text"
+              value={data.orgName}
+              onChange={e => onChange({ orgName: e.target.value })}
+              placeholder="例: 株式会社〇〇 マーケティング部"
+              className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm text-gray-900 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1.5">
+              プロジェクト名 / Project Name
+            </label>
+            <input
+              type="text"
+              value={data.projectName}
+              onChange={e => onChange({ projectName: e.target.value })}
+              placeholder="例: Google Ads メインアカウント"
+              className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm text-gray-900 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all"
+            />
+          </div>
+          <hr className="border-gray-200" />
+        </div>
+      )}
+
       {/* Main KPI selection */}
       <div className="space-y-4">
         <div>
