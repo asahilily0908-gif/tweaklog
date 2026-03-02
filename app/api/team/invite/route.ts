@@ -28,8 +28,8 @@ export async function POST(request: Request) {
 
   // Check plan
   const plan = await getUserPlan(user.id)
-  if (!['team', 'enterprise'].includes(plan)) {
-    return NextResponse.json({ error: 'Team features require the Team plan' }, { status: 403 })
+  if (!['pro', 'team', 'enterprise'].includes(plan)) {
+    return NextResponse.json({ error: 'Team features require a paid plan' }, { status: 403 })
   }
 
   // Check caller is owner/manager of this org

@@ -11,7 +11,7 @@ const PLAN_FEATURES: Record<string, PlanType[]> = {
   'custom-metrics': ['free', 'pro', 'team', 'enterprise'],
   'spreadsheet-sync': ['pro', 'team', 'enterprise'],
   'unlimited-projects': ['pro', 'team', 'enterprise'],
-  'team-members': ['team', 'enterprise'],
+  'team-members': ['pro', 'team', 'enterprise'],
   'api-export': ['team', 'enterprise'],
 }
 

@@ -646,13 +646,18 @@
     "cta": "Upgrade to Pro",
     "aiChatDescription": "Upgrade to Pro to use AI Chat for data analysis and improvement suggestions.",
     "experimentLimit": "You've reached the monthly change log limit (10)",
-    "experimentLimitCta": "Upgrade to Pro for unlimited logs"
+    "experimentLimitCta": "Upgrade to Pro for unlimited logs",
+    "teamTitle": "Available on Team plan",
+    "teamDescription": "Upgrade to Team to manage team members.",
+    "teamCta": "Upgrade to Team",
+    "memberLimitReached": "Member limit reached ({max}). Upgrade to Team for more members.",
+    "memberLimitCta": "Upgrade to Team"
   },
   "team": {
     "title": "Team Members",
-    "description": "Manage your organization members (up to 5)",
+    "description": "Manage your organization members",
     "inviteMember": "Invite Member",
-    "memberCount": "{count}/5 members",
+    "memberCount": "{count}/{max} members",
     "role": "Role",
     "roles": {
       "owner": "Owner",

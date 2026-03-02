@@ -647,13 +647,18 @@
     "cta": "Proにアップグレード",
     "aiChatDescription": "AI Chatを使ってデータの分析や改善提案を受けるにはProプランが必要です。",
     "experimentLimit": "今月の変更ログ上限（10件）に達しました",
-    "experimentLimitCta": "無制限に記録するにはProへアップグレード"
+    "experimentLimitCta": "無制限に記録するにはProへアップグレード",
+    "teamTitle": "Teamプランで利用可能",
+    "teamDescription": "チームメンバーの管理にはTeamプランへのアップグレードが必要です。",
+    "teamCta": "Teamにアップグレード",
+    "memberLimitReached": "メンバー上限（{max}人）に達しました。上限を増やすにはTeamプランにアップグレードしてください。",
+    "memberLimitCta": "Teamにアップグレード"
   },
   "team": {
     "title": "チームメンバー",
-    "description": "組織のメンバーを管理します（最大5名）",
+    "description": "組織のメンバーを管理します",
     "inviteMember": "メンバーを招待",
-    "memberCount": "{count}/5 メンバー",
+    "memberCount": "{count}/{max} メンバー",
     "role": "ロール",
     "roles": {
       "owner": "オーナー",
