@@ -136,7 +136,7 @@ function DashboardMockup() {
           </div>
         </div>
       </div>
-      <div className="absolute -inset-4 -z-10 rounded-2xl bg-[#7C3AED]/5 blur-2xl" />
+      <div className="absolute -inset-4 -z-10 rounded-2xl bg-gradient-to-r from-blue-500/5 via-purple-500/5 to-blue-500/5 blur-2xl" />
     </div>
   )
 }
@@ -240,14 +240,14 @@ export default function LandingPage() {
             {userId ? (
               <Link
                 href="/post-login"
-                className="rounded-lg bg-[#7C3AED] px-4 py-2 text-sm font-medium text-white hover:shadow-sm hover:shadow-indigo-500/15 transition-all duration-200"
+                className="rounded-lg bg-gradient-to-r from-[#2563EB] to-[#9333EA] px-4 py-2 text-sm font-medium text-white hover:shadow-sm hover:shadow-indigo-500/15 transition-all duration-200"
               >
                 {t('nav.dashboard')}
               </Link>
             ) : (
               <Link
                 href="/signup"
-                className="rounded-lg bg-[#7C3AED] px-4 py-2 text-sm font-medium text-white hover:shadow-sm hover:shadow-indigo-500/15 transition-all duration-200"
+                className="rounded-lg bg-gradient-to-r from-[#2563EB] to-[#9333EA] px-4 py-2 text-sm font-medium text-white hover:shadow-sm hover:shadow-indigo-500/15 transition-all duration-200"
               >
                 {t('landing.nav.startFree')}
               </Link>
@@ -277,7 +277,7 @@ export default function LandingPage() {
             </Link>
             <Link
               href="/signup"
-              className="block rounded-lg bg-[#7C3AED] px-4 py-2.5 text-center text-sm font-medium text-white"
+              className="block rounded-lg bg-gradient-to-r from-[#2563EB] to-[#9333EA] px-4 py-2.5 text-center text-sm font-medium text-white"
             >
               {t('landing.nav.startFree')}
             </Link>
@@ -288,12 +288,12 @@ export default function LandingPage() {
       {/* Hero */}
       <section className="relative overflow-hidden pt-28 pb-16 sm:pt-32 sm:pb-20 md:pt-40 md:pb-32">
         <div className="absolute inset-0 -z-10">
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 h-[400px] sm:h-[600px] w-[600px] sm:w-[800px] rounded-full bg-purple-50 blur-3xl opacity-60" />
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 h-[400px] sm:h-[600px] w-[600px] sm:w-[800px] rounded-full bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 blur-3xl opacity-60" />
         </div>
 
         <div className="mx-auto max-w-6xl px-4 md:px-6">
           <div className="text-center max-w-4xl mx-auto mb-10 sm:mb-12 md:mb-16">
-            <h1 className="text-2xl sm:text-3xl md:text-[2.75rem] lg:text-5xl font-bold leading-tight tracking-tight mb-4 sm:mb-6 text-[#7C3AED] break-words">
+            <h1 className="text-2xl sm:text-3xl md:text-[2.75rem] lg:text-5xl font-bold leading-tight tracking-tight mb-4 sm:mb-6 bg-gradient-to-r from-[#2563EB] to-[#9333EA] bg-clip-text text-transparent break-words">
               {t('landing.hero.headline')}
             </h1>
             <p className="text-base sm:text-lg md:text-xl text-blue-600 font-medium mb-4 sm:mb-6">
@@ -305,7 +305,7 @@ export default function LandingPage() {
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
               <Link
                 href="/signup"
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-[#7C3AED] px-6 py-3 text-base font-medium text-white hover:shadow-sm hover:shadow-indigo-500/15 transition-all duration-200 shadow-sm shadow-indigo-500/10"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#2563EB] to-[#9333EA] px-6 py-3 text-base font-medium text-white hover:shadow-sm hover:shadow-indigo-500/15 transition-all duration-200 shadow-sm shadow-indigo-500/10"
               >
                 {t('landing.hero.cta')}
                 <ArrowRight className="h-4 w-4" />
@@ -336,7 +336,7 @@ export default function LandingPage() {
               { titleKey: 'problem3Title', descKey: 'problem3Desc', solutionKey: 'solution3', icon: Sparkles },
             ].map(({ titleKey, descKey, solutionKey, icon: Icon }) => (
               <div key={titleKey} className="rounded-xl border border-gray-200 bg-white p-5 sm:p-6 md:p-8">
-                <div className="mb-3 sm:mb-4 inline-flex rounded-lg bg-purple-100 p-2.5">
+                <div className="mb-3 sm:mb-4 inline-flex rounded-lg bg-gradient-to-br from-blue-100 to-purple-100 p-2.5">
                   <Icon className="h-5 w-5 text-[#2563EB]" />
                 </div>
                 <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">
@@ -381,8 +381,8 @@ export default function LandingPage() {
               }
               const c = colorMap[color]
               return (
-                <div key={key} className={`rounded-xl border-2 ${c.border} bg-white p-5 sm:p-6 md:p-8 hover:border-[#7C3AED] transition-colors duration-200 overflow-hidden`}>
-                  <div className="mb-3 sm:mb-4 inline-flex rounded-lg bg-purple-100 p-2.5">
+                <div key={key} className={`rounded-xl border-2 ${c.border} bg-white p-5 sm:p-6 md:p-8 hover:border-[#2563EB] transition-colors duration-200 overflow-hidden`}>
+                  <div className="mb-3 sm:mb-4 inline-flex rounded-lg bg-gradient-to-br from-blue-100 to-purple-100 p-2.5">
                     <Icon className={`h-5 w-5 ${c.icon}`} />
                   </div>
                   <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-1">
@@ -452,7 +452,7 @@ export default function LandingPage() {
             ].map(({ step, icon: Icon, titleKey, descKey }) => (
               <div key={step} className="flex items-start gap-4 sm:flex-col sm:items-center sm:text-center rounded-xl border border-gray-100 bg-white p-4 sm:p-6 sm:border-0 sm:bg-transparent">
                 <div className="flex flex-col items-center gap-2 shrink-0">
-                  <div className="flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-[#7C3AED] text-white font-bold text-base sm:text-lg shadow-sm shadow-indigo-500/10">
+                  <div className="flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-gradient-to-br from-[#2563EB] to-[#9333EA] text-white font-bold text-base sm:text-lg shadow-sm shadow-indigo-500/10">
                     {step}
                   </div>
                   <div className="hidden sm:inline-flex rounded-lg bg-blue-50 p-2.5">
@@ -509,7 +509,7 @@ export default function LandingPage() {
               },
             ].map(({ icon: Icon, title, desc }) => (
               <div key={title} className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-                <div className="mb-4 inline-flex h-10 w-10 items-center justify-center rounded-xl bg-[#7C3AED]">
+                <div className="mb-4 inline-flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600">
                   <Icon className="h-5 w-5 text-white" />
                 </div>
                 <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-1.5">{title}</h3>
@@ -571,14 +571,9 @@ export default function LandingPage() {
             </div>
 
             {/* Pro — order-first on mobile so it appears at top */}
-            <div className="rounded-xl border-2 border-[#7C3AED] bg-white p-5 sm:p-6 md:p-8 relative order-first md:order-none shadow-sm shadow-[#7C3AED]/5">
-              <div className="absolute -top-3 left-1/2 -translate-x-1/2 flex items-center gap-1.5">
-                <span className="rounded-full bg-[#7C3AED] px-3 py-0.5 text-xs font-medium text-white">
-                  {t('landing.pricing.popular')}
-                </span>
-                <span className="rounded-full bg-[#9333EA] px-2.5 py-0.5 text-xs font-medium text-white">
-                  {t('landing.pricing.freeTrial')}
-                </span>
+            <div className="rounded-xl border-2 border-[#2563EB] bg-white p-5 sm:p-6 md:p-8 relative order-first md:order-none shadow-sm shadow-blue-500/5">
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-gradient-to-r from-[#2563EB] to-[#9333EA] px-3 py-0.5 text-xs font-medium text-white">
+                {t('landing.pricing.popular')}
               </div>
               <h3 className="text-lg font-bold text-gray-900">{t('landing.pricing.pro.name')}</h3>
               <div className="mt-2 mb-1">
@@ -597,7 +592,7 @@ export default function LandingPage() {
               <button
                 onClick={() => handleCheckout('pro')}
                 disabled={checkoutLoading === 'pro'}
-                className="block w-full rounded-lg bg-[#7C3AED] px-4 py-2.5 text-center text-sm font-medium text-white hover:shadow-sm hover:shadow-indigo-500/15 transition-all duration-200 disabled:opacity-50"
+                className="block w-full rounded-lg bg-gradient-to-r from-[#2563EB] to-[#9333EA] px-4 py-2.5 text-center text-sm font-medium text-white hover:shadow-sm hover:shadow-indigo-500/15 transition-all duration-200 disabled:opacity-50"
               >
                 {checkoutLoading === 'pro' ? t('common.loading') : t('billing.tryFree')}
               </button>
@@ -671,14 +666,14 @@ export default function LandingPage() {
       </Section>
 
       {/* Footer CTA */}
-      <Section className="py-16 sm:py-20 md:py-28 bg-[#7C3AED]">
+      <Section className="py-16 sm:py-20 md:py-28 bg-gradient-to-r from-[#2563EB] to-[#9333EA]">
         <div className="mx-auto max-w-6xl px-4 md:px-6 text-center">
           <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-white mb-4 sm:mb-6 break-words">
             {t('landing.footerCta.headline')}
           </h2>
           <Link
             href="/signup"
-            className="inline-flex items-center gap-2 rounded-xl bg-white px-6 py-3 text-sm sm:text-base font-medium text-[#7C3AED] hover:bg-purple-50 transition-colors shadow-sm"
+            className="inline-flex items-center gap-2 rounded-xl bg-white px-6 py-3 text-sm sm:text-base font-medium text-[#2563EB] hover:bg-blue-50 transition-colors shadow-sm"
           >
             {t('landing.footerCta.cta')}
             <ArrowRight className="h-4 w-4" />
