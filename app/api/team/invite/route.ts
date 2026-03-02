@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { getUserPlan } from '@/lib/stripe/check-plan'
+import { PLAN_LIMITS, type PlanType } from '@/lib/plan-config'
 
 export async function POST(request: Request) {
   const supabase = await createClient()
@@ -27,7 +28,7 @@ export async function POST(request: Request) {
 
   // Check plan
   const plan = await getUserPlan(user.id)
-  if (plan !== 'team') {
+  if (!['team', 'enterprise'].includes(plan)) {
     return NextResponse.json({ error: 'Team features require the Team plan' }, { status: 403 })
   }
 
@@ -51,8 +52,9 @@ export async function POST(request: Request) {
     .select('id', { count: 'exact', head: true })
     .eq('org_id', orgId)
 
-  if ((count ?? 0) >= 5) {
-    return NextResponse.json({ error: 'Member limit reached (max 5)' }, { status: 400 })
+  const maxMembers = PLAN_LIMITS[plan as PlanType]?.maxTeamMembers ?? 1
+  if ((count ?? 0) >= maxMembers) {
+    return NextResponse.json({ error: `Member limit reached (max ${maxMembers})` }, { status: 400 })
   }
 
   // Check if email is already a member
