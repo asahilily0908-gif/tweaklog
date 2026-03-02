@@ -217,7 +217,7 @@ export default function SetupWizard() {
               type="button"
               onClick={handleComplete}
               disabled={isSubmitting}
-              className="rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 px-8 py-3 text-lg font-semibold text-white hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+              className="rounded-xl bg-[#7C3AED] px-8 py-3 text-lg font-semibold text-white hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
             >
               {isSubmitting ? '保存中...' : 'ダッシュボードへ'}
             </button>

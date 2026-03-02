@@ -88,7 +88,7 @@ export default function Sidebar({ projectId, projectName, userEmail }: SidebarPr
                   href={href}
                   className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200 ${
                     isActive
-                      ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-sm shadow-indigo-500/20'
+                      ? 'bg-[#7C3AED] text-white shadow-sm shadow-indigo-500/20'
                       : 'text-slate-700 hover:bg-slate-50'
                   }`}
                 >
@@ -116,7 +116,7 @@ export default function Sidebar({ projectId, projectName, userEmail }: SidebarPr
       {/* User section */}
       <div className="border-t border-slate-200/60 px-3 py-3">
         <div className="flex items-center gap-2.5 px-3 py-2">
-          <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 text-xs font-medium text-white">
+          <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#7C3AED] text-xs font-medium text-white">
             {userEmail ? userEmail[0].toUpperCase() : 'U'}
           </div>
           <div className="min-w-0 flex-1">

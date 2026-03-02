@@ -413,7 +413,7 @@ export default function DashboardContent({ project, outcomes, experiments, metri
   const availablePlatforms = ['ALL', ...project.platform]
 
   return (
-    <div className="p-4 sm:p-6 max-w-7xl mx-auto min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50/30">
+    <div className="p-4 sm:p-6 max-w-7xl mx-auto min-h-screen bg-slate-50">
       {/* Header */}
       <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>

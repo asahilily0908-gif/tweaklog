@@ -20,7 +20,7 @@ export default async function Image() {
           flexDirection: "column",
           justifyContent: "center",
           alignItems: "center",
-          background: "linear-gradient(135deg, #1e3a5f 0%, #0f172a 50%, #1e1b4b 100%)",
+          background: "linear-gradient(135deg, #5b21b6 0%, #1e1b4b 50%, #4c1d95 100%)",
           position: "relative",
           overflow: "hidden",
         }}
@@ -35,7 +35,7 @@ export default async function Image() {
             height: 400,
             borderRadius: "50%",
             background:
-              "radial-gradient(circle, rgba(59,130,246,0.15) 0%, transparent 70%)",
+              "radial-gradient(circle, rgba(124,58,237,0.15) 0%, transparent 70%)",
           }}
         />
         <div
@@ -47,7 +47,7 @@ export default async function Image() {
             height: 300,
             borderRadius: "50%",
             background:
-              "radial-gradient(circle, rgba(139,92,246,0.12) 0%, transparent 70%)",
+              "radial-gradient(circle, rgba(124,58,237,0.12) 0%, transparent 70%)",
           }}
         />
 
@@ -75,7 +75,7 @@ export default async function Image() {
                 width: 48,
                 height: 48,
                 borderRadius: 12,
-                background: "linear-gradient(135deg, #3b82f6, #8b5cf6)",
+                background: "#7C3AED",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -145,9 +145,9 @@ export default async function Image() {
                 style={{
                   padding: "8px 20px",
                   borderRadius: 100,
-                  border: "1px solid rgba(59, 130, 246, 0.3)",
-                  background: "rgba(59, 130, 246, 0.1)",
-                  color: "#93c5fd",
+                  border: "1px solid rgba(124, 58, 237, 0.3)",
+                  background: "rgba(124, 58, 237, 0.1)",
+                  color: "#c4b5fd",
                   fontSize: 18,
                   fontWeight: 500,
                 }}
@@ -167,7 +167,7 @@ export default async function Image() {
             right: 0,
             height: 4,
             background:
-              "linear-gradient(90deg, #3b82f6, #8b5cf6, #3b82f6)",
+              "#7C3AED",
           }}
         />
       </div>

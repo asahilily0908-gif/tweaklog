@@ -534,6 +534,7 @@
       "title": "Pricing",
       "subtitle": "Choose the plan that fits your team",
       "popular": "Most Popular",
+      "freeTrial": "14-day free trial",
       "comingSoon": "Coming Soon",
       "free": {
         "name": "Free",

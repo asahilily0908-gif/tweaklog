@@ -535,6 +535,7 @@
       "title": "料金プラン",
       "subtitle": "あなたのチームに合ったプランを選択",
       "popular": "人気No.1",
+      "freeTrial": "14日間無料トライアル",
       "comingSoon": "Coming Soon",
       "free": {
         "name": "Free",

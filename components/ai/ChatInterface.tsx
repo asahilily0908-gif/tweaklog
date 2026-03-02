@@ -30,7 +30,7 @@ function MessageBubble({
   return (
     <div className={`flex ${isUser ? 'justify-end' : 'justify-start'}`}>
       {!isUser && (
-        <div className="mr-2.5 mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-indigo-500 to-purple-600">
+        <div className="mr-2.5 mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#7C3AED]">
           <Sparkles className="h-4 w-4 text-white" />
         </div>
       )}
@@ -153,7 +153,7 @@ export default function ChatInterface({
 
   const rateLimitBanner = rateLimited ? (
     <div className="mx-3 sm:mx-6 mb-3">
-      <div className="mx-auto max-w-2xl rounded-lg bg-gradient-to-r from-indigo-500 to-purple-600 px-4 py-3 text-white">
+      <div className="mx-auto max-w-2xl rounded-lg bg-[#7C3AED] px-4 py-3 text-white">
         <p className="text-sm font-medium">{t('chat.rateLimitMessage') || '月間の利用上限に達しました'}</p>
         <Link
           href={`/app/${projectId}/settings`}
@@ -190,7 +190,7 @@ export default function ChatInterface({
           type="button"
           onClick={() => handleSend()}
           disabled={!input.trim() || isStreaming}
-          className="flex h-[46px] w-[46px] shrink-0 items-center justify-center rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-sm hover:shadow-sm disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-150"
+          className="flex h-[46px] w-[46px] shrink-0 items-center justify-center rounded-xl bg-[#7C3AED] text-white shadow-sm hover:shadow-sm disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-150"
         >
           {isStreaming ? (
             <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
@@ -218,7 +218,7 @@ export default function ChatInterface({
 
         {/* Empty state */}
         <div className="flex flex-1 flex-col items-center justify-center px-4 sm:px-6 text-center">
-          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 shadow-sm shadow-indigo-500/10">
+          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-[#7C3AED] shadow-sm shadow-indigo-500/10">
             <Sparkles className="h-7 w-7 text-white" />
           </div>
           <h2 className="mt-4 text-xl font-bold tracking-tight text-gray-900">{t('chat.emptyTitle')}</h2>
@@ -249,12 +249,12 @@ export default function ChatInterface({
     <div className="flex h-full flex-col bg-white">
       {/* Header */}
       <div className="border-b border-gray-100 px-4 sm:px-6 py-4 flex items-center gap-3">
-        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-indigo-500 to-purple-600">
+        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#7C3AED]">
           <Sparkles className="h-4 w-4 text-white" />
         </div>
         <div className="flex items-center gap-2">
           <h1 className="text-sm font-bold text-gray-900">{t('chat.emptyTitle')}</h1>
-          <span className="inline-flex items-center rounded-full bg-gradient-to-r from-[#2563EB] to-[#9333EA] px-2 py-0.5 text-[10px] font-semibold text-white">Beta</span>
+          <span className="inline-flex items-center rounded-full bg-[#7C3AED] px-2 py-0.5 text-[10px] font-semibold text-white">Beta</span>
         </div>
         <div>
           <p className="text-[11px] text-gray-400">

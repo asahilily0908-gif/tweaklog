@@ -513,7 +513,7 @@ export default function CsvImportContent({ project }: Props) {
               </p>
               <a
                 href={`/app/${project.id}/settings`}
-                className="mt-6 inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-indigo-500 to-purple-600 px-6 py-3 text-sm font-semibold text-white shadow-sm hover:shadow-md transition-all duration-150"
+                className="mt-6 inline-flex items-center gap-2 rounded-lg bg-[#7C3AED] px-6 py-3 text-sm font-semibold text-white shadow-sm hover:shadow-md transition-all duration-150"
               >
                 Proプランにアップグレード
               </a>
@@ -526,7 +526,7 @@ export default function CsvImportContent({ project }: Props) {
               </p>
               <a
                 href={`/app/${project.id}/settings`}
-                className="mt-6 inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-indigo-500 to-purple-600 px-6 py-3 text-sm font-semibold text-white shadow-sm hover:shadow-md transition-all duration-150"
+                className="mt-6 inline-flex items-center gap-2 rounded-lg bg-[#7C3AED] px-6 py-3 text-sm font-semibold text-white shadow-sm hover:shadow-md transition-all duration-150"
               >
                 アップグレードして全件インポート
               </a>

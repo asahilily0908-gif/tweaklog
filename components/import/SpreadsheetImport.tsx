@@ -557,7 +557,7 @@ export default function SpreadsheetImport({ project, existingConfig }: Props) {
                 </div>
                 <a
                   href={`/app/${project.id}/settings`}
-                  className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-indigo-500 to-purple-600 px-5 py-2.5 text-sm font-medium text-white shadow-sm hover:shadow-md transition-all duration-150"
+                  className="inline-flex items-center gap-2 rounded-lg bg-[#7C3AED] px-5 py-2.5 text-sm font-medium text-white shadow-sm hover:shadow-md transition-all duration-150"
                 >
                   Proプランにアップグレード
                 </a>
@@ -573,7 +573,7 @@ export default function SpreadsheetImport({ project, existingConfig }: Props) {
                 </div>
                 <a
                   href={`/app/${project.id}/settings`}
-                  className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-indigo-500 to-purple-600 px-5 py-2.5 text-sm font-medium text-white shadow-sm hover:shadow-md transition-all duration-150"
+                  className="inline-flex items-center gap-2 rounded-lg bg-[#7C3AED] px-5 py-2.5 text-sm font-medium text-white shadow-sm hover:shadow-md transition-all duration-150"
                 >
                   アップグレードして全件インポート
                 </a>

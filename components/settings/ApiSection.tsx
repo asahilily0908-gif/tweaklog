@@ -140,7 +140,7 @@ export default function ApiSection() {
           <button
             type="button"
             disabled
-            className="rounded-lg bg-gradient-to-r from-indigo-500 to-purple-600 px-5 py-2 text-sm font-medium text-white opacity-50 cursor-not-allowed"
+            className="rounded-lg bg-[#7C3AED] px-5 py-2 text-sm font-medium text-white opacity-50 cursor-not-allowed"
           >
             APIキーを生成
           </button>
