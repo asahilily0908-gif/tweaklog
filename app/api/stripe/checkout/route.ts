@@ -14,7 +14,7 @@ export async function POST(request: NextRequest) {
 
   const body = await request.json()
   const plan = body.plan || 'pro'
-  const priceId = body.priceId || (plan === 'team' ? PLANS.team.priceId : PLANS.pro.priceId)
+  const priceId = body.priceId || PLANS[plan as keyof typeof PLANS]?.priceId || PLANS.pro.priceId
 
   if (!priceId) {
     return NextResponse.json({ error: 'Missing priceId' }, { status: 400 })

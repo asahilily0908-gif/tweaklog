@@ -45,9 +45,6 @@ export async function POST(request: NextRequest) {
 
   // Helper: sync organizations.plan for the user's owned org
   async function syncOrgPlan(userId: string, plan: string) {
-    // Map subscription plan name to organizations.plan value
-    const orgPlan = plan === 'pro' ? 'personal' : plan // 'pro' → 'personal', 'team' → 'team', 'free' → 'free'
-
     // Find org where user is owner
     const { data: membership } = await admin
       .from('org_members')
@@ -59,7 +56,7 @@ export async function POST(request: NextRequest) {
     if (membership) {
       await admin
         .from('organizations')
-        .update({ plan: orgPlan })
+        .update({ plan })
         .eq('id', membership.org_id)
     }
   }
@@ -111,6 +108,8 @@ export async function POST(request: NextRequest) {
         let plan = 'pro'
         if (priceId === process.env.STRIPE_TEAM_PRICE_ID) {
           plan = 'team'
+        } else if (priceId === process.env.STRIPE_ENTERPRISE_PRICE_ID) {
+          plan = 'enterprise'
         }
 
         const periods = getPeriodDates(subscription)
