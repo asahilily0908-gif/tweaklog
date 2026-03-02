@@ -384,7 +384,8 @@
     "suggestedPrompts": "おすすめの質問",
     "exampleQuestion1": "先週のCPAの変化を教えてください",
     "exampleQuestion2": "最も効果的だった変更は何ですか？",
-    "exampleQuestion3": "最近のパフォーマンス低下の原因は？"
+    "exampleQuestion3": "最近のパフォーマンス低下の原因は？",
+    "rateLimitMessage": "今月のAIチャット利用上限に達しました。プランをアップグレードすると、より多くのAI分析をご利用いただけます。"
   },
   "impact": {
     "title": "インパクト分析",

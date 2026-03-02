@@ -383,7 +383,8 @@
     "suggestedPrompts": "Suggested prompts",
     "exampleQuestion1": "How did CPA change last week?",
     "exampleQuestion2": "What was the most effective change?",
-    "exampleQuestion3": "What caused the recent performance drop?"
+    "exampleQuestion3": "What caused the recent performance drop?",
+    "rateLimitMessage": "You've reached your monthly AI chat limit. Upgrade your plan to unlock more AI analysis."
   },
   "impact": {
     "title": "Impact Analysis",
