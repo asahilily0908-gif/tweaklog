@@ -3,6 +3,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 import { normalizePlatform } from '@/lib/import/column-mappings'
+import { PLAN_LIMITS, type PlanType } from '@/lib/plan-config'
 
 interface OutcomeRow {
   date: string
@@ -75,7 +76,7 @@ export async function importOutcomes(projectId: string, rows: OutcomeRow[]) {
       .select('*', { count: 'exact', head: true })
       .eq('project_id', projectId)
 
-    const maxRows = org?.plan === 'pro' ? 50000 : 1000
+    const maxRows = PLAN_LIMITS[(org?.plan as PlanType) ?? 'free']?.maxOutcomeRows ?? 1000
     const remaining = maxRows - (currentRows || 0)
     planInfo = { plan: org?.plan || 'free', maxRows, remaining }
 
