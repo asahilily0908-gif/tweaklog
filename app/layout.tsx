@@ -18,19 +18,22 @@ const siteUrl = "https://tweaklog.vercel.app";
 
 export const metadata: Metadata = {
   title: {
-    default: "Tweaklog — Ad Change Logs × Impact Analysis × AI Insights",
+    default: "Tweaklog — 広告運用の効果分析・改善提案SaaS",
     template: "%s | Tweaklog",
   },
   description:
-    "Track every ad change, automatically measure its impact on KPIs, and get AI-powered insights. The all-in-one platform for Google Ads, Meta Ads, and more.",
+    "広告運用の変更ログを記録し、AIがKPIへのインパクトを自動分析。CTR・CVR・ROASの改善サイクルを加速します。",
   keywords: [
     "広告運用",
     "変更ログ",
     "AI分析",
     "CPA改善",
+    "CTR",
+    "CVR",
     "ROAS",
     "Google Ads",
     "Meta Ads",
+    "Yahoo! Ads",
     "広告レポート",
     "SaaS",
     "Tweaklog",
@@ -44,15 +47,24 @@ export const metadata: Metadata = {
     alternateLocale: "en_US",
     url: siteUrl,
     siteName: "Tweaklog",
-    title: "Tweaklog — Ad Change Logs × Impact Analysis × AI Insights",
+    title: "Tweaklog — 広告運用の効果分析・改善提案SaaS",
     description:
-      "Track every ad change, automatically measure its impact on KPIs, and get AI-powered insights. The all-in-one platform for Google Ads, Meta Ads, and more.",
+      "広告運用の変更ログを記録し、AIがKPIへのインパクトを自動分析。CTR・CVR・ROASの改善サイクルを加速します。",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Tweaklog — 広告運用の効果分析・改善提案SaaS",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Tweaklog — Ad Change Logs × Impact Analysis × AI Insights",
+    title: "Tweaklog — 広告運用の効果分析・改善提案SaaS",
     description:
-      "Track every ad change, automatically measure its impact on KPIs, and get AI-powered insights. The all-in-one platform for Google Ads, Meta Ads, and more.",
+      "広告運用の変更ログを記録し、AIがKPIへのインパクトを自動分析。CTR・CVR・ROASの改善サイクルを加速します。",
+    images: ["/og-image.png"],
   },
   robots: {
     index: true,

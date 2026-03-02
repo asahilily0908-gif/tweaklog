@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://tweaklog.vercel.app/sitemap.xml
