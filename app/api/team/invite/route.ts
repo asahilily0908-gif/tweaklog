@@ -106,7 +106,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: insertError.message }, { status: 500 })
   }
 
-  const origin = request.headers.get('origin') || 'https://tweaklog.vercel.app'
+  const origin = request.headers.get('origin') || 'https://tweaklog.io'
   const inviteUrl = `${origin}/invite/${invitation.token}`
 
   return NextResponse.json({

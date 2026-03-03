@@ -55,7 +55,7 @@ export async function POST(request: NextRequest) {
     .eq('role', 'owner')
     .single()
 
-  const origin = request.headers.get('origin') || 'https://tweaklog.vercel.app'
+  const origin = request.headers.get('origin') || 'https://tweaklog.io'
 
   const session = await stripe.checkout.sessions.create({
     customer: stripeCustomerId,

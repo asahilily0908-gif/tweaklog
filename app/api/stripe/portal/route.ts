@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'No subscription found' }, { status: 404 })
   }
 
-  const origin = request.headers.get('origin') || 'https://tweaklog.vercel.app'
+  const origin = request.headers.get('origin') || 'https://tweaklog.io'
 
   const session = await stripe.billingPortal.sessions.create({
     customer: subscription.stripe_customer_id,

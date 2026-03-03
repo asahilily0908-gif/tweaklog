@@ -75,7 +75,7 @@ pnpm test:watch  # ウォッチモード
 
 ## MCP サーバー
 
-エンドポイント: `https://tweaklog.vercel.app/api/mcp/mcp`
+エンドポイント: `https://tweaklog.io/api/mcp/mcp`
 
 ### Claude Desktop 設定
 
@@ -83,7 +83,7 @@ pnpm test:watch  # ウォッチモード
 {
   "mcpServers": {
     "tweaklog": {
-      "url": "https://tweaklog.vercel.app/api/mcp/mcp"
+      "url": "https://tweaklog.io/api/mcp/mcp"
     }
   }
 }

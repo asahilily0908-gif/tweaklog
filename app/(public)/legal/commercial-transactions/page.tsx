@@ -64,8 +64,8 @@ export default function CommercialTransactionsPage() {
                   URL
                 </th>
                 <td className="px-5 py-4 text-gray-300">
-                  <a href="https://tweaklog.vercel.app" className="text-blue-400 hover:text-blue-300 transition-colors">
-                    https://tweaklog.vercel.app
+                  <a href="https://tweaklog.io" className="text-blue-400 hover:text-blue-300 transition-colors">
+                    https://tweaklog.io
                   </a>
                 </td>
               </tr>

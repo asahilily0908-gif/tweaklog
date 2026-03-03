@@ -17,7 +17,7 @@ Records advertising changes (bid, creative, targeting, budget, structure), compa
 - **Animations:** framer-motion 12 + CSS keyframes
 - **i18n:** Custom locale provider (Japanese default, English supported)
 - **Package manager:** pnpm
-- **Deployment:** Vercel (https://tweaklog.vercel.app)
+- **Deployment:** Vercel (https://tweaklog.io)
 
 ## Completed Features
 
@@ -230,7 +230,7 @@ middleware.ts                           # Supabase session refresh on all routes
    - Click to open Impact Card panel
 
 4. **Vercel Deployment**
-   - Production URL: https://tweaklog.vercel.app
+   - Production URL: https://tweaklog.io
    - Root page redirects to /login
    - Post-login redirect: existing users → dashboard, new users → setup wizard
 

@@ -14,7 +14,7 @@ const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
 });
 
-const siteUrl = "https://tweaklog.vercel.app";
+const siteUrl = "https://tweaklog.io";
 
 export const metadata: Metadata = {
   title: {
@@ -71,7 +71,7 @@ export const metadata: Metadata = {
     follow: true,
   },
   verification: {
-    google: "usdnT-mK-E-Nq5o9ZajQzAGn6A_8RaWnQgTsOOrxEYo",
+    google: "iV8UJaqyeG_dgjRBGdMHW1JFArIjGRWkUTHtrqDYDkA",
   },
 };
 

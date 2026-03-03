@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { Copy, Check } from 'lucide-react'
 
-const MCP_URL = 'https://tweaklog.vercel.app/api/mcp/mcp'
+const MCP_URL = 'https://tweaklog.io/api/mcp/mcp'
 
 const CLAUDE_CONFIG = `{
   "mcpServers": {

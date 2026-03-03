@@ -86,7 +86,7 @@ function DashboardMockup() {
           </div>
           {/* MOBILE FIX: URL bar hidden on mobile */}
           <div className="ml-4 flex-1 rounded-md bg-gray-100 px-3 py-1 text-xs text-gray-400 font-mono hidden sm:block">
-            tweaklog.vercel.app/dashboard
+            tweaklog.io/dashboard
           </div>
         </div>
         {/* Dashboard content */}
@@ -523,7 +523,7 @@ export default function LandingPage() {
               <pre className="whitespace-pre">{`{
   "mcpServers": {
     "tweaklog": {
-      "url": "https://tweaklog.vercel.app/api/mcp/mcp"
+      "url": "https://tweaklog.io/api/mcp/mcp"
     }
   }
 }`}</pre>
