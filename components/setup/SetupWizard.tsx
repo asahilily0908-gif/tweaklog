@@ -8,6 +8,7 @@ import MetricConfigStep from './MetricConfigStep'
 import SetupCompleteStep from './SetupCompleteStep'
 import { completeSetup } from '@/app/(app)/setup/actions'
 import { updateProjectSetup } from '@/app/(app)/app/[project]/setup/actions'
+import { useTranslation } from '@/lib/i18n/config'
 
 export interface WizardData {
   orgName: string
@@ -23,17 +24,18 @@ export interface WizardData {
   }>
 }
 
-const STEPS = [
-  { num: 1, label: 'KPI設定' },
-  { num: 2, label: '指標設定' },
-  { num: 3, label: '完了' },
-]
-
 export default function SetupWizard() {
   const params = useParams()
   const router = useRouter()
+  const { t } = useTranslation()
   const projectId = params.project as string | undefined
   const isNewSetup = !projectId
+
+  const STEPS = [
+    { num: 1, label: t('setup.wizard.kpiSetup') },
+    { num: 2, label: t('setup.wizard.metricSetup') },
+    { num: 3, label: t('setup.wizard.complete') },
+  ]
 
   const [currentStep, setCurrentStep] = useState(1)
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -96,7 +98,7 @@ export default function SetupWizard() {
             return
           }
         } catch {
-          toast.error('セットアップの保存に失敗しました')
+          toast.error(t('setup.wizard.saveFailed'))
           setIsSubmitting(false)
         }
         return
@@ -111,7 +113,7 @@ export default function SetupWizard() {
         router.push(`/app/${projectId}/dashboard`)
       }
     } catch {
-      toast.error('セットアップの保存に失敗しました')
+      toast.error(t('setup.wizard.saveFailed'))
       setIsSubmitting(false)
     }
   }
@@ -197,7 +199,7 @@ export default function SetupWizard() {
               onClick={handleBack}
               className="rounded-xl border border-gray-300 bg-white px-6 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-all duration-200"
             >
-              戻る
+              {t('setup.wizard.back')}
             </button>
           ) : (
             <div />
@@ -210,7 +212,7 @@ export default function SetupWizard() {
               disabled={!canProceed()}
               className="rounded-xl bg-indigo-600 px-6 py-2.5 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-200"
             >
-              次へ
+              {t('setup.wizard.next')}
             </button>
           ) : (
             <button
@@ -219,7 +221,7 @@ export default function SetupWizard() {
               disabled={isSubmitting}
               className="rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 px-8 py-3 text-lg font-semibold text-white hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
             >
-              {isSubmitting ? '保存中...' : 'ダッシュボードへ'}
+              {isSubmitting ? t('setup.wizard.saving') : t('setup.wizard.goToDashboard')}
             </button>
           )}
         </div>

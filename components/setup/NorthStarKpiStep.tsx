@@ -9,6 +9,7 @@ import {
   Pencil,
 } from 'lucide-react'
 import type { WizardData } from './SetupWizard'
+import { useTranslation } from '@/lib/i18n/config'
 
 interface NorthStarKpiStepProps {
   data: WizardData
@@ -17,12 +18,12 @@ interface NorthStarKpiStepProps {
 }
 
 const KPI_OPTIONS = [
-  { value: 'conversions', label: 'CV数', icon: Target },
-  { value: 'revenue', label: '売上 / Revenue', icon: DollarSign },
-  { value: 'mql', label: 'MQL数', icon: Users },
-  { value: 'reservations', label: '来店予約数', icon: Calendar },
-  { value: 'app_installs', label: 'アプリインストール数', icon: Smartphone },
-  { value: 'custom', label: 'カスタム', icon: Pencil },
+  { value: 'conversions', labelKey: 'setup.northStarKpi.kpiOptions.conversions', icon: Target },
+  { value: 'revenue', labelKey: 'setup.northStarKpi.kpiOptions.revenue', icon: DollarSign },
+  { value: 'mql', labelKey: 'setup.northStarKpi.kpiOptions.mql', icon: Users },
+  { value: 'reservations', labelKey: 'setup.northStarKpi.kpiOptions.reservations', icon: Calendar },
+  { value: 'app_installs', labelKey: 'setup.northStarKpi.kpiOptions.appInstalls', icon: Smartphone },
+  { value: 'custom', labelKey: 'setup.northStarKpi.kpiOptions.custom', icon: Pencil },
 ]
 
 const SUB_KPI_OPTIONS = [
@@ -42,6 +43,8 @@ export default function NorthStarKpiStep({
   onChange,
   isNewSetup,
 }: NorthStarKpiStepProps) {
+  const { t } = useTranslation()
+
   function toggleSubKpi(kpi: string) {
     if (data.subKpis.includes(kpi)) {
       onChange({ subKpis: data.subKpis.filter((k) => k !== kpi) })
@@ -57,25 +60,25 @@ export default function NorthStarKpiStep({
         <div className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1.5">
-              組織名 / Organization Name
+              {t('setup.northStarKpi.orgName')}
             </label>
             <input
               type="text"
               value={data.orgName}
               onChange={e => onChange({ orgName: e.target.value })}
-              placeholder="例: 株式会社〇〇 マーケティング部"
+              placeholder={t('setup.northStarKpi.orgPlaceholder')}
               className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm text-gray-900 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all"
             />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1.5">
-              プロジェクト名 / Project Name
+              {t('setup.northStarKpi.projectName')}
             </label>
             <input
               type="text"
               value={data.projectName}
               onChange={e => onChange({ projectName: e.target.value })}
-              placeholder="例: Google Ads メインアカウント"
+              placeholder={t('setup.northStarKpi.projectPlaceholder')}
               className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm text-gray-900 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all"
             />
           </div>
@@ -87,10 +90,10 @@ export default function NorthStarKpiStep({
       <div className="space-y-4">
         <div>
           <h2 className="text-2xl font-bold text-gray-900">
-            あなたのビジネスで最も重要な指標は？
+            {t('setup.northStarKpi.heading')}
           </h2>
           <p className="mt-2 text-sm text-gray-500">
-            1つだけ選んでください。ダッシュボードの中心指標になり、変更の効果判定の基準になります。
+            {t('setup.northStarKpi.description')}
           </p>
         </div>
 
@@ -115,7 +118,7 @@ export default function NorthStarKpiStep({
                 <span
                   className={`text-sm font-medium ${isSelected ? 'text-indigo-900' : 'text-gray-700'}`}
                 >
-                  {option.label}
+                  {t(option.labelKey)}
                 </span>
               </button>
             )
@@ -130,7 +133,7 @@ export default function NorthStarKpiStep({
               onChange={(e) =>
                 onChange({ northStarKpiCustomName: e.target.value })
               }
-              placeholder="例: 粗利ベースROAS、LTV効率..."
+              placeholder={t('setup.northStarKpi.customPlaceholder')}
               className="block w-full rounded-xl border border-gray-300 px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
             />
           </div>
@@ -141,10 +144,10 @@ export default function NorthStarKpiStep({
       <div className="space-y-4">
         <div>
           <h3 className="text-lg font-semibold text-gray-900">
-            サブKPI（最大5つ）
+            {t('setup.northStarKpi.subKpiHeading')}
           </h3>
           <p className="mt-1 text-sm text-gray-500">
-            北極星KPIを補完する指標を選んでください。
+            {t('setup.northStarKpi.subKpiDescription')}
           </p>
         </div>
 
@@ -172,7 +175,7 @@ export default function NorthStarKpiStep({
           })}
         </div>
         <p className="text-xs text-gray-400">
-          {data.subKpis.length}/5 選択中
+          {t('setup.northStarKpi.selectedCount').replace('{count}', String(data.subKpis.length))}
         </p>
       </div>
     </div>

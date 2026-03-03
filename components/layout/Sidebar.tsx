@@ -109,7 +109,7 @@ export default function Sidebar({ projectId, projectName, userEmail }: SidebarPr
           className="flex w-full items-center justify-center gap-2 rounded-lg px-3 py-2 text-xs font-medium text-slate-500 transition-colors hover:bg-slate-50 hover:text-slate-700"
         >
           <Globe className="h-4 w-4" />
-          {locale === 'ja' ? 'English' : '日本語'}
+          {locale === 'ja' ? 'English' : t('language.japanese')}
         </button>
       </div>
 

@@ -1,24 +1,29 @@
 'use client'
 
 import type { WizardData } from './SetupWizard'
+import { useTranslation } from '@/lib/i18n/config'
 
 interface SetupCompleteStepProps {
   data: WizardData
 }
 
-const KPI_LABELS: Record<string, string> = {
-  conversions: 'CV数',
-  revenue: '売上 / Revenue',
-  mql: 'MQL数',
-  reservations: '来店予約数',
-  app_installs: 'アプリインストール数',
+const KPI_LABEL_KEYS: Record<string, string> = {
+  conversions: 'setup.northStarKpi.kpiOptions.conversions',
+  revenue: 'setup.northStarKpi.kpiOptions.revenue',
+  mql: 'setup.northStarKpi.kpiOptions.mql',
+  reservations: 'setup.northStarKpi.kpiOptions.reservations',
+  app_installs: 'setup.northStarKpi.kpiOptions.appInstalls',
 }
 
 export default function SetupCompleteStep({ data }: SetupCompleteStepProps) {
+  const { t } = useTranslation()
+
   const northStarLabel =
     data.northStarKpi === 'custom'
       ? data.northStarKpiCustomName
-      : KPI_LABELS[data.northStarKpi] ?? data.northStarKpi
+      : KPI_LABEL_KEYS[data.northStarKpi]
+        ? t(KPI_LABEL_KEYS[data.northStarKpi])
+        : data.northStarKpi
 
   return (
     <div className="space-y-8">
@@ -39,10 +44,10 @@ export default function SetupCompleteStep({ data }: SetupCompleteStepProps) {
           </svg>
         </div>
         <h2 className="text-2xl font-bold text-gray-900">
-          セットアップ完了！
+          {t('setup.completeStep2.heading')}
         </h2>
         <p className="mt-2 text-sm text-gray-500">
-          以下の設定でダッシュボードを開始します。
+          {t('setup.completeStep2.description')}
         </p>
       </div>
 
@@ -50,7 +55,7 @@ export default function SetupCompleteStep({ data }: SetupCompleteStepProps) {
       <div className="rounded-xl border border-gray-200 bg-white overflow-hidden">
         <div className="bg-gray-50 px-5 py-3 border-b border-gray-200">
           <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-500">
-            メインKPI
+            {t('setup.completeStep2.mainKpi')}
           </h3>
         </div>
         <div className="px-5 py-4 space-y-3">
@@ -76,7 +81,7 @@ export default function SetupCompleteStep({ data }: SetupCompleteStepProps) {
       <div className="rounded-xl border border-gray-200 bg-white overflow-hidden">
         <div className="bg-gray-50 px-5 py-3 border-b border-gray-200">
           <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-500">
-            分析指標
+            {t('setup.completeStep2.metrics')}
           </h3>
         </div>
         <div className="px-5 py-4">
@@ -103,7 +108,7 @@ export default function SetupCompleteStep({ data }: SetupCompleteStepProps) {
             </div>
           ) : (
             <p className="text-sm text-gray-500">
-              未設定（後から設定可能）
+              {t('setup.completeStep2.noMetrics')}
             </p>
           )}
         </div>

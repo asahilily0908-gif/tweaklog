@@ -14,6 +14,7 @@ import {
   Zap,
 } from 'lucide-react'
 import NewChangeModal from '@/components/experiments/NewChangeModal'
+import { useTranslation } from '@/lib/i18n/config'
 
 interface CommandPaletteProps {
   isOpen: boolean
@@ -24,81 +25,83 @@ interface CommandPaletteProps {
 interface Command {
   id: string
   icon: typeof Search
-  label: string
-  description: string
+  labelKey: string
+  descKey: string
   shortcut?: string
-  section: string
+  sectionKey: string
 }
 
 const COMMANDS: Command[] = [
   {
     id: 'new-change',
     icon: PlusCircle,
-    label: '変更を記録',
-    description: '新しい広告変更を記録する',
+    labelKey: 'commandPalette.commands.newChange',
+    descKey: 'commandPalette.commands.newChangeDesc',
     shortcut: 'N',
-    section: 'アクション',
+    sectionKey: 'commandPalette.sections.actions',
   },
   {
     id: 'search-changes',
     icon: Search,
-    label: '変更を検索',
-    description: '過去の変更履歴を検索する',
+    labelKey: 'commandPalette.commands.searchChanges',
+    descKey: 'commandPalette.commands.searchChangesDesc',
     shortcut: 'S',
-    section: 'アクション',
+    sectionKey: 'commandPalette.sections.actions',
   },
   {
     id: 'import-csv',
     icon: Upload,
-    label: 'CSVインポート',
-    description: 'CSVファイルから変更履歴を取り込む',
-    section: 'アクション',
+    labelKey: 'commandPalette.commands.importCsv',
+    descKey: 'commandPalette.commands.importCsvDesc',
+    sectionKey: 'commandPalette.sections.actions',
   },
   {
     id: 'go-dashboard',
     icon: BarChart3,
-    label: 'ダッシュボード',
-    description: 'KPIダッシュボードを表示',
+    labelKey: 'commandPalette.commands.dashboard',
+    descKey: 'commandPalette.commands.dashboardDesc',
     shortcut: 'D',
-    section: 'ナビゲーション',
+    sectionKey: 'commandPalette.sections.navigation',
   },
   {
     id: 'go-experiments',
     icon: ClipboardList,
-    label: '変更履歴',
-    description: 'すべての変更一覧を表示',
+    labelKey: 'commandPalette.commands.experiments',
+    descKey: 'commandPalette.commands.experimentsDesc',
     shortcut: 'E',
-    section: 'ナビゲーション',
+    sectionKey: 'commandPalette.sections.navigation',
   },
   {
     id: 'go-ai-chat',
     icon: MessageSquare,
-    label: 'AI分析チャット',
-    description: 'AIと対話して分析する',
+    labelKey: 'commandPalette.commands.aiChat',
+    descKey: 'commandPalette.commands.aiChatDesc',
     shortcut: 'A',
-    section: 'ナビゲーション',
+    sectionKey: 'commandPalette.sections.navigation',
   },
   {
     id: 'go-settings',
     icon: Settings,
-    label: '設定',
-    description: 'プロジェクト設定を開く',
-    section: 'ナビゲーション',
+    labelKey: 'commandPalette.commands.settings',
+    descKey: 'commandPalette.commands.settingsDesc',
+    sectionKey: 'commandPalette.sections.navigation',
   },
   {
     id: 'go-import',
     icon: FileUp,
-    label: 'データインポート',
-    description: 'CSVインポート画面を開く',
-    section: 'ナビゲーション',
+    labelKey: 'commandPalette.commands.dataImport',
+    descKey: 'commandPalette.commands.dataImportDesc',
+    sectionKey: 'commandPalette.sections.navigation',
   },
 ]
 
 function isNaturalLanguageInput(text: string): boolean {
   return (
     /入札|クリエイティブ|ターゲティング|予算/.test(text) ||
+    /bid|creative|targeting|budget/i.test(text) ||
     /→|から|に変更/.test(text) ||
-    /\d+\s*円/.test(text)
+    /\d+\s*円/.test(text) ||
+    /\$\d+/.test(text)
   )
 }
 
@@ -108,6 +111,7 @@ export default function CommandPalette({
   projectId,
 }: CommandPaletteProps) {
   const router = useRouter()
+  const { t } = useTranslation()
   const [query, setQuery] = useState('')
   const [selectedIndex, setSelectedIndex] = useState(0)
   const [showNewChangeForm, setShowNewChangeForm] = useState(false)
@@ -135,10 +139,9 @@ export default function CommandPalette({
   const filteredCommands = COMMANDS.filter((cmd) => {
     if (!query) return true
     const q = query.toLowerCase()
-    return (
-      cmd.label.toLowerCase().includes(q) ||
-      cmd.description.toLowerCase().includes(q)
-    )
+    const label = t(cmd.labelKey).toLowerCase()
+    const desc = t(cmd.descKey).toLowerCase()
+    return label.includes(q) || desc.includes(q)
   })
 
   // Build display items: natural language suggestion + filtered commands
@@ -158,9 +161,10 @@ export default function CommandPalette({
   // Group commands by section for display
   const sections = new Map<string, Command[]>()
   for (const cmd of filteredCommands) {
-    const list = sections.get(cmd.section) ?? []
+    const sectionLabel = t(cmd.sectionKey)
+    const list = sections.get(sectionLabel) ?? []
     list.push(cmd)
-    sections.set(cmd.section, list)
+    sections.set(sectionLabel, list)
   }
 
   const handleCommand = useCallback(
@@ -271,7 +275,7 @@ export default function CommandPalette({
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="コマンドを入力、または変更を自然言語で記録..."
+            placeholder={t('commandPalette.placeholder')}
             className="min-w-0 flex-1 border-none shadow-none px-2 py-4 text-lg text-slate-900 placeholder-slate-400 outline-none focus:outline-none focus:ring-0"
           />
           <kbd className="shrink-0 whitespace-nowrap rounded bg-slate-100 px-2 py-1 text-xs text-slate-500">
@@ -300,7 +304,7 @@ export default function CommandPalette({
               />
               <div className="min-w-0 flex-1">
                 <span className="text-sm font-medium">
-                  この内容を変更として記録する
+                  {t('commandPalette.naturalLanguageSuggestion')}
                 </span>
                 <p className="truncate text-xs text-slate-400">{query}</p>
               </div>
@@ -346,9 +350,9 @@ export default function CommandPalette({
                           : 'text-slate-400'
                       }`}
                     />
-                    <span className="text-sm font-medium">{cmd.label}</span>
+                    <span className="text-sm font-medium">{t(cmd.labelKey)}</span>
                     <span className="flex-1 text-right text-xs text-slate-400">
-                      {cmd.description}
+                      {t(cmd.descKey)}
                     </span>
                     {cmd.shortcut && (
                       <kbd className="rounded bg-slate-100 px-1.5 py-0.5 text-xs text-slate-500">
@@ -367,7 +371,7 @@ export default function CommandPalette({
           {/* Empty state */}
           {allItems.length === 0 && (
             <p className="px-4 py-8 text-center text-sm text-slate-400">
-              コマンドが見つかりません
+              {t('commandPalette.noResults')}
             </p>
           )}
         </div>
