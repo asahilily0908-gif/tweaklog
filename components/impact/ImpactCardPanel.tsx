@@ -213,7 +213,7 @@ export default function ImpactCardPanel({
                         <div className="flex items-center gap-1.5">
                           <span className="text-xs font-medium text-gray-900">{metric.displayName}</span>
                           {i === 0 && (
-                            <span className="rounded-full bg-blue-50 border border-blue-100 px-1.5 py-0.5 text-[9px] font-semibold text-blue-600">
+                            <span className="whitespace-nowrap rounded-full bg-blue-50 border border-blue-100 px-1.5 py-0.5 text-xs font-semibold text-blue-600">
                               {t('dashboard.mainKpi')}
                             </span>
                           )}

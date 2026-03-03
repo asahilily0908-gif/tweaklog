@@ -1,6 +1,5 @@
 'use client'
 
-import { useTranslation } from '@/lib/i18n/config'
 import { TrendingUp, TrendingDown } from 'lucide-react'
 
 interface KpiCardProps {
@@ -13,7 +12,6 @@ interface KpiCardProps {
 }
 
 export default function KpiCard({ label, value, badge, accentColor, change, improvementDirection = 'up' }: KpiCardProps) {
-  const { t } = useTranslation()
   const hasBadge = badge && accentColor === 'blue'
 
   // Determine if the change is positive (good), negative (bad), or neutral
@@ -34,8 +32,8 @@ export default function KpiCard({ label, value, badge, accentColor, change, impr
       <div className="flex items-center gap-1 sm:gap-2">
         <p className="text-[10px] sm:text-xs font-medium text-gray-500 uppercase tracking-wider truncate">{label}</p>
         {badge && (
-          <span className={`hidden sm:inline-flex rounded-full px-2 py-0.5 text-[10px] font-semibold ${badgeBg}`}>
-            {badge === 'メインKPI' ? t('dashboard.mainKpi') : badge === 'Custom' ? t('dashboard.custom') : badge}
+          <span className={`hidden sm:inline-flex whitespace-nowrap rounded-full px-2 py-0.5 text-[10px] font-semibold ${badgeBg}`}>
+            {badge}
           </span>
         )}
       </div>
