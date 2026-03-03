@@ -721,6 +721,11 @@
       "signupAndJoin": "Sign up and join"
     }
   },
+  "datePicker": {
+    "placeholder": "Select date",
+    "today": "Today",
+    "clear": "Clear"
+  },
   "language": {
     "ja": "日本語",
     "en": "English",

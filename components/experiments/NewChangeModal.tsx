@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import { createExperiment } from '@/app/(app)/app/[project]/experiments/actions'
 import { useTranslation } from '@/lib/i18n/config'
+import DatePicker from '@/components/ui/DatePicker'
 
 interface ExperimentGroup {
   id: string
@@ -357,12 +358,10 @@ export default function NewChangeModal({ projectId, platforms, groups, onClose }
           {/* Date */}
           <div>
             <label className="mb-1.5 block text-xs font-medium text-gray-700">{t('experiments.date')}</label>
-            <input
-              type="date"
-              required
+            <DatePicker
               value={changeDate}
-              onChange={(e) => setChangeDate(e.target.value)}
-              className={inputClass}
+              onChange={setChangeDate}
+              required
             />
           </div>
 

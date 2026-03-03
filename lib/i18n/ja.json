@@ -722,6 +722,11 @@
       "signupAndJoin": "アカウントを作成して参加"
     }
   },
+  "datePicker": {
+    "placeholder": "日付を選択",
+    "today": "今日",
+    "clear": "クリア"
+  },
   "language": {
     "ja": "日本語",
     "en": "English",
