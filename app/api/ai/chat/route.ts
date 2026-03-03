@@ -8,11 +8,12 @@ interface ChatRequest {
   projectId: string
   chatId?: string
   messages: Array<{ role: 'user' | 'assistant'; content: string }>
+  locale?: string
 }
 
 export async function POST(request: NextRequest) {
   const body: ChatRequest = await request.json()
-  const { projectId, chatId, messages } = body
+  const { projectId, chatId, messages, locale } = body
 
   if (!projectId || !messages || messages.length === 0) {
     return new Response(JSON.stringify({ error: 'Missing projectId or messages' }), { status: 400 })
@@ -100,7 +101,8 @@ export async function POST(request: NextRequest) {
     },
     experimentsResult.data ?? [],
     (outcomesResult.data ?? []).reverse(), // chronological order for the prompt
-    metricsResult.data ?? []
+    metricsResult.data ?? [],
+    locale
   )
 
   // Stream response from Claude

@@ -85,7 +85,8 @@ export function buildSystemPrompt(
   project: ProjectContext,
   recentExperiments: ExperimentContext[],
   outcomeSummary: OutcomeSummary[],
-  metricConfigs: MetricConfigContext[]
+  metricConfigs: MetricConfigContext[],
+  locale?: string
 ): string {
   const northStarLabel = project.northStarKpi
     ? KPI_LABELS[project.northStarKpi] ?? project.northStarKpi
@@ -128,5 +129,5 @@ ${metricsBlock}
 - Be concise and actionable. Prioritize insights over raw data recitation.
 - When comparing periods, specify the exact dates being compared.
 - If asked about something not in the data, say so honestly rather than speculating.
-- Respond in the same language the user writes in.`
+${locale === 'ja' ? '- 日本語で回答してください。' : '- Reply in English.'}`
 }

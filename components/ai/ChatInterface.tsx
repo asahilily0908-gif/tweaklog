@@ -73,7 +73,7 @@ export default function ChatInterface({
   const [rateLimited, setRateLimited] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
-  const { t } = useTranslation()
+  const { t, locale } = useTranslation()
   const suggestions = [
     t('chat.suggestion1'),
     t('chat.suggestion2'),
@@ -103,7 +103,7 @@ export default function ChatInterface({
       const response = await fetch('/api/ai/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ projectId, chatId, messages: newMessages }),
+        body: JSON.stringify({ projectId, chatId, messages: newMessages, locale }),
       })
 
       if (response.status === 429) {
