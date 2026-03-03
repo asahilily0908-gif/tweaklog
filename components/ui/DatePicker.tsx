@@ -37,12 +37,12 @@ function toYMD(date: Date): string {
 }
 
 const calendarClassNames = {
-  root: 'p-3',
+  root: 'p-3 relative',
   months: 'flex flex-col',
   month: 'space-y-3',
   month_caption: 'flex items-center justify-center relative h-8',
   caption_label: 'text-sm font-semibold text-gray-900',
-  nav: 'absolute inset-x-1 top-0 flex items-center justify-between h-8',
+  nav: 'absolute inset-x-1 top-3 flex items-center justify-between h-8 z-10',
   button_previous: 'inline-flex items-center justify-center h-7 w-7 rounded-lg bg-transparent text-gray-500 hover:bg-gray-100 hover:text-gray-700 transition-colors cursor-pointer border-0',
   button_next: 'inline-flex items-center justify-center h-7 w-7 rounded-lg bg-transparent text-gray-500 hover:bg-gray-100 hover:text-gray-700 transition-colors cursor-pointer border-0',
   chevron: 'h-4 w-4',
