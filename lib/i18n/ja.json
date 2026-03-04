@@ -264,7 +264,7 @@
     "campaignPatterns": "キャンペーン",
     "campaigns": "キャンペーン",
     "searchCampaigns": "キャンペーンを検索",
-    "csvImportHint": "CSVをインポートするとキャンペーン一覧が表示されます",
+    "csvImportHint": "データをインポートするとキャンペーン一覧が表示されます",
     "selectAll": "すべて選択",
     "deselectAll": "すべて解除",
     "noMatchingCampaigns": "該当するキャンペーンがありません",

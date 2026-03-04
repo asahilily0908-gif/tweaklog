@@ -263,7 +263,7 @@
     "campaignPatterns": "campaigns",
     "campaigns": "Campaigns",
     "searchCampaigns": "Search campaigns",
-    "csvImportHint": "Import a CSV to see campaign list",
+    "csvImportHint": "Import data to see your campaign list",
     "selectAll": "Select all",
     "deselectAll": "Deselect all",
     "noMatchingCampaigns": "No campaigns match your search",
