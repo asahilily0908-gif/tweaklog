@@ -34,7 +34,7 @@ export default function TermsPage() {
           <section>
             <h2 className="text-xl font-bold text-white mb-4">2. Service Description</h2>
             <p>
-              Tweaklog is a SaaS platform for advertising operations teams that provides:
+              Tweaklog is a platform for advertising operations teams that provides:
             </p>
             <ul className="list-disc list-inside mt-3 space-y-1.5 text-gray-400">
               <li>Ad change logging and tracking across multiple platforms (Google Ads, Meta Ads, TikTok, Yahoo! Ads, etc.)</li>

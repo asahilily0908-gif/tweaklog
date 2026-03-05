@@ -18,11 +18,11 @@ const siteUrl = "https://tweaklog.io";
 
 export const metadata: Metadata = {
   title: {
-    default: "Tweaklog — 広告運用の効果分析・改善提案SaaS",
+    default: "Tweaklog — 広告運用の変更ログ × インパクト分析",
     template: "%s | Tweaklog",
   },
   description:
-    "広告運用の変更ログを記録し、AIがKPIへのインパクトを自動分析。CTR・CVR・ROASの改善サイクルを加速します。",
+    "広告の変更ログを残し、KPIへの影響を可視化。運用ナレッジをチームの資産に変える。",
   keywords: [
     "広告運用",
     "変更ログ",
@@ -35,7 +35,6 @@ export const metadata: Metadata = {
     "Meta Ads",
     "Yahoo! Ads",
     "広告レポート",
-    "SaaS",
     "Tweaklog",
   ],
   authors: [{ name: "Tweaklog" }],
@@ -47,23 +46,23 @@ export const metadata: Metadata = {
     alternateLocale: "en_US",
     url: siteUrl,
     siteName: "Tweaklog",
-    title: "Tweaklog — 広告運用の効果分析・改善提案SaaS",
+    title: "Tweaklog — 広告運用の変更ログ × インパクト分析",
     description:
-      "広告運用の変更ログを記録し、AIがKPIへのインパクトを自動分析。CTR・CVR・ROASの改善サイクルを加速します。",
+      "広告の変更ログを残し、KPIへの影響を可視化。運用ナレッジをチームの資産に変える。",
     images: [
       {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "Tweaklog — 広告運用の効果分析・改善提案SaaS",
+        alt: "Tweaklog — 広告運用の変更ログ × インパクト分析",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Tweaklog — 広告運用の効果分析・改善提案SaaS",
+    title: "Tweaklog — 広告運用の変更ログ × インパクト分析",
     description:
-      "広告運用の変更ログを記録し、AIがKPIへのインパクトを自動分析。CTR・CVR・ROASの改善サイクルを加速します。",
+      "広告の変更ログを残し、KPIへの影響を可視化。運用ナレッジをチームの資産に変える。",
     images: ["/og-image.png"],
   },
   robots: {
