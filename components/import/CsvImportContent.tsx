@@ -58,6 +58,7 @@ export default function CsvImportContent({ project }: Props) {
   const [importResult, setImportResult] = useState<{ imported: number; warning?: string; total?: number; plan?: string; maxRows?: number } | null>(null)
   const [progress, setProgress] = useState(0)
   const [isDragOver, setIsDragOver] = useState(false)
+  const [campaignName, setCampaignName] = useState('')
 
   const handleDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault()
@@ -171,7 +172,7 @@ export default function CsvImportContent({ project }: Props) {
         return {
           date: get('date') ?? '',
           platform: get('platform') ?? 'google_ads',
-          campaign: get('campaign') ?? '',
+          campaign: get('campaign') || (campaignName.trim() || ''),
           impressions: parseFloat(get('impressions') ?? '0') || 0,
           clicks: parseFloat(get('clicks') ?? '0') || 0,
           cost: parseFloat(get('cost')?.replace(/[,$¥]/g, '') ?? '0') || 0,
@@ -447,6 +448,23 @@ export default function CsvImportContent({ project }: Props) {
             </div>
           )}
 
+          {/* Campaign name input */}
+          <div className="rounded-xl border border-gray-200 bg-white px-5 py-4 shadow-sm">
+            <label className="block text-xs font-medium text-gray-700 mb-1.5">
+              {t('import.campaignNameLabel')}
+            </label>
+            <input
+              type="text"
+              value={campaignName}
+              onChange={(e) => setCampaignName(e.target.value)}
+              placeholder={t('import.campaignNamePlaceholder')}
+              className="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all duration-150"
+            />
+            <p className="mt-1.5 text-[11px] text-gray-400">
+              {t('import.campaignNameHint')}
+            </p>
+          </div>
+
           {/* Actions */}
           <div className="flex flex-col-reverse sm:flex-row sm:justify-between gap-3">
             <button
@@ -536,6 +554,9 @@ export default function CsvImportContent({ project }: Props) {
               <p className="mt-5 text-xl font-bold tracking-tight text-gray-900">{t('import.importComplete')}</p>
               <p className="mt-1.5 text-sm text-gray-500">
                 {t('import.successImported').replace('{count}', importResult.imported.toLocaleString())}
+              </p>
+              <p className="mt-2 text-sm text-gray-400">
+                {t('import.importCompleteExtra')}
               </p>
             </>
           )}

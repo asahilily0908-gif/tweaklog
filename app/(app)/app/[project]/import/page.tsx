@@ -24,16 +24,16 @@ export default async function ImportPage({
     notFound()
   }
 
-  // Fetch existing spreadsheet config
-  const { data: spreadsheetConfig } = await supabase
+  // Fetch existing spreadsheet configs (multiple per project)
+  const { data: spreadsheetConfigs } = await supabase
     .from('spreadsheet_configs')
     .select('*')
     .eq('project_id', projectId)
-    .single()
+    .order('created_at', { ascending: true })
 
   return (
     <div className="animate-fade-in-up">
-      <ImportTabs project={project} spreadsheetConfig={spreadsheetConfig ?? null} />
+      <ImportTabs project={project} spreadsheetConfigs={spreadsheetConfigs ?? []} />
     </div>
   )
 }

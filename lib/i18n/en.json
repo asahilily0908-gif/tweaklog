@@ -362,7 +362,19 @@
     "nextMapColumns": "Next: Map Columns",
     "saveAndImport": "Save & Import {count} rows",
     "customColumn": "-- Custom Column --",
-    "custom": "custom"
+    "custom": "custom",
+    "campaignNameLabel": "Campaign name (optional)",
+    "campaignNamePlaceholder": "e.g. Brand Campaign_Tokyo",
+    "campaignNameHint": "All rows will use this campaign name if provided",
+    "importCompleteExtra": "You can import additional campaign data using the same steps",
+    "addSpreadsheet": "Add spreadsheet",
+    "deleteConfig": "Delete connection",
+    "deleteConfigConfirm": "Delete this spreadsheet connection?",
+    "spreadsheetSectionTitle": "Connect from Google Spreadsheet",
+    "spreadsheetSectionDesc": "Paste a URL to auto-fetch and import data",
+    "orDivider": "or",
+    "csvSectionTitle": "Import from CSV file",
+    "csvSectionDesc": "Drag & drop or click to select a CSV file"
   },
   "chat": {
     "title": "AI Chat",

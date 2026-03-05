@@ -195,6 +195,8 @@ interface SpreadsheetConfigInput {
   startColumn: string
   endColumn: string | null
   columnMappings: Record<string, string>
+  campaignName?: string | null
+  configId?: string | null
 }
 
 export async function saveSpreadsheetConfig(input: SpreadsheetConfigInput) {
@@ -202,14 +204,8 @@ export async function saveSpreadsheetConfig(input: SpreadsheetConfigInput) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { error: 'Not authenticated' }
 
-  // Upsert: one config per project
-  const { data: existing } = await supabase
-    .from('spreadsheet_configs')
-    .select('id')
-    .eq('project_id', input.projectId)
-    .single()
-
-  if (existing) {
+  if (input.configId) {
+    // Update existing config
     const { data, error } = await supabase
       .from('spreadsheet_configs')
       .update({
@@ -219,10 +215,11 @@ export async function saveSpreadsheetConfig(input: SpreadsheetConfigInput) {
         start_column: input.startColumn,
         end_column: input.endColumn,
         column_mappings: input.columnMappings,
+        campaign_name: input.campaignName ?? null,
         last_synced_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
       })
-      .eq('id', existing.id)
+      .eq('id', input.configId)
       .select('id')
       .single()
 
@@ -230,6 +227,7 @@ export async function saveSpreadsheetConfig(input: SpreadsheetConfigInput) {
     return { data }
   }
 
+  // Insert new config
   const { data, error } = await supabase
     .from('spreadsheet_configs')
     .insert({
@@ -240,6 +238,7 @@ export async function saveSpreadsheetConfig(input: SpreadsheetConfigInput) {
       start_column: input.startColumn,
       end_column: input.endColumn,
       column_mappings: input.columnMappings,
+      campaign_name: input.campaignName ?? null,
       last_synced_at: new Date().toISOString(),
     })
     .select('id')
@@ -275,6 +274,20 @@ export async function updateLastSynced(configId: string) {
       last_synced_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
     })
+    .eq('id', configId)
+
+  if (error) return { error: error.message }
+  return { success: true }
+}
+
+export async function deleteSpreadsheetConfig(configId: string) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Not authenticated' }
+
+  const { error } = await supabase
+    .from('spreadsheet_configs')
+    .delete()
     .eq('id', configId)
 
   if (error) return { error: error.message }

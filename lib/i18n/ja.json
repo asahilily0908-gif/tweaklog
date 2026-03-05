@@ -363,7 +363,19 @@
     "nextMapColumns": "次へ：カラムマッピング",
     "saveAndImport": "保存して{count}行を取込",
     "customColumn": "-- カスタム列 --",
-    "custom": "カスタム"
+    "custom": "カスタム",
+    "campaignNameLabel": "キャンペーン名（任意）",
+    "campaignNamePlaceholder": "例: ブランドキャンペーン_東京",
+    "campaignNameHint": "入力するとすべての行にこのキャンペーン名が設定されます",
+    "importCompleteExtra": "別のキャンペーンデータも同じ手順でインポートできます",
+    "addSpreadsheet": "スプレッドシートを追加",
+    "deleteConfig": "接続を削除",
+    "deleteConfigConfirm": "このスプレッドシート接続を削除しますか？",
+    "spreadsheetSectionTitle": "Google スプレッドシートから接続",
+    "spreadsheetSectionDesc": "URLを貼り付けるだけでデータを自動取得・インポート",
+    "orDivider": "または",
+    "csvSectionTitle": "CSVファイルからインポート",
+    "csvSectionDesc": "CSVファイルをドラッグ&ドロップ、またはクリックして選択"
   },
   "chat": {
     "title": "AIチャット",

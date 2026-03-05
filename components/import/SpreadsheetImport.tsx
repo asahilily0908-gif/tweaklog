@@ -4,7 +4,8 @@ import { useState, useCallback, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import { importOutcomes } from '@/app/(app)/app/[project]/import/actions'
-import { saveSpreadsheetConfig, updateLastSynced } from '@/app/(app)/app/[project]/import/actions'
+import { saveSpreadsheetConfig, updateLastSynced, deleteSpreadsheetConfig } from '@/app/(app)/app/[project]/import/actions'
+import type { SpreadsheetConfig } from './ImportTabs'
 import { STANDARD_FIELDS, guessField, normalizePlatform } from '@/lib/import/column-mappings'
 import { useTranslation } from '@/lib/i18n/config'
 
@@ -15,22 +16,11 @@ interface Project {
   settings: Record<string, unknown>
 }
 
-interface SpreadsheetConfig {
-  id: string
-  spreadsheet_url: string
-  sheet_gid: string
-  header_row: number
-  start_column: string
-  end_column: string | null
-  column_mappings: Record<string, string>
-  auto_sync: boolean
-  sync_schedule: string
-  last_synced_at: string | null
-}
-
 interface Props {
   project: Project
   existingConfig?: SpreadsheetConfig | null
+  onDeleted?: (id: string) => void
+  onConfigCreated?: (config: SpreadsheetConfig) => void
 }
 
 type Step = 'url' | 'preview' | 'mapping' | 'importing' | 'done'
@@ -74,7 +64,7 @@ function detectHeaderRow(rows: string[][], maxScan: number = 10): number {
   return bestRow
 }
 
-export default function SpreadsheetImport({ project, existingConfig }: Props) {
+export default function SpreadsheetImport({ project, existingConfig, onDeleted, onConfigCreated }: Props) {
   const router = useRouter()
   const { t } = useTranslation()
 
@@ -83,6 +73,7 @@ export default function SpreadsheetImport({ project, existingConfig }: Props) {
   const [step, setStep] = useState<Step>(existingConfig ? 'done' : 'url')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [campaignName, setCampaignName] = useState(existingConfig?.campaign_name ?? '')
 
   // Sheet data
   const [allRows, setAllRows] = useState<string[][]>([])
@@ -245,7 +236,8 @@ export default function SpreadsheetImport({ project, existingConfig }: Props) {
       const outcomeRows = buildOutcomeRowsFromData(
         slicedHeaders,
         data.rows.slice(config.header_row + 1).map((row: string[]) => row.slice(startIdx, endIdx + 1)),
-        restored
+        restored,
+        config.campaign_name ?? ''
       )
 
       if (outcomeRows.length === 0) {
@@ -369,7 +361,8 @@ export default function SpreadsheetImport({ project, existingConfig }: Props) {
   function buildOutcomeRowsFromData(
     headerList: string[],
     dataRowList: string[][],
-    mappingMap: Record<number, string>
+    mappingMap: Record<number, string>,
+    campaignNameOverride?: string
   ) {
     const fieldToIdx: Record<string, number> = {}
     for (const [idxStr, field] of Object.entries(mappingMap)) {
@@ -405,7 +398,7 @@ export default function SpreadsheetImport({ project, existingConfig }: Props) {
         return {
           date: normalizeDate(get('date') ?? '') ?? '',
           platform,
-          campaign: get('campaign') ?? '',
+          campaign: get('campaign') || (campaignNameOverride?.trim() || ''),
           impressions: parseNum(get('impressions')),
           clicks: parseNum(get('clicks')),
           cost: parseNum(get('cost')),
@@ -417,7 +410,7 @@ export default function SpreadsheetImport({ project, existingConfig }: Props) {
   }
 
   function buildOutcomeRows() {
-    return buildOutcomeRowsFromData(headers, dataRows, mappings)
+    return buildOutcomeRowsFromData(headers, dataRows, mappings, campaignName)
   }
 
   async function handleImport() {
@@ -456,10 +449,12 @@ export default function SpreadsheetImport({ project, existingConfig }: Props) {
         startColumn: startCol,
         endColumn: endCol || null,
         columnMappings: columnMappingsObj,
+        campaignName: campaignName.trim() || null,
+        configId: config?.id ?? null,
       })
 
       if (configResult.data) {
-        setConfig({
+        const newConfig: SpreadsheetConfig = {
           id: configResult.data.id,
           spreadsheet_url: url.trim(),
           sheet_gid: sheetGid,
@@ -467,10 +462,15 @@ export default function SpreadsheetImport({ project, existingConfig }: Props) {
           start_column: startCol,
           end_column: endCol || null,
           column_mappings: columnMappingsObj,
+          campaign_name: campaignName.trim() || null,
           auto_sync: false,
           sync_schedule: 'daily',
           last_synced_at: new Date().toISOString(),
-        })
+        }
+        setConfig(newConfig)
+        if (!existingConfig) {
+          onConfigCreated?.(newConfig)
+        }
       }
 
       if (result.warning === 'limit_reached') {
@@ -545,6 +545,11 @@ export default function SpreadsheetImport({ project, existingConfig }: Props) {
                   {Object.keys(config.column_mappings).length} {t('import.columnsMapped')}
                 </span>
               </div>
+              {config.campaign_name && (
+                <span className="rounded-full bg-blue-50 px-2.5 py-0.5 text-xs font-medium text-blue-700">
+                  {t('import.campaign')}: {config.campaign_name}
+                </span>
+              )}
             </div>
 
             {importResult && importResult.warning === 'limit_reached' && (
@@ -580,11 +585,14 @@ export default function SpreadsheetImport({ project, existingConfig }: Props) {
               </div>
             )}
             {importResult && !importResult.warning && (
-              <div className="flex items-center gap-2 rounded-lg border border-green-200 bg-green-50 px-4 py-2.5 text-xs text-green-700">
-                <svg className="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                {t('import.successImported').replace('{count}', importResult.imported.toLocaleString())}
+              <div className="rounded-lg border border-green-200 bg-green-50 px-4 py-2.5 text-xs text-green-700">
+                <div className="flex items-center gap-2">
+                  <svg className="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  {t('import.successImported').replace('{count}', importResult.imported.toLocaleString())}
+                </div>
+                <p className="mt-1 ml-6 text-green-600">{t('import.importCompleteExtra')}</p>
               </div>
             )}
 
@@ -633,6 +641,20 @@ export default function SpreadsheetImport({ project, existingConfig }: Props) {
                 className="rounded-lg border border-gray-200 px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-all duration-150"
               >
                 {t('import.viewDashboard')}
+              </button>
+              <button
+                type="button"
+                onClick={async () => {
+                  if (!config || !confirm(t('import.deleteConfigConfirm'))) return
+                  const result = await deleteSpreadsheetConfig(config.id)
+                  if (result.success) {
+                    toast.success(t('import.deleteConfig'))
+                    onDeleted?.(config.id)
+                  }
+                }}
+                className="rounded-lg border border-red-200 px-4 py-2.5 text-sm font-medium text-red-600 hover:bg-red-50 transition-all duration-150"
+              >
+                {t('import.deleteConfig')}
               </button>
             </div>
           </div>
@@ -949,6 +971,23 @@ export default function SpreadsheetImport({ project, existingConfig }: Props) {
               {error}
             </div>
           )}
+
+          {/* Campaign name input */}
+          <div className="rounded-xl border border-gray-200 bg-white px-5 py-4 shadow-sm">
+            <label className="block text-xs font-medium text-gray-700 mb-1.5">
+              {t('import.campaignNameLabel')}
+            </label>
+            <input
+              type="text"
+              value={campaignName}
+              onChange={(e) => setCampaignName(e.target.value)}
+              placeholder={t('import.campaignNamePlaceholder')}
+              className="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all duration-150"
+            />
+            <p className="mt-1.5 text-[11px] text-gray-400">
+              {t('import.campaignNameHint')}
+            </p>
+          </div>
 
           {/* Actions */}
           <div className="flex flex-col-reverse sm:flex-row sm:justify-between gap-3">
