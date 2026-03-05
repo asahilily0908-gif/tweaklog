@@ -425,7 +425,8 @@
       "startFree": "無料で始める"
     },
     "hero": {
-      "headline": "広告の変更ログを残す。KPIへの影響が見える。",
+      "headlineLine1": "広告の変更ログを残す。",
+      "headlineLine2": "KPIへの影響が見える。",
       "tagline": "Log the tweak. See the lift.",
       "subheadline": "変更履歴 × KPI比較 × インパクト分析。運用ナレッジをチームの資産に変える。",
       "cta": "無料で始める",

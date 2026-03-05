@@ -424,7 +424,8 @@
       "startFree": "Start Free"
     },
     "hero": {
-      "headline": "Log every ad change. See the KPI impact.",
+      "headlineLine1": "Log every ad change.",
+      "headlineLine2": "See the KPI impact.",
       "tagline": "Log the tweak. See the lift.",
       "subheadline": "Change logs × KPI comparison × Impact analysis. Turn your ad operations into team knowledge.",
       "cta": "Start Free",

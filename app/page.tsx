@@ -293,8 +293,9 @@ export default function LandingPage() {
 
         <div className="mx-auto max-w-6xl px-4 md:px-6">
           <div className="text-center max-w-4xl mx-auto mb-10 sm:mb-12 md:mb-16">
-            <h1 className="text-2xl sm:text-3xl md:text-[2.75rem] lg:text-5xl font-bold leading-tight tracking-tight mb-4 sm:mb-6 bg-gradient-to-r from-[#2563EB] to-[#9333EA] bg-clip-text text-transparent break-words">
-              {t('landing.hero.headline')}
+            <h1 className="text-2xl sm:text-3xl md:text-[2.75rem] lg:text-5xl font-bold leading-tight tracking-tight mb-4 sm:mb-6 bg-gradient-to-r from-[#2563EB] to-[#9333EA] bg-clip-text text-transparent">
+              {t('landing.hero.headlineLine1')}<br />
+              {t('landing.hero.headlineLine2')}
             </h1>
             <p className="text-base sm:text-lg md:text-xl text-blue-600 font-medium mb-4 sm:mb-6">
               {t('landing.hero.tagline')}
