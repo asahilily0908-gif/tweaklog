@@ -208,6 +208,24 @@ export default function DashboardContent({ project, outcomes, experiments, metri
     return filtered
   }, [outcomes, platform, dateRange, latestDate, selectedGroup, selectedCampaign])
 
+  const filteredExperiments = useMemo(() => {
+    let filtered = experiments
+    if (platform !== 'ALL') {
+      filtered = filtered.filter((e) => e.platform === platform)
+    }
+    if (selectedGroup && selectedGroup.campaignPatterns.length > 0) {
+      filtered = filtered.filter((e) =>
+        e.campaign && selectedGroup.campaignPatterns.some((pat) => e.campaign!.toLowerCase().includes(pat.toLowerCase()))
+      )
+    }
+    if (selectedCampaign === 'uncategorized') {
+      filtered = filtered.filter((e) => e.campaign === null)
+    } else if (selectedCampaign !== 'all') {
+      filtered = filtered.filter((e) => e.campaign === null || e.campaign === selectedCampaign)
+    }
+    return filtered
+  }, [experiments, platform, selectedGroup, selectedCampaign])
+
   const dailyData = useMemo(() => aggregateByDate(filteredOutcomes), [filteredOutcomes])
 
   const totals = useMemo(() => {
@@ -605,7 +623,7 @@ export default function DashboardContent({ project, outcomes, experiments, metri
             data={chartData}
             northStarKey={isAllMode ? (project.north_star_kpi ?? 'conversions') : undefined}
             isAllMode={isAllMode}
-            experiments={experiments}
+            experiments={filteredExperiments}
             onExperimentClick={(chartExps, date) => {
               const fullExps = chartExps
                 .map((ce) => experiments.find((e) => e.id === ce.id))
@@ -647,7 +665,7 @@ export default function DashboardContent({ project, outcomes, experiments, metri
           </a>
         </div>
         <RecentExperiments
-          experiments={experiments}
+          experiments={filteredExperiments}
           projectId={project.id}
           outcomes={outcomes}
           northStarKpi={project.north_star_kpi ?? undefined}
