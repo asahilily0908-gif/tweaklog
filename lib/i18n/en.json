@@ -427,7 +427,7 @@
       "headlineLine1": "Log every ad change.",
       "headlineLine2": "See the KPI impact.",
       "tagline": "Log the tweak. See the lift.",
-      "subheadline": "Change logs × KPI comparison × Impact analysis. Turn your ad operations into team knowledge.",
+      "subheadline": "Change logs × KPI comparison × Impact analysis. Turn the cause-and-effect of every change into team knowledge.",
       "cta": "Start Free",
       "secondaryCta": "See Features"
     },
@@ -450,6 +450,17 @@
       "problem3Title": "Can't tell what actually worked",
       "problem3Desc": "Numbers fluctuate, but you can't pinpoint which change caused the shift.",
       "solution3": "AI analyzes with full context"
+    },
+    "impactMetrics": {
+      "stat1Value": "80%",
+      "stat1Label": "Less time on reviews",
+      "stat1Desc": "No more manual spreadsheet tracking",
+      "stat2Value": "100%",
+      "stat2Label": "Every change linked to results",
+      "stat2Desc": "Past optimizations become reusable assets",
+      "stat3Value": "1min",
+      "stat3Label": "To log a change",
+      "stat3Desc": "One click to create a structured record"
     },
     "features": {
       "title": "Core Features",
@@ -541,7 +552,10 @@
       },
       "cta": "Start Free",
       "comingSoonButton": "Coming Soon",
-      "contactUs": "Contact Us"
+      "contactUs": "Contact Us",
+      "trialBadge": "14-day free trial",
+      "startTrial": "Start 14-day free trial",
+      "getStarted": "Get started"
     },
     "faq": {
       "title": "FAQ",

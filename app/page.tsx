@@ -510,6 +510,31 @@ export default function LandingPage() {
         </div>
       </Section>
 
+      {/* Impact Metrics */}
+      <Section className="py-12 sm:py-16 md:py-20">
+        <div className="mx-auto max-w-6xl px-4 md:px-6">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
+            {[
+              { valueKey: 'stat1Value', labelKey: 'stat1Label', descKey: 'stat1Desc' },
+              { valueKey: 'stat2Value', labelKey: 'stat2Label', descKey: 'stat2Desc' },
+              { valueKey: 'stat3Value', labelKey: 'stat3Label', descKey: 'stat3Desc' },
+            ].map(({ valueKey, labelKey, descKey }) => (
+              <div key={valueKey} className="text-center p-5 sm:p-6 md:p-8 rounded-xl border border-gray-100 bg-white">
+                <div className="text-3xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-[#2563EB] to-[#9333EA] bg-clip-text text-transparent mb-2">
+                  {t(`landing.impactMetrics.${valueKey}`)}
+                </div>
+                <div className="text-sm sm:text-base font-semibold text-gray-900 mb-1">
+                  {t(`landing.impactMetrics.${labelKey}`)}
+                </div>
+                <div className="text-xs sm:text-sm text-gray-500">
+                  {t(`landing.impactMetrics.${descKey}`)}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </Section>
+
       {/* Features */}
       <Section className="py-16 sm:py-20 md:py-28" id="features">
         <div className="mx-auto max-w-6xl px-4 md:px-6">
@@ -633,6 +658,126 @@ export default function LandingPage() {
         </div>
       </Section>
 
+      {/* Pricing */}
+      <Section className="py-16 sm:py-20 md:py-28 bg-gray-50/50" id="pricing">
+        <div className="mx-auto max-w-6xl px-4 md:px-6">
+          <div className="text-center mb-8 sm:mb-12">
+            <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 mb-3 break-words">
+              {t('landing.pricing.title')}
+            </h2>
+            <p className="text-sm sm:text-base text-gray-600">
+              {t('landing.pricing.subtitle')}
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 max-w-6xl mx-auto pt-2">
+            {/* Free */}
+            <div className="rounded-xl border border-gray-200 bg-white p-5 sm:p-6 md:p-8 overflow-hidden">
+              <h3 className="text-lg font-bold text-gray-900">{t('landing.pricing.free.name')}</h3>
+              <div className="mt-2 mb-1">
+                <span className="text-2xl sm:text-3xl font-bold text-gray-900">{t('landing.pricing.free.price')}</span>
+              </div>
+              <p className="text-xs sm:text-sm text-gray-500 mb-4 sm:mb-6">{t('landing.pricing.free.desc')}</p>
+              <ul className="space-y-2 sm:space-y-3 mb-6 sm:mb-8">
+                {(['feature1', 'feature2', 'feature3', 'feature4', 'feature5'] as const).map((f) => (
+                  <li key={f} className="flex items-start gap-2 text-xs sm:text-sm text-gray-600">
+                    <Check className="h-4 w-4 text-green-500 shrink-0 mt-0.5" />
+                    <span>{t(`landing.pricing.free.${f}`)}</span>
+                  </li>
+                ))}
+              </ul>
+              <Link
+                href="/signup"
+                className="block w-full rounded-lg border border-gray-200 px-4 py-2.5 text-center text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+              >
+                {t('landing.pricing.cta')}
+              </Link>
+            </div>
+
+            {/* Pro — order-first on mobile so it appears at top */}
+            <div className="rounded-xl border-2 border-[#2563EB] bg-white p-5 sm:p-6 md:p-8 relative order-first md:order-none shadow-sm shadow-blue-500/5">
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-gradient-to-r from-[#2563EB] to-[#9333EA] px-3 py-0.5 text-xs font-medium text-white">
+                {t('landing.pricing.popular')}
+              </div>
+              <div className="mb-2">
+                <span className="inline-block rounded-full border border-purple-200 bg-purple-50 px-2.5 py-0.5 text-[10px] sm:text-xs font-medium text-purple-700">
+                  {t('landing.pricing.trialBadge')}
+                </span>
+              </div>
+              <h3 className="text-lg font-bold text-gray-900">{t('landing.pricing.pro.name')}</h3>
+              <div className="mt-2 mb-1">
+                <span className="text-2xl sm:text-3xl font-bold text-gray-900">{t('landing.pricing.pro.price')}</span>
+                <span className="text-xs sm:text-sm text-gray-500">{t('landing.pricing.pro.priceUnit')}</span>
+              </div>
+              <p className="text-xs sm:text-sm text-gray-500 mb-4 sm:mb-6">{t('landing.pricing.pro.desc')}</p>
+              <ul className="space-y-2 sm:space-y-3 mb-6 sm:mb-8">
+                {(['feature1', 'feature2', 'feature3', 'feature4', 'feature5'] as const).map((f) => (
+                  <li key={f} className="flex items-start gap-2 text-xs sm:text-sm text-gray-600">
+                    <Check className="h-4 w-4 text-blue-500 shrink-0 mt-0.5" />
+                    <span>{t(`landing.pricing.pro.${f}`)}</span>
+                  </li>
+                ))}
+              </ul>
+              <button
+                onClick={() => handleCheckout('pro')}
+                disabled={checkoutLoading === 'pro'}
+                className="block w-full rounded-lg bg-gradient-to-r from-[#2563EB] to-[#9333EA] px-4 py-2.5 text-center text-sm font-medium text-white hover:shadow-sm hover:shadow-indigo-500/15 transition-all duration-200 disabled:opacity-50"
+              >
+                {checkoutLoading === 'pro' ? t('common.loading') : t('landing.pricing.startTrial')}
+              </button>
+            </div>
+
+            {/* Team */}
+            <div className="rounded-xl border border-gray-200 bg-white p-5 sm:p-6 md:p-8 overflow-hidden">
+              <h3 className="text-lg font-bold text-gray-900">{t('landing.pricing.team.name')}</h3>
+              <div className="mt-2 mb-1">
+                <span className="text-2xl sm:text-3xl font-bold text-gray-900">{t('landing.pricing.team.price')}</span>
+                <span className="text-xs sm:text-sm text-gray-500">{t('landing.pricing.team.priceUnit')}</span>
+              </div>
+              <p className="text-xs sm:text-sm text-gray-500 mb-4 sm:mb-6">{t('landing.pricing.team.desc')}</p>
+              <ul className="space-y-2 sm:space-y-3 mb-6 sm:mb-8">
+                {(['feature1', 'feature2', 'feature3', 'feature4', 'feature5'] as const).map((f) => (
+                  <li key={f} className="flex items-start gap-2 text-xs sm:text-sm text-gray-600">
+                    <Check className="h-4 w-4 text-green-500 shrink-0 mt-0.5" />
+                    <span>{t(`landing.pricing.team.${f}`)}</span>
+                  </li>
+                ))}
+              </ul>
+              <button
+                onClick={() => handleCheckout('team')}
+                disabled={checkoutLoading === 'team'}
+                className="block w-full rounded-lg bg-gradient-to-r from-[#2563EB] to-[#9333EA] px-4 py-2.5 text-center text-sm font-medium text-white hover:shadow-sm hover:shadow-indigo-500/15 transition-all duration-200 disabled:opacity-50"
+              >
+                {checkoutLoading === 'team' ? t('common.loading') : t('landing.pricing.getStarted')}
+              </button>
+            </div>
+
+            {/* Enterprise */}
+            <div className="rounded-xl border border-gray-200 bg-white p-5 sm:p-6 md:p-8 overflow-hidden">
+              <h3 className="text-lg font-bold text-gray-900">{t('landing.pricing.enterprise.name')}</h3>
+              <div className="mt-2 mb-1">
+                <span className="text-2xl sm:text-3xl font-bold text-gray-900">{t('landing.pricing.enterprise.price')}</span>
+                <span className="text-xs sm:text-sm text-gray-500">{t('landing.pricing.enterprise.priceUnit')}</span>
+              </div>
+              <p className="text-xs sm:text-sm text-gray-500 mb-4 sm:mb-6">{t('landing.pricing.enterprise.desc')}</p>
+              <ul className="space-y-2 sm:space-y-3 mb-6 sm:mb-8">
+                {(['feature1', 'feature2', 'feature3', 'feature4', 'feature5'] as const).map((f) => (
+                  <li key={f} className="flex items-start gap-2 text-xs sm:text-sm text-gray-600">
+                    <Check className="h-4 w-4 text-purple-500 shrink-0 mt-0.5" />
+                    <span>{t(`landing.pricing.enterprise.${f}`)}</span>
+                  </li>
+                ))}
+              </ul>
+              <a
+                href="mailto:tweaklog41@gmail.com"
+                className="block w-full rounded-lg border border-gray-200 px-4 py-2.5 text-center text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+              >
+                {t('landing.pricing.contactUs')}
+              </a>
+            </div>
+          </div>
+        </div>
+      </Section>
+
       {/* MCP / Agent AI */}
       <Section className="py-16 sm:py-20 md:py-28 bg-gradient-to-b from-white to-slate-50">
         <div className="mx-auto max-w-6xl px-4 md:px-6">
@@ -686,121 +831,6 @@ export default function LandingPage() {
             <p className="text-sm sm:text-base text-slate-600 md:max-w-[200px] text-center md:text-left leading-relaxed">
               この設定をClaude Desktopに追加するだけ。
             </p>
-          </div>
-        </div>
-      </Section>
-
-      {/* Pricing */}
-      <Section className="py-16 sm:py-20 md:py-28 bg-gray-50/50" id="pricing">
-        <div className="mx-auto max-w-6xl px-4 md:px-6">
-          <div className="text-center mb-8 sm:mb-12">
-            <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 mb-3 break-words">
-              {t('landing.pricing.title')}
-            </h2>
-            <p className="text-sm sm:text-base text-gray-600">
-              {t('landing.pricing.subtitle')}
-            </p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 max-w-6xl mx-auto pt-2">
-            {/* Free */}
-            <div className="rounded-xl border border-gray-200 bg-white p-5 sm:p-6 md:p-8 overflow-hidden">
-              <h3 className="text-lg font-bold text-gray-900">{t('landing.pricing.free.name')}</h3>
-              <div className="mt-2 mb-1">
-                <span className="text-2xl sm:text-3xl font-bold text-gray-900">{t('landing.pricing.free.price')}</span>
-              </div>
-              <p className="text-xs sm:text-sm text-gray-500 mb-4 sm:mb-6">{t('landing.pricing.free.desc')}</p>
-              <ul className="space-y-2 sm:space-y-3 mb-6 sm:mb-8">
-                {(['feature1', 'feature2', 'feature3', 'feature4', 'feature5'] as const).map((f) => (
-                  <li key={f} className="flex items-start gap-2 text-xs sm:text-sm text-gray-600">
-                    <Check className="h-4 w-4 text-green-500 shrink-0 mt-0.5" />
-                    <span>{t(`landing.pricing.free.${f}`)}</span>
-                  </li>
-                ))}
-              </ul>
-              <Link
-                href="/signup"
-                className="block w-full rounded-lg border border-gray-200 px-4 py-2.5 text-center text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
-              >
-                {t('landing.pricing.cta')}
-              </Link>
-            </div>
-
-            {/* Pro — order-first on mobile so it appears at top */}
-            <div className="rounded-xl border-2 border-[#2563EB] bg-white p-5 sm:p-6 md:p-8 relative order-first md:order-none shadow-sm shadow-blue-500/5">
-              <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-gradient-to-r from-[#2563EB] to-[#9333EA] px-3 py-0.5 text-xs font-medium text-white">
-                {t('landing.pricing.popular')}
-              </div>
-              <h3 className="text-lg font-bold text-gray-900">{t('landing.pricing.pro.name')}</h3>
-              <div className="mt-2 mb-1">
-                <span className="text-2xl sm:text-3xl font-bold text-gray-900">{t('landing.pricing.pro.price')}</span>
-                <span className="text-xs sm:text-sm text-gray-500">{t('landing.pricing.pro.priceUnit')}</span>
-              </div>
-              <p className="text-xs sm:text-sm text-gray-500 mb-4 sm:mb-6">{t('landing.pricing.pro.desc')}</p>
-              <ul className="space-y-2 sm:space-y-3 mb-6 sm:mb-8">
-                {(['feature1', 'feature2', 'feature3', 'feature4', 'feature5'] as const).map((f) => (
-                  <li key={f} className="flex items-start gap-2 text-xs sm:text-sm text-gray-600">
-                    <Check className="h-4 w-4 text-blue-500 shrink-0 mt-0.5" />
-                    <span>{t(`landing.pricing.pro.${f}`)}</span>
-                  </li>
-                ))}
-              </ul>
-              <button
-                onClick={() => handleCheckout('pro')}
-                disabled={checkoutLoading === 'pro'}
-                className="block w-full rounded-lg bg-gradient-to-r from-[#2563EB] to-[#9333EA] px-4 py-2.5 text-center text-sm font-medium text-white hover:shadow-sm hover:shadow-indigo-500/15 transition-all duration-200 disabled:opacity-50"
-              >
-                {checkoutLoading === 'pro' ? t('common.loading') : t('billing.tryFree')}
-              </button>
-            </div>
-
-            {/* Team */}
-            <div className="rounded-xl border border-gray-200 bg-white p-5 sm:p-6 md:p-8 overflow-hidden">
-              <h3 className="text-lg font-bold text-gray-900">{t('landing.pricing.team.name')}</h3>
-              <div className="mt-2 mb-1">
-                <span className="text-2xl sm:text-3xl font-bold text-gray-900">{t('landing.pricing.team.price')}</span>
-                <span className="text-xs sm:text-sm text-gray-500">{t('landing.pricing.team.priceUnit')}</span>
-              </div>
-              <p className="text-xs sm:text-sm text-gray-500 mb-4 sm:mb-6">{t('landing.pricing.team.desc')}</p>
-              <ul className="space-y-2 sm:space-y-3 mb-6 sm:mb-8">
-                {(['feature1', 'feature2', 'feature3', 'feature4', 'feature5'] as const).map((f) => (
-                  <li key={f} className="flex items-start gap-2 text-xs sm:text-sm text-gray-600">
-                    <Check className="h-4 w-4 text-green-500 shrink-0 mt-0.5" />
-                    <span>{t(`landing.pricing.team.${f}`)}</span>
-                  </li>
-                ))}
-              </ul>
-              <button
-                onClick={() => handleCheckout('team')}
-                disabled={checkoutLoading === 'team'}
-                className="block w-full rounded-lg border border-gray-200 px-4 py-2.5 text-center text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors disabled:opacity-50"
-              >
-                {checkoutLoading === 'team' ? t('common.loading') : t('landing.pricing.cta')}
-              </button>
-            </div>
-
-            {/* Enterprise */}
-            <div className="rounded-xl border border-gray-200 bg-white p-5 sm:p-6 md:p-8 overflow-hidden">
-              <h3 className="text-lg font-bold text-gray-900">{t('landing.pricing.enterprise.name')}</h3>
-              <div className="mt-2 mb-1">
-                <span className="text-2xl sm:text-3xl font-bold text-gray-900">{t('landing.pricing.enterprise.price')}</span>
-                <span className="text-xs sm:text-sm text-gray-500">{t('landing.pricing.enterprise.priceUnit')}</span>
-              </div>
-              <p className="text-xs sm:text-sm text-gray-500 mb-4 sm:mb-6">{t('landing.pricing.enterprise.desc')}</p>
-              <ul className="space-y-2 sm:space-y-3 mb-6 sm:mb-8">
-                {(['feature1', 'feature2', 'feature3', 'feature4', 'feature5'] as const).map((f) => (
-                  <li key={f} className="flex items-start gap-2 text-xs sm:text-sm text-gray-600">
-                    <Check className="h-4 w-4 text-purple-500 shrink-0 mt-0.5" />
-                    <span>{t(`landing.pricing.enterprise.${f}`)}</span>
-                  </li>
-                ))}
-              </ul>
-              <a
-                href="mailto:tweaklog41@gmail.com"
-                className="block w-full rounded-lg border border-gray-200 px-4 py-2.5 text-center text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
-              >
-                {t('landing.pricing.contactUs')}
-              </a>
-            </div>
           </div>
         </div>
       </Section>

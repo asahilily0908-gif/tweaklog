@@ -428,7 +428,7 @@
       "headlineLine1": "広告の変更ログを残す。",
       "headlineLine2": "KPIへの影響が見える。",
       "tagline": "Log the tweak. See the lift.",
-      "subheadline": "変更履歴 × KPI比較 × インパクト分析。運用ナレッジをチームの資産に変える。",
+      "subheadline": "変更履歴 × KPI比較 × インパクト分析。過去の変更と成果の因果関係を、チームの資産に変える。",
       "cta": "無料で始める",
       "secondaryCta": "機能を見る"
     },
@@ -451,6 +451,17 @@
       "problem3Title": "なぜ効いたか分からない",
       "problem3Desc": "数字の変動は見えても、どの変更が原因か特定できない。",
       "solution3": "AIが文脈を理解して分析"
+    },
+    "impactMetrics": {
+      "stat1Value": "80%",
+      "stat1Label": "振り返り工数を削減",
+      "stat1Desc": "スプシでの手動管理から解放",
+      "stat2Value": "100%",
+      "stat2Label": "変更と成果の因果関係を記録",
+      "stat2Desc": "過去の施策が再現可能な資産になる",
+      "stat3Value": "1min",
+      "stat3Label": "変更ログの記録時間",
+      "stat3Desc": "ワンクリックで構造化された記録を残す"
     },
     "features": {
       "title": "Tweaklogの主要機能",
@@ -542,7 +553,10 @@
       },
       "cta": "無料で始める",
       "comingSoonButton": "準備中",
-      "contactUs": "お問い合わせ"
+      "contactUs": "お問い合わせ",
+      "trialBadge": "14日間無料トライアル",
+      "startTrial": "14日間無料で試す",
+      "getStarted": "このプランで始める"
     },
     "faq": {
       "title": "よくある質問",
