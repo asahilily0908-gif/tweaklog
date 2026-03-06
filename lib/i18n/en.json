@@ -431,6 +431,13 @@
       "cta": "Start Free",
       "secondaryCta": "See Features"
     },
+    "mock": {
+      "marker1": "Bid change",
+      "marker2": "Creative swap",
+      "marker3": "Targeting change",
+      "tooltipChange": "Bid +15%",
+      "tooltipResult": "CPA -12.3%"
+    },
     "painPoints": {
       "title": "Sound familiar?",
       "problem1Title": "Change logs are scattered",

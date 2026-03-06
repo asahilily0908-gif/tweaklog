@@ -73,7 +73,7 @@ function LanguageSwitcher() {
   )
 }
 
-function DashboardMockup() {
+function DashboardMockup({ t }: { t: (key: string) => string }) {
   return (
     <div className="relative mx-auto w-full max-w-3xl">
       <div className="rounded-xl border border-gray-200 bg-white shadow-sm shadow-blue-500/5 overflow-hidden">
@@ -84,14 +84,12 @@ function DashboardMockup() {
             <div className="h-2.5 w-2.5 sm:h-3 sm:w-3 rounded-full bg-yellow-400" />
             <div className="h-2.5 w-2.5 sm:h-3 sm:w-3 rounded-full bg-green-400" />
           </div>
-          {/* MOBILE FIX: URL bar hidden on mobile */}
           <div className="ml-4 flex-1 rounded-md bg-gray-100 px-3 py-1 text-xs text-gray-400 font-mono hidden sm:block">
             tweaklog.io/dashboard
           </div>
         </div>
         {/* Dashboard content */}
         <div className="p-3 sm:p-4 md:p-6">
-          {/* MOBILE FIX: KPI cards 2-col on mobile */}
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3 mb-3 sm:mb-4">
             <div className="rounded-lg border border-gray-100 p-2 sm:p-3">
               <div className="text-[10px] sm:text-xs text-gray-500 mb-0.5 sm:mb-1">CPA</div>
@@ -109,7 +107,7 @@ function DashboardMockup() {
               <div className="text-[10px] sm:text-xs text-green-600 font-medium">+0.4%</div>
             </div>
           </div>
-          {/* Chart mock */}
+          {/* Chart mock with change markers */}
           <div className="rounded-lg border border-gray-100 p-2 sm:p-4">
             <div className="flex items-center justify-between mb-2 sm:mb-3">
               <span className="text-[10px] sm:text-xs font-medium text-gray-700">Performance Trend</span>
@@ -118,21 +116,61 @@ function DashboardMockup() {
                 <span className="rounded bg-gray-50 px-1.5 sm:px-2 py-0.5 text-[9px] sm:text-[10px] text-gray-500">Cost</span>
               </div>
             </div>
-            <svg viewBox="0 0 400 120" className="w-full h-auto">
-              <line x1="0" y1="30" x2="400" y2="30" stroke="#f1f5f9" strokeWidth="1" />
-              <line x1="0" y1="60" x2="400" y2="60" stroke="#f1f5f9" strokeWidth="1" />
-              <line x1="0" y1="90" x2="400" y2="90" stroke="#f1f5f9" strokeWidth="1" />
-              <polyline
-                points="0,80 40,75 80,82 120,70 160,65 200,72 240,55 280,48 320,42 360,38 400,35"
-                fill="none"
-                stroke="#3b82f6"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <circle cx="200" cy="72" r="5" fill="#8b5cf6" stroke="white" strokeWidth="2" />
-              <circle cx="280" cy="48" r="5" fill="#f97316" stroke="white" strokeWidth="2" />
-            </svg>
+            <div className="relative">
+              <svg viewBox="0 0 400 120" className="w-full h-auto">
+                <line x1="0" y1="30" x2="400" y2="30" stroke="#f1f5f9" strokeWidth="1" />
+                <line x1="0" y1="60" x2="400" y2="60" stroke="#f1f5f9" strokeWidth="1" />
+                <line x1="0" y1="90" x2="400" y2="90" stroke="#f1f5f9" strokeWidth="1" />
+                <polyline
+                  points="0,80 40,75 80,82 120,70 160,65 200,72 240,55 280,48 320,42 360,38 400,35"
+                  fill="none"
+                  stroke="#3b82f6"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                {/* Marker 1: Bid change at x=120 y=70 */}
+                <line x1="120" y1="70" x2="120" y2="110" stroke="#8b5cf6" strokeWidth="1" strokeDasharray="3,3" opacity="0.5" />
+                <circle cx="120" cy="70" r="5" fill="#8b5cf6" stroke="white" strokeWidth="2" />
+                {/* Marker 2: Creative swap at x=240 y=55 */}
+                <line x1="240" y1="55" x2="240" y2="110" stroke="#f97316" strokeWidth="1" strokeDasharray="3,3" opacity="0.5" />
+                <circle cx="240" cy="55" r="5" fill="#f97316" stroke="white" strokeWidth="2" />
+                {/* Marker 3: Targeting change at x=340 y=40 */}
+                <line x1="340" y1="40" x2="340" y2="110" stroke="#22c55e" strokeWidth="1" strokeDasharray="3,3" opacity="0.5" />
+                <circle cx="340" cy="40" r="5" fill="#22c55e" stroke="white" strokeWidth="2" />
+                {/* Date labels */}
+                <text x="120" y="118" textAnchor="middle" className="text-[8px]" fill="#94a3b8">2/5</text>
+                <text x="240" y="118" textAnchor="middle" className="text-[8px]" fill="#94a3b8">2/12</text>
+                <text x="340" y="118" textAnchor="middle" className="text-[8px]" fill="#94a3b8">2/19</text>
+              </svg>
+              {/* Tooltip on marker 1 — always visible */}
+              <div className="absolute hidden sm:block" style={{ left: '30%', top: '8%' }}>
+                <div className="relative -translate-x-1/2 rounded-lg border border-purple-200 bg-white px-2.5 py-1.5 shadow-md">
+                  <div className="text-[9px] sm:text-[10px] font-medium text-purple-700">{t('landing.mock.marker1')}</div>
+                  <div className="text-[9px] sm:text-[10px] text-gray-600">
+                    <span>{t('landing.mock.tooltipChange')}</span>
+                    <span className="mx-1 text-gray-300">&rarr;</span>
+                    <span className="font-medium text-green-600">{t('landing.mock.tooltipResult')}</span>
+                  </div>
+                  <div className="absolute left-1/2 -translate-x-1/2 -bottom-1 h-2 w-2 rotate-45 border-b border-r border-purple-200 bg-white" />
+                </div>
+              </div>
+            </div>
+            {/* Marker legend */}
+            <div className="flex flex-wrap gap-2 sm:gap-3 mt-2 sm:mt-3">
+              <div className="flex items-center gap-1">
+                <div className="h-2 w-2 rounded-full bg-purple-500" />
+                <span className="text-[8px] sm:text-[10px] text-gray-500">{t('landing.mock.marker1')}</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <div className="h-2 w-2 rounded-full bg-orange-500" />
+                <span className="text-[8px] sm:text-[10px] text-gray-500">{t('landing.mock.marker2')}</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <div className="h-2 w-2 rounded-full bg-green-500" />
+                <span className="text-[8px] sm:text-[10px] text-gray-500">{t('landing.mock.marker3')}</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -320,7 +358,7 @@ export default function LandingPage() {
             </div>
           </div>
 
-          <DashboardMockup />
+          <DashboardMockup t={t} />
         </div>
       </section>
 

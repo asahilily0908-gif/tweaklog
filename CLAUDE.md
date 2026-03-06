@@ -1,6 +1,6 @@
 # Tweaklog
 
-Ad operations change-log and impact analysis SaaS. "Log the tweak. See the lift."
+Ad operations change-log and impact analysis tool. "Log the tweak. See the lift."
 
 Records advertising changes (bid, creative, targeting, budget, structure), compares before/after KPIs with user-defined Main KPI metrics, and provides AI-powered analysis.
 

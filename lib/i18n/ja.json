@@ -432,6 +432,13 @@
       "cta": "無料で始める",
       "secondaryCta": "機能を見る"
     },
+    "mock": {
+      "marker1": "入札変更",
+      "marker2": "クリエイティブ差替",
+      "marker3": "ターゲティング変更",
+      "tooltipChange": "入札 +15%",
+      "tooltipResult": "CPA -12.3%"
+    },
     "painPoints": {
       "title": "広告運用、こんな課題ありませんか？",
       "problem1Title": "変更の記録がバラバラ",
