@@ -435,8 +435,9 @@
       "marker1": "Bid change",
       "marker2": "Creative swap",
       "marker3": "Targeting change",
-      "tooltipChange": "Bid +15%",
-      "tooltipResult": "CPA -12.3%"
+      "tooltip1": "Bid +15% → CPA -12.3%",
+      "tooltip2": "CTR +0.8%",
+      "tooltip3": "CVR +0.4%"
     },
     "painPoints": {
       "title": "Sound familiar?",

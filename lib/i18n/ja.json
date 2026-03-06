@@ -436,8 +436,9 @@
       "marker1": "入札変更",
       "marker2": "クリエイティブ差替",
       "marker3": "ターゲティング変更",
-      "tooltipChange": "入札 +15%",
-      "tooltipResult": "CPA -12.3%"
+      "tooltip1": "入札 +15% → CPA -12.3%",
+      "tooltip2": "CTR +0.8%",
+      "tooltip3": "CVR +0.4%"
     },
     "painPoints": {
       "title": "広告運用、こんな課題ありませんか？",

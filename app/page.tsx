@@ -73,7 +73,77 @@ function LanguageSwitcher() {
   )
 }
 
+interface MockPoint { date: string; cpa: number; marker?: number }
+
+const MOCK_DATA_30D: MockPoint[] = [
+  { date: '2/1', cpa: 2800 }, { date: '2/2', cpa: 2750 }, { date: '2/3', cpa: 2820 },
+  { date: '2/4', cpa: 2700 }, { date: '2/5', cpa: 2650, marker: 1 },
+  { date: '2/6', cpa: 2580 }, { date: '2/7', cpa: 2520 }, { date: '2/8', cpa: 2560 },
+  { date: '2/9', cpa: 2500 }, { date: '2/10', cpa: 2480 },
+  { date: '2/11', cpa: 2520 }, { date: '2/12', cpa: 2450, marker: 2 },
+  { date: '2/13', cpa: 2380 }, { date: '2/14', cpa: 2400 }, { date: '2/15', cpa: 2350 },
+  { date: '2/16', cpa: 2380 }, { date: '2/17', cpa: 2320 }, { date: '2/18', cpa: 2360 },
+  { date: '2/19', cpa: 2300, marker: 3 }, { date: '2/20', cpa: 2280 },
+  { date: '2/21', cpa: 2250 }, { date: '2/22', cpa: 2300 }, { date: '2/23', cpa: 2260 },
+  { date: '2/24', cpa: 2240 }, { date: '2/25', cpa: 2280 }, { date: '2/26', cpa: 2220 },
+  { date: '2/27', cpa: 2260 }, { date: '2/28', cpa: 2340 },
+]
+
+const MOCK_DATA_7D: MockPoint[] = [
+  { date: '2/22', cpa: 2300 }, { date: '2/23', cpa: 2260 },
+  { date: '2/24', cpa: 2240 }, { date: '2/25', cpa: 2280 },
+  { date: '2/26', cpa: 2220 }, { date: '2/27', cpa: 2260 }, { date: '2/28', cpa: 2340 },
+]
+
+const MARKERS = [
+  { id: 1, color: '#8b5cf6', labelKey: 'marker1', tooltipKey: 'tooltip1', dotClass: 'bg-purple-500' },
+  { id: 2, color: '#f97316', labelKey: 'marker2', tooltipKey: 'tooltip2', dotClass: 'bg-orange-500' },
+  { id: 3, color: '#22c55e', labelKey: 'marker3', tooltipKey: 'tooltip3', dotClass: 'bg-green-500' },
+]
+
 function DashboardMockup({ t }: { t: (key: string) => string }) {
+  const [period, setPeriod] = useState<'7d' | '30d'>('30d')
+  const [activeMarker, setActiveMarker] = useState<number | null>(1)
+  const [hoverPoint, setHoverPoint] = useState<{ x: number; y: number; date: string; cpa: number } | null>(null)
+  const svgRef = useRef<SVGSVGElement>(null)
+
+  const data = period === '7d' ? MOCK_DATA_7D : MOCK_DATA_30D
+
+  // Build SVG polyline points and marker positions
+  const W = 400, H = 110, PAD_TOP = 10, PAD_BOT = 20
+  const chartH = H - PAD_TOP - PAD_BOT
+  const minCpa = Math.min(...data.map(d => d.cpa)) - 50
+  const maxCpa = Math.max(...data.map(d => d.cpa)) + 50
+  const toY = (v: number) => PAD_TOP + chartH - ((v - minCpa) / (maxCpa - minCpa)) * chartH
+  const toX = (i: number) => (i / (data.length - 1)) * W
+
+  const points = data.map((d, i) => `${toX(i)},${toY(d.cpa)}`).join(' ')
+
+  const markerPositions = data
+    .map((d, i) => d.marker ? { ...d, x: toX(i), y: toY(d.cpa), marker: d.marker } : null)
+    .filter((m): m is NonNullable<typeof m> => m !== null)
+
+  function handleSvgMove(e: React.MouseEvent<SVGSVGElement> | React.TouchEvent<SVGSVGElement>) {
+    const svg = svgRef.current
+    if (!svg) return
+    const rect = svg.getBoundingClientRect()
+    const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX
+    const relX = ((clientX - rect.left) / rect.width) * W
+    // Find closest data point
+    let closest = 0
+    let minDist = Infinity
+    for (let i = 0; i < data.length; i++) {
+      const dist = Math.abs(toX(i) - relX)
+      if (dist < minDist) { minDist = dist; closest = i }
+    }
+    const d = data[closest]
+    setHoverPoint({ x: toX(closest), y: toY(d.cpa), date: d.date, cpa: d.cpa })
+  }
+
+  function handleSvgLeave() {
+    setHoverPoint(null)
+  }
+
   return (
     <div className="relative mx-auto w-full max-w-3xl">
       <div className="rounded-xl border border-gray-200 bg-white shadow-sm shadow-blue-500/5 overflow-hidden">
@@ -90,86 +160,132 @@ function DashboardMockup({ t }: { t: (key: string) => string }) {
         </div>
         {/* Dashboard content */}
         <div className="p-3 sm:p-4 md:p-6">
+          {/* KPI cards with hover */}
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3 mb-3 sm:mb-4">
-            <div className="rounded-lg border border-gray-100 p-2 sm:p-3">
-              <div className="text-[10px] sm:text-xs text-gray-500 mb-0.5 sm:mb-1">CPA</div>
-              <div className="text-sm sm:text-lg font-bold text-gray-900">¥2,340</div>
-              <div className="text-[10px] sm:text-xs text-green-600 font-medium">-12.3%</div>
-            </div>
-            <div className="rounded-lg border border-gray-100 p-2 sm:p-3">
-              <div className="text-[10px] sm:text-xs text-gray-500 mb-0.5 sm:mb-1">Cost</div>
-              <div className="text-sm sm:text-lg font-bold text-gray-900">¥128,500</div>
-              <div className="text-[10px] sm:text-xs text-gray-500 font-medium">+2.1%</div>
-            </div>
-            <div className="rounded-lg border border-gray-100 p-2 sm:p-3 col-span-2 sm:col-span-1">
-              <div className="text-[10px] sm:text-xs text-gray-500 mb-0.5 sm:mb-1">CVR</div>
-              <div className="text-sm sm:text-lg font-bold text-gray-900">3.2%</div>
-              <div className="text-[10px] sm:text-xs text-green-600 font-medium">+0.4%</div>
-            </div>
+            {[
+              { label: 'CPA', value: '¥2,340', change: '-12.3%', positive: true },
+              { label: 'Cost', value: '¥128,500', change: '+2.1%', positive: false },
+              { label: 'CVR', value: '3.2%', change: '+0.4%', positive: true },
+            ].map((kpi, i) => (
+              <div
+                key={kpi.label}
+                className={`rounded-lg border border-gray-100 p-2 sm:p-3 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md hover:border-gray-200 cursor-default ${i === 2 ? 'col-span-2 sm:col-span-1' : ''}`}
+              >
+                <div className="text-[10px] sm:text-xs text-gray-500 mb-0.5 sm:mb-1">{kpi.label}</div>
+                <div className="text-sm sm:text-lg font-bold text-gray-900">{kpi.value}</div>
+                <div className={`text-[10px] sm:text-xs font-medium ${kpi.positive ? 'text-green-600' : 'text-gray-500'}`}>{kpi.change}</div>
+              </div>
+            ))}
           </div>
-          {/* Chart mock with change markers */}
+          {/* Chart */}
           <div className="rounded-lg border border-gray-100 p-2 sm:p-4">
             <div className="flex items-center justify-between mb-2 sm:mb-3">
               <span className="text-[10px] sm:text-xs font-medium text-gray-700">Performance Trend</span>
-              <div className="flex gap-1">
-                <span className="rounded bg-blue-50 px-1.5 sm:px-2 py-0.5 text-[9px] sm:text-[10px] font-medium text-blue-600">CPA</span>
-                <span className="rounded bg-gray-50 px-1.5 sm:px-2 py-0.5 text-[9px] sm:text-[10px] text-gray-500">Cost</span>
+              <div className="flex gap-0.5 rounded-md bg-gray-100 p-0.5">
+                {(['7d', '30d'] as const).map((p) => (
+                  <button
+                    key={p}
+                    type="button"
+                    onClick={() => { setPeriod(p); setActiveMarker(null); setHoverPoint(null) }}
+                    className={`rounded px-2 py-0.5 text-[9px] sm:text-[10px] font-medium transition-all ${
+                      period === p ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'
+                    }`}
+                  >
+                    {p}
+                  </button>
+                ))}
               </div>
             </div>
             <div className="relative">
-              <svg viewBox="0 0 400 120" className="w-full h-auto">
-                <line x1="0" y1="30" x2="400" y2="30" stroke="#f1f5f9" strokeWidth="1" />
-                <line x1="0" y1="60" x2="400" y2="60" stroke="#f1f5f9" strokeWidth="1" />
-                <line x1="0" y1="90" x2="400" y2="90" stroke="#f1f5f9" strokeWidth="1" />
-                <polyline
-                  points="0,80 40,75 80,82 120,70 160,65 200,72 240,55 280,48 320,42 360,38 400,35"
-                  fill="none"
-                  stroke="#3b82f6"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
+              <svg
+                ref={svgRef}
+                viewBox={`0 0 ${W} ${H}`}
+                className="w-full h-auto cursor-crosshair"
+                onMouseMove={handleSvgMove}
+                onMouseLeave={handleSvgLeave}
+                onTouchMove={handleSvgMove}
+              >
+                {/* Grid lines */}
+                <line x1="0" y1={PAD_TOP} x2={W} y2={PAD_TOP} stroke="#f1f5f9" strokeWidth="1" />
+                <line x1="0" y1={PAD_TOP + chartH / 2} x2={W} y2={PAD_TOP + chartH / 2} stroke="#f1f5f9" strokeWidth="1" />
+                <line x1="0" y1={PAD_TOP + chartH} x2={W} y2={PAD_TOP + chartH} stroke="#f1f5f9" strokeWidth="1" />
+                {/* Area fill */}
+                <polygon
+                  points={`0,${PAD_TOP + chartH} ${points} ${W},${PAD_TOP + chartH}`}
+                  fill="url(#mockGradient)"
                 />
-                {/* Marker 1: Bid change at x=120 y=70 */}
-                <line x1="120" y1="70" x2="120" y2="110" stroke="#8b5cf6" strokeWidth="1" strokeDasharray="3,3" opacity="0.5" />
-                <circle cx="120" cy="70" r="5" fill="#8b5cf6" stroke="white" strokeWidth="2" />
-                {/* Marker 2: Creative swap at x=240 y=55 */}
-                <line x1="240" y1="55" x2="240" y2="110" stroke="#f97316" strokeWidth="1" strokeDasharray="3,3" opacity="0.5" />
-                <circle cx="240" cy="55" r="5" fill="#f97316" stroke="white" strokeWidth="2" />
-                {/* Marker 3: Targeting change at x=340 y=40 */}
-                <line x1="340" y1="40" x2="340" y2="110" stroke="#22c55e" strokeWidth="1" strokeDasharray="3,3" opacity="0.5" />
-                <circle cx="340" cy="40" r="5" fill="#22c55e" stroke="white" strokeWidth="2" />
-                {/* Date labels */}
-                <text x="120" y="118" textAnchor="middle" className="text-[8px]" fill="#94a3b8">2/5</text>
-                <text x="240" y="118" textAnchor="middle" className="text-[8px]" fill="#94a3b8">2/12</text>
-                <text x="340" y="118" textAnchor="middle" className="text-[8px]" fill="#94a3b8">2/19</text>
+                <defs>
+                  <linearGradient id="mockGradient" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.15" />
+                    <stop offset="100%" stopColor="#3b82f6" stopOpacity="0" />
+                  </linearGradient>
+                </defs>
+                {/* Line */}
+                <polyline points={points} fill="none" stroke="#3b82f6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                {/* Hover line + point */}
+                {hoverPoint && (
+                  <>
+                    <line x1={hoverPoint.x} y1={PAD_TOP} x2={hoverPoint.x} y2={PAD_TOP + chartH} stroke="#94a3b8" strokeWidth="1" strokeDasharray="3,3" />
+                    <circle cx={hoverPoint.x} cy={hoverPoint.y} r="4" fill="#3b82f6" stroke="white" strokeWidth="2" />
+                  </>
+                )}
+                {/* Change markers */}
+                {markerPositions.map((m) => {
+                  const markerDef = MARKERS.find(mk => mk.id === m.marker)!
+                  return (
+                    <g key={m.marker} className="cursor-pointer" onClick={() => setActiveMarker(activeMarker === m.marker ? null : m.marker)}>
+                      <line x1={m.x} y1={m.y} x2={m.x} y2={PAD_TOP + chartH} stroke={markerDef.color} strokeWidth="1" strokeDasharray="3,3" opacity="0.5" />
+                      <circle cx={m.x} cy={m.y} r="6" fill={markerDef.color} stroke="white" strokeWidth="2" />
+                      <text x={m.x} y={H - 2} textAnchor="middle" fontSize="7" fill="#94a3b8">{m.date}</text>
+                    </g>
+                  )
+                })}
               </svg>
-              {/* Tooltip on marker 1 — always visible */}
-              <div className="absolute hidden sm:block" style={{ left: '30%', top: '8%' }}>
-                <div className="relative -translate-x-1/2 rounded-lg border border-purple-200 bg-white px-2.5 py-1.5 shadow-md">
-                  <div className="text-[9px] sm:text-[10px] font-medium text-purple-700">{t('landing.mock.marker1')}</div>
-                  <div className="text-[9px] sm:text-[10px] text-gray-600">
-                    <span>{t('landing.mock.tooltipChange')}</span>
-                    <span className="mx-1 text-gray-300">&rarr;</span>
-                    <span className="font-medium text-green-600">{t('landing.mock.tooltipResult')}</span>
+              {/* Hover tooltip */}
+              {hoverPoint && (
+                <div
+                  className="pointer-events-none absolute z-10"
+                  style={{ left: `${(hoverPoint.x / W) * 100}%`, top: `${((hoverPoint.y - 28) / H) * 100}%` }}
+                >
+                  <div className="-translate-x-1/2 rounded-md bg-gray-900 px-2 py-1 text-[9px] text-white shadow whitespace-nowrap">
+                    {hoverPoint.date} &middot; ¥{hoverPoint.cpa.toLocaleString()}
                   </div>
-                  <div className="absolute left-1/2 -translate-x-1/2 -bottom-1 h-2 w-2 rotate-45 border-b border-r border-purple-200 bg-white" />
                 </div>
-              </div>
+              )}
+              {/* Marker tooltips */}
+              {markerPositions.map((m) => {
+                if (activeMarker !== m.marker) return null
+                const markerDef = MARKERS.find(mk => mk.id === m.marker)!
+                const borderColor = m.marker === 1 ? 'border-purple-200' : m.marker === 2 ? 'border-orange-200' : 'border-green-200'
+                const textColor = m.marker === 1 ? 'text-purple-700' : m.marker === 2 ? 'text-orange-700' : 'text-green-700'
+                return (
+                  <div
+                    key={m.marker}
+                    className="absolute z-20"
+                    style={{ left: `${(m.x / W) * 100}%`, top: `${((m.y - 8) / H) * 100}%` }}
+                  >
+                    <div className={`-translate-x-1/2 -translate-y-full rounded-lg border ${borderColor} bg-white px-2 sm:px-2.5 py-1 sm:py-1.5 shadow-md`}>
+                      <div className={`text-[9px] sm:text-[10px] font-medium ${textColor}`}>{t(`landing.mock.${markerDef.labelKey}`)}</div>
+                      <div className="text-[9px] sm:text-[10px] text-gray-600 whitespace-nowrap">{t(`landing.mock.${markerDef.tooltipKey}`)}</div>
+                      <div className={`absolute left-1/2 -translate-x-1/2 -bottom-1 h-2 w-2 rotate-45 border-b border-r ${borderColor} bg-white`} />
+                    </div>
+                  </div>
+                )
+              })}
             </div>
-            {/* Marker legend */}
+            {/* Legend */}
             <div className="flex flex-wrap gap-2 sm:gap-3 mt-2 sm:mt-3">
-              <div className="flex items-center gap-1">
-                <div className="h-2 w-2 rounded-full bg-purple-500" />
-                <span className="text-[8px] sm:text-[10px] text-gray-500">{t('landing.mock.marker1')}</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <div className="h-2 w-2 rounded-full bg-orange-500" />
-                <span className="text-[8px] sm:text-[10px] text-gray-500">{t('landing.mock.marker2')}</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <div className="h-2 w-2 rounded-full bg-green-500" />
-                <span className="text-[8px] sm:text-[10px] text-gray-500">{t('landing.mock.marker3')}</span>
-              </div>
+              {MARKERS.map((m) => (
+                <button
+                  key={m.id}
+                  type="button"
+                  onClick={() => setActiveMarker(activeMarker === m.id ? null : m.id)}
+                  className="flex items-center gap-1 hover:opacity-70 transition-opacity"
+                >
+                  <div className={`h-2 w-2 rounded-full ${m.dotClass}`} />
+                  <span className="text-[8px] sm:text-[10px] text-gray-500">{t(`landing.mock.${m.labelKey}`)}</span>
+                </button>
+              ))}
             </div>
           </div>
         </div>
