@@ -26,7 +26,7 @@ export default function ScoreBadge({
     if (size === 'lg') {
       return (
         <div
-          className={`flex h-20 w-20 flex-col items-center justify-center rounded-2xl border ${nullColor}`}
+          className={`flex h-24 w-24 flex-col items-center justify-center rounded-2xl border ${nullColor}`}
         >
           <span className="text-2xl font-bold">—</span>
         </div>
@@ -56,10 +56,10 @@ export default function ScoreBadge({
   if (size === 'lg') {
     return (
       <div
-        className={`flex h-20 w-20 flex-col items-center justify-center rounded-2xl border ${colorClasses}`}
+        className={`flex h-24 w-24 flex-col items-center justify-center rounded-2xl border ${colorClasses}`}
       >
         <span className="text-2xl font-bold">{formatScore(score)}</span>
-        <span className="text-xs">{t(color.label)}</span>
+        <span className="text-[10px] whitespace-nowrap text-center">{t(color.label)}</span>
         {changePercent !== undefined && (
           <span className="mt-0.5 text-[10px] opacity-75">
             {changePercent >= 0 ? '+' : ''}

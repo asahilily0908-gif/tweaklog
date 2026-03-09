@@ -416,13 +416,13 @@
     "improved": "Improved",
     "worsened": "Worsened",
     "scoreLabels": {
-      "significantImprovement": "Significant improvement",
+      "significantImprovement": "Major improvement",
       "improved": "Improved",
       "slightlyImproved": "Slightly improved",
       "noChange": "No change",
       "slightlyWorse": "Slightly worse",
       "worse": "Worse",
-      "significantlyWorse": "Significantly worse"
+      "significantlyWorse": "Major decline"
     }
   },
   "landing": {
