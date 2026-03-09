@@ -93,7 +93,7 @@ describe('getScoreColor', () => {
   it('+3 → bg-green-100 系', () => {
     const color = getScoreColor(3)
     expect(color.bg).toBe('bg-green-100')
-    expect(color.label).toBe('大幅改善')
+    expect(color.label).toBe('impact.scoreLabels.significantImprovement')
   })
 
   it('+4 → bg-green-100 系', () => {
@@ -104,42 +104,42 @@ describe('getScoreColor', () => {
   it('+2 → bg-green-50 系', () => {
     const color = getScoreColor(2)
     expect(color.bg).toBe('bg-green-50')
-    expect(color.label).toBe('改善')
+    expect(color.label).toBe('impact.scoreLabels.improved')
   })
 
   it('+1 → bg-emerald-50 系', () => {
     const color = getScoreColor(1)
     expect(color.bg).toBe('bg-emerald-50')
-    expect(color.label).toBe('やや改善')
+    expect(color.label).toBe('impact.scoreLabels.slightlyImproved')
   })
 
   it('0 → bg-slate-50 系', () => {
     const color = getScoreColor(0)
     expect(color.bg).toBe('bg-slate-50')
-    expect(color.label).toBe('変化なし')
+    expect(color.label).toBe('impact.scoreLabels.noChange')
   })
 
   it('-1 → bg-orange-50 系', () => {
     const color = getScoreColor(-1)
     expect(color.bg).toBe('bg-orange-50')
-    expect(color.label).toBe('やや悪化')
+    expect(color.label).toBe('impact.scoreLabels.slightlyWorse')
   })
 
   it('-2 → bg-red-50 系', () => {
     const color = getScoreColor(-2)
     expect(color.bg).toBe('bg-red-50')
-    expect(color.label).toBe('悪化')
+    expect(color.label).toBe('impact.scoreLabels.worse')
   })
 
   it('-3 → bg-red-100 系', () => {
     const color = getScoreColor(-3)
     expect(color.bg).toBe('bg-red-100')
-    expect(color.label).toBe('大幅悪化')
+    expect(color.label).toBe('impact.scoreLabels.significantlyWorse')
   })
 
   it('-4 → bg-red-100 系', () => {
     const color = getScoreColor(-4)
     expect(color.bg).toBe('bg-red-100')
-    expect(color.label).toBe('大幅悪化')
+    expect(color.label).toBe('impact.scoreLabels.significantlyWorse')
   })
 })

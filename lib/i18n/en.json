@@ -414,7 +414,16 @@
     "mainKpiChange": "{kpi} change",
     "metricsComparison": "Metrics Comparison",
     "improved": "Improved",
-    "worsened": "Worsened"
+    "worsened": "Worsened",
+    "scoreLabels": {
+      "significantImprovement": "Significant improvement",
+      "improved": "Improved",
+      "slightlyImproved": "Slightly improved",
+      "noChange": "No change",
+      "slightlyWorse": "Slightly worse",
+      "worse": "Worse",
+      "significantlyWorse": "Significantly worse"
+    }
   },
   "landing": {
     "nav": {

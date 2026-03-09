@@ -415,7 +415,16 @@
     "mainKpiChange": "{kpi}の変化",
     "metricsComparison": "指標比較",
     "improved": "改善",
-    "worsened": "悪化"
+    "worsened": "悪化",
+    "scoreLabels": {
+      "significantImprovement": "大幅改善",
+      "improved": "改善",
+      "slightlyImproved": "やや改善",
+      "noChange": "変化なし",
+      "slightlyWorse": "やや悪化",
+      "worse": "悪化",
+      "significantlyWorse": "大幅悪化"
+    }
   },
   "landing": {
     "nav": {

@@ -83,49 +83,49 @@ export function getScoreColor(score: number): {
       bg: 'bg-green-100',
       text: 'text-green-700',
       border: 'border-green-300',
-      label: '大幅改善',
+      label: 'impact.scoreLabels.significantImprovement',
     }
   if (score === 2)
     return {
       bg: 'bg-green-50',
       text: 'text-green-600',
       border: 'border-green-200',
-      label: '改善',
+      label: 'impact.scoreLabels.improved',
     }
   if (score === 1)
     return {
       bg: 'bg-emerald-50',
       text: 'text-emerald-600',
       border: 'border-emerald-200',
-      label: 'やや改善',
+      label: 'impact.scoreLabels.slightlyImproved',
     }
   if (score === 0)
     return {
       bg: 'bg-slate-50',
       text: 'text-slate-500',
       border: 'border-slate-200',
-      label: '変化なし',
+      label: 'impact.scoreLabels.noChange',
     }
   if (score === -1)
     return {
       bg: 'bg-orange-50',
       text: 'text-orange-600',
       border: 'border-orange-200',
-      label: 'やや悪化',
+      label: 'impact.scoreLabels.slightlyWorse',
     }
   if (score === -2)
     return {
       bg: 'bg-red-50',
       text: 'text-red-600',
       border: 'border-red-200',
-      label: '悪化',
+      label: 'impact.scoreLabels.worse',
     }
   // -3 or -4
   return {
     bg: 'bg-red-100',
     text: 'text-red-700',
     border: 'border-red-300',
-    label: '大幅悪化',
+    label: 'impact.scoreLabels.significantlyWorse',
   }
 }
 

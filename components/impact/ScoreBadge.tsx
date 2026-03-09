@@ -1,6 +1,7 @@
 'use client'
 
 import { getScoreColor } from '@/lib/metrics/score-calculator'
+import { useTranslation } from '@/lib/i18n/config'
 
 interface ScoreBadgeProps {
   score: number | null
@@ -19,6 +20,7 @@ export default function ScoreBadge({
   changePercent,
   size = 'sm',
 }: ScoreBadgeProps) {
+  const { t } = useTranslation()
   if (score === null) {
     const nullColor = 'bg-gray-100 text-gray-400 border-gray-200'
     if (size === 'lg') {
@@ -57,7 +59,7 @@ export default function ScoreBadge({
         className={`flex h-20 w-20 flex-col items-center justify-center rounded-2xl border ${colorClasses}`}
       >
         <span className="text-2xl font-bold">{formatScore(score)}</span>
-        <span className="text-xs">{color.label}</span>
+        <span className="text-xs">{t(color.label)}</span>
         {changePercent !== undefined && (
           <span className="mt-0.5 text-[10px] opacity-75">
             {changePercent >= 0 ? '+' : ''}
