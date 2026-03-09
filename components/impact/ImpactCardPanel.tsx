@@ -125,16 +125,16 @@ export default function ImpactCardPanel({
 
       {/* Panel */}
       <div
-        className={`relative w-full max-w-[calc(100vw-1rem)] md:max-w-md overflow-y-auto bg-white shadow-2xl transition-transform duration-300 ease-out ${
+        className={`relative w-full max-w-[calc(100vw-1rem)] md:max-w-md overflow-x-hidden overflow-y-auto bg-white shadow-2xl transition-transform duration-300 ease-out ${
           isVisible ? 'translate-x-0' : 'translate-x-full'
         }`}
       >
-        <div className="p-4 sm:p-6">
+        <div className="p-4 sm:p-5">
           {/* Close button */}
           <button
             type="button"
             onClick={handleClose}
-            className="absolute right-4 top-4 rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-all duration-150"
+            className="absolute right-3 top-3 rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-all duration-150 z-10"
           >
             <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -142,9 +142,9 @@ export default function ImpactCardPanel({
           </button>
 
           {/* Header section */}
-          <div className="mb-6 pr-8">
+          <div className="mb-5 pr-8">
             <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider mb-3">{t('impact.impactCard')}</p>
-            <div className="flex items-center gap-2 mb-2">
+            <div className="flex flex-wrap items-center gap-1.5 mb-2">
               <span className={`inline-flex rounded-md border px-2 py-0.5 text-[10px] font-semibold ${CATEGORY_COLORS[experiment.category] ?? 'bg-gray-50 text-gray-700 border-gray-200'}`}>
                 {t('experiments.categories.' + experiment.category) || experiment.category}
               </span>
@@ -155,33 +155,33 @@ export default function ImpactCardPanel({
                 </span>
               )}
               {experiment.campaign && (
-                <span className="text-xs text-gray-400 truncate">{experiment.campaign}</span>
+                <span className="text-xs text-gray-400 truncate max-w-[150px]">{experiment.campaign}</span>
               )}
             </div>
 
             <p className="text-xs text-gray-400 mb-3">{formatDate(experiment.created_at)}</p>
-
-            {experiment.before_value && experiment.after_value && (
-              <div className="rounded-lg border border-gray-100 bg-gray-50/80 px-4 py-3 mb-3">
-                <p className="text-sm font-medium">
-                  <span className="text-red-400 line-through">{experiment.before_value}</span>
-                  <span className="mx-2.5 text-gray-300">&rarr;</span>
-                  <span className="text-green-600 font-semibold">{experiment.after_value}</span>
-                </p>
-              </div>
-            )}
-
-            {experiment.reason && (
-              <p className="text-xs leading-relaxed text-gray-500">{experiment.reason}</p>
-            )}
           </div>
 
+          {experiment.before_value && experiment.after_value && (
+            <div className="rounded-lg border border-gray-100 bg-gray-50/80 px-3 py-3 mb-4">
+              <p className="text-sm font-medium break-words">
+                <span className="text-red-400 line-through">{experiment.before_value}</span>
+                <span className="mx-2 text-gray-300">&rarr;</span>
+                <span className="text-green-600 font-semibold">{experiment.after_value}</span>
+              </p>
+            </div>
+          )}
+
+          {experiment.reason && (
+            <p className="text-xs leading-relaxed text-gray-500 mb-5">{experiment.reason}</p>
+          )}
+
           {/* Score section */}
-          <div className="mb-6 flex flex-col items-center rounded-xl border border-gray-200 bg-gradient-to-b from-gray-50/80 to-white p-5">
+          <div className="mb-5 flex flex-col items-center rounded-xl border border-gray-200 bg-gradient-to-b from-gray-50/80 to-white p-4">
             <p className="mb-3 text-[10px] font-semibold uppercase tracking-wider text-gray-400">{t('impact.impactScore')}</p>
             <ScoreBadge score={hasData ? impact.score : null} size="lg" />
             {impact.northStarChangePct !== null && (
-              <p className="mt-3 text-xs text-gray-500">
+              <p className="mt-3 text-xs text-gray-500 text-center">
                 {northStarKpi.toUpperCase()} {t('impact.change')}:{' '}
                 <span className={`font-semibold tabular-nums ${impact.northStarChangePct >= 0 ? 'text-green-600' : 'text-red-600'}`}>
                   {impact.northStarChangePct >= 0 ? '+' : ''}
@@ -194,68 +194,66 @@ export default function ImpactCardPanel({
           {/* Metrics comparison */}
           {hasData ? (
             <div className="overflow-hidden rounded-xl border border-gray-200">
-              <div className="overflow-x-auto">
-                <table className="w-full table-fixed min-w-[320px]">
-                  <colgroup>
-                    <col className="w-[35%]" />
-                    <col className="w-[20%]" />
-                    <col className="w-[20%]" />
-                    <col className="w-[25%]" />
-                  </colgroup>
-                  <thead>
-                    <tr className="bg-gray-50/80 border-b border-gray-200">
-                      <th className="py-2.5 pr-2 text-left text-[10px] font-semibold uppercase tracking-wider text-gray-400 pl-3">{t('impact.metric')}</th>
-                      <th className="py-2.5 px-2 text-right text-[10px] font-semibold uppercase tracking-wider text-gray-400">{t('impact.before')}</th>
-                      <th className="py-2.5 px-2 text-right text-[10px] font-semibold uppercase tracking-wider text-gray-400">{t('impact.after')}</th>
-                      <th className="py-2.5 pl-2 text-right text-[10px] font-semibold uppercase tracking-wider text-gray-400 pr-3">{t('impact.change')}</th>
+              <table className="w-full table-fixed">
+                <colgroup>
+                  <col style={{ width: '35%' }} />
+                  <col style={{ width: '20%' }} />
+                  <col style={{ width: '20%' }} />
+                  <col style={{ width: '25%' }} />
+                </colgroup>
+                <thead>
+                  <tr className="bg-gray-50/80 border-b border-gray-200">
+                    <th className="py-2.5 pr-1 text-left text-[10px] font-semibold uppercase tracking-wider text-gray-400 pl-3">{t('impact.metric')}</th>
+                    <th className="py-2.5 px-1 text-right text-[10px] font-semibold uppercase tracking-wider text-gray-400">{t('impact.before')}</th>
+                    <th className="py-2.5 px-1 text-right text-[10px] font-semibold uppercase tracking-wider text-gray-400">{t('impact.after')}</th>
+                    <th className="py-2.5 pl-1 text-right text-[10px] font-semibold uppercase tracking-wider text-gray-400 pr-3">{t('impact.change')}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {impact.metrics.map((metric, i) => (
+                    <tr
+                      key={metric.metricName}
+                      className={`border-b border-gray-100 last:border-0 ${i % 2 === 1 ? 'bg-gray-50/30' : ''}`}
+                    >
+                      <td className="py-2.5 pr-1 pl-3 overflow-hidden">
+                        <div className="flex items-center gap-1 min-w-0">
+                          <span className="text-xs font-medium text-gray-900 truncate">{metric.displayName}</span>
+                          {i === 0 && (
+                            <span className="shrink-0 whitespace-nowrap rounded-full bg-blue-50 border border-blue-100 px-1 py-0.5 text-[9px] font-semibold text-blue-600 leading-none">
+                              {t('dashboard.mainKpi')}
+                            </span>
+                          )}
+                        </div>
+                      </td>
+                      <td className="py-2.5 px-1 text-right text-[11px] tabular-nums text-gray-500 overflow-hidden truncate">
+                        {formatMetricValue(metric.beforeAvg, metric.metricName)}
+                      </td>
+                      <td className="py-2.5 px-1 text-right text-[11px] tabular-nums text-gray-700 font-medium overflow-hidden truncate">
+                        {formatMetricValue(metric.afterAvg, metric.metricName)}
+                      </td>
+                      <td className={`py-2.5 pl-1 pr-3 text-right text-[11px] font-semibold tabular-nums overflow-hidden ${
+                        metric.improved === true ? 'text-green-600' : metric.improved === false ? 'text-red-500' : 'text-gray-400'
+                      }`}>
+                        <span className="inline-flex items-center justify-end gap-0.5 whitespace-nowrap">
+                          {metric.improved === true && (
+                            <svg className="h-3 w-3 shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25" />
+                            </svg>
+                          )}
+                          {metric.improved === false && (
+                            <svg className="h-3 w-3 shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 4.5l15 15m0 0V8.25m0 11.25H8.25" />
+                            </svg>
+                          )}
+                          {metric.changePct !== null
+                            ? `${metric.changePct >= 0 ? '+' : ''}${metric.changePct.toFixed(1)}%`
+                            : '—'}
+                        </span>
+                      </td>
                     </tr>
-                  </thead>
-                  <tbody>
-                    {impact.metrics.map((metric, i) => (
-                      <tr
-                        key={metric.metricName}
-                        className={`border-b border-gray-100 last:border-0 ${i % 2 === 1 ? 'bg-gray-50/30' : ''}`}
-                      >
-                        <td className="py-3 pr-2 pl-3">
-                          <div className="flex items-center gap-1 truncate">
-                            <span className="text-xs font-medium text-gray-900 truncate">{metric.displayName}</span>
-                            {i === 0 && (
-                              <span className="shrink-0 whitespace-nowrap rounded-full bg-blue-50 border border-blue-100 px-1 py-0.5 text-[10px] font-semibold text-blue-600">
-                                {t('dashboard.mainKpi')}
-                              </span>
-                            )}
-                          </div>
-                        </td>
-                        <td className="py-3 px-2 text-right text-xs tabular-nums text-gray-500 truncate">
-                          {formatMetricValue(metric.beforeAvg, metric.metricName)}
-                        </td>
-                        <td className="py-3 px-2 text-right text-xs tabular-nums text-gray-700 font-medium truncate">
-                          {formatMetricValue(metric.afterAvg, metric.metricName)}
-                        </td>
-                        <td className={`py-3 pl-2 pr-3 text-right text-xs font-semibold tabular-nums ${
-                          metric.improved === true ? 'text-green-600' : metric.improved === false ? 'text-red-500' : 'text-gray-400'
-                        }`}>
-                          <span className="inline-flex items-center justify-end gap-0.5 whitespace-nowrap">
-                            {metric.improved === true && (
-                              <svg className="h-3 w-3 shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25" />
-                              </svg>
-                            )}
-                            {metric.improved === false && (
-                              <svg className="h-3 w-3 shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 4.5l15 15m0 0V8.25m0 11.25H8.25" />
-                              </svg>
-                            )}
-                            {metric.changePct !== null
-                              ? `${metric.changePct >= 0 ? '+' : ''}${metric.changePct.toFixed(1)}%`
-                              : '—'}
-                          </span>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+                  ))}
+                </tbody>
+              </table>
             </div>
           ) : (
             <div className="rounded-xl border border-gray-200 bg-gray-50 p-8 text-center">
@@ -268,7 +266,7 @@ export default function ImpactCardPanel({
           )}
 
           {/* Footer */}
-          <p className="mt-5 text-center text-[10px] text-gray-400">
+          <p className="mt-4 text-center text-[10px] text-gray-400">
             {t('impact.comparingPeriod')}
           </p>
         </div>
